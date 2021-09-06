@@ -7,7 +7,64 @@ let error_list = {
     "jquery": "This plugin needs JQuery to work properly."
 };
 
-var Utils = {
+var $ = {
+
+    getID: function (e, n = document) {
+        return n.getElementById(e);
+    },
+
+    getClass: function (e, n = document) {
+        return n.getElementsByClassName(e);
+    },
+
+    getTag: function (e, n = document) {
+        return n.getElementsByTagName(e);
+    },
+
+    getSelector: function (e, n = document) {
+        return n.querySelector(e);
+    },
+
+    getSelectorAll: function (e, n = document) {
+        return n.querySelectorAll(e);
+    },
+
+    hasClass: function (e, className) {
+        return new RegExp('(\\s|^)' + className + '(\\s|$)').test(e.className);
+    },
+
+    getParent: function (elem, selector) {
+        var parent = undefined;
+
+        while (elem.parentNode.tagName !== "BODY" && parent === undefined) {
+            elem = elem.parentNode;
+
+            if (elem.matches(selector)) {
+                parent = elem;
+            }
+        }
+
+        return parent;
+    },
+
+    delegate: function (el, evt, sel, handler) {
+        el.addEventListener(evt, function (event) {
+            var t = event.target;
+            while (t && t !== this) {
+                if (t.matches(sel)) {
+                    handler.call(t, event);
+                }
+                t = t.parentNode;
+            }
+        });
+    },
+
+    removeClassList: function (e, className) {
+        for (let element of e) {
+            element.classList.remove(className);
+        };
+    },
+
     objToString: function (obj, delimiter = ";") {
         var str = '';
         for (var p in obj) {
@@ -23,7 +80,6 @@ var Utils = {
         switch (str.toLowerCase()) {
             case 'false':
             case 'no':
-            case '0':
             case 'n':
             case '':
             case 'null':
@@ -34,8 +90,8 @@ var Utils = {
         }
     },
 
-    exists: function () {
-        return this.length !== 0;
+    exists: function (element) {
+        return (typeof (element) != 'undefined' && element != null);
     },
 
     throwException: function (message) {
@@ -102,14 +158,14 @@ var Validator = {
                 inputValidationFormat("select", form, key, "correct")
             }
 
-            if (($(`${form} input[name='${key}']`).attr("type") == "email") && (!$(`${form} input[name='${key}']`).hasClass("no-required"))) {
+            if (($(`${form} input[name='${key}']`).getAttribute("type") == "email") && (!$(`${form} input[name='${key}']`).hasClass("no-required"))) {
                 if (!isEmail(value)) {
                     error += "-2";
                     inputValidationFormat("input", form, key, "error")
                 }
             }
 
-            if (($(`${form} input[name='${key}']`).attr("data-type") == "url") && (!$(`${form} input[name='${key}']`).hasClass("no-required"))) {
+            if (($(`${form} input[name='${key}']`).getAttribute("data-type") == "url") && (!$(`${form} input[name='${key}']`).hasClass("no-required"))) {
                 if (!isValidURL(value)) {
                     error += "-3";
                     inputValidationFormat("input", form, key, "error")
@@ -174,7 +230,7 @@ var Validator = {
 class Wizard {
 
     constructor(args) {
-        
+
         let opts = {
             wz_class: (args != undefined && args.hasOwnProperty("wz_class")) ? args.wz_class : ".wizard",
             wz_nav: (args != undefined && args.hasOwnProperty("wz_nav")) ? args.wz_nav : ".wizard-nav",
@@ -207,26 +263,29 @@ class Wizard {
         var active_index = 0;
         var is_form = false;
 
-        $($wz_nav).each(function (index) {
-            let $this = $(this);
-            let attr = (typeof $this.attr("data-type") !== 'undefined' && $this.attr("data-type") !== false) ? $this.attr("data-type") : type;
+        for (let i = 0; i < $wz_nav.length; i++) {
+            let $this = $wz_nav[i];
+            let attr = (typeof $this.getAttribute("data-type") !== undefined && $this.getAttribute("data-type") !== false) ? $this.getAttribute("data-type") : type;
 
             is_form = (attr === "form") ? true : is_form;
 
-            active = (active === false) ? $this.hasClass("active") : active;
-            active_index = ($this.hasClass("active")) ? index : active_index;
+            active = (active === false) ? $.hasClass($this, "active") : active;
+            active_index = ($.hasClass($this, "active")) ? i : active_index;
 
-            $this.attr("data-step", index);
-            $wz_content.eq(index).attr("data-step", index);
+            $this.setAttribute("data-step", i);
+            $wz_content[i].setAttribute("data-step", i);
 
-            $this.attr("data-type", attr);
-            $wz_content.eq(index).attr("data-type", attr);
-        });
+            $this.setAttribute("data-type", attr);
+            $wz_content[i].setAttribute("data-type", attr);
+        };
 
-        $wz_nav.removeClass("active").eq(active_index).addClass("active");
-        $wz_content.removeClass("active").eq(active_index).addClass("active");
+        $.removeClassList($wz_nav, "active");
+        $wz_nav[active_index].classList.add("active");
 
-        $(this.wz_nav).addClass(this.wz_nav_style);
+        $.removeClassList($wz_content, "active");
+        $wz_content[active_index].classList.add("active");
+
+        $.getSelector(this.wz_nav).classList.add(this.wz_nav_style);
 
         if (is_form) {
             this.update2Form()
@@ -234,46 +293,54 @@ class Wizard {
     }
 
     update2Form() {
-        let wz_content = $(this.wz_class).find(this.wz_content);
+        let wz = $.getSelector(this.wz_class);
+        let wz_content = $.getSelector(this.wz_content, wz);
 
-        if (wz_content.is("form") === false) {
-            let wz_content_class = wz_content.attr("class");
-            let wz_content_content = wz_content.contents()
+        if (wz_content.tagName !== "FORM") {
+            let wz_content_class = wz_content.getAttribute("class");
+            let wz_content_content = wz_content.innerHTML
 
             wz_content.remove();
+            var $form = document.createElement("form");
 
-            let $form = $(`<form class="${wz_content_class} ${this.wz_form}"></form>`);
-            $form.append(wz_content_content);
+            $form.setAttribute("method", "POST");
+            $form.setAttribute("class", wz_content_class + " " + this.wz_form);
 
-            $(this.wz_class).append($form);
+            $form.innerHTML = wz_content_content;
+
+            wz.appendChild($form)
         }
     }
 
     createButtons() {
-        let wz_content = $(this.wz_class).find(this.wz_content);
+        let wz = $.getSelector(this.wz_class);
+        let wz_btns = $.getSelector(this.wz_buttons, wz);
 
-        if (wz_content.is("form") === false) {
-            let wz_content_class = wz_content.attr("class");
-            let wz_content_content = wz_content.contents()
-
-            wz_content.remove();
-
-            let $form = $(`<form class="${wz_content_class} ${this.wz_form}"></form>`);
-            $form.append(wz_content_content);
-
-            $(this.wz_class).append($form);
+        if ($.exists(wz_btns) === false && $.str2bool(this.buttons)) {
+            var buttons = document.createElement("aside");
+            buttons.classList.add(this);
+            document.body.appendChild(x);
         }
+
+        return true;
+    }
+
+    checkForm() {
+
     }
 
     onClick(e) {
-        let $this = $(e)
-        let step = $this.attr("data-step");
+        let $this = e
 
-        let parent = $this.parents(this.wz_class);
-        let nav = parent.find(this.wz_nav);
-        let content = parent.find(this.wz_content);
+        let step = $this.getAttribute("data-step");
 
-        let type = (!parent.attr("data-type")) ? "default" : parent.attr("data-type");
+        let parent = $.getParent($this, this.wz_class);
+
+        let nav = $.getSelector(this.wz_nav, parent);
+
+        let content = $.getSelector(this.wz_content, parent);
+
+        let type = (!nav.getAttribute("data-type")) ? "default" : nav.getAttribute("data-type");
 
         // switch (type) {
         //     case 'form':
@@ -284,20 +351,25 @@ class Wizard {
         //         break;
         // }
 
-        nav.find(`${this.wz_step}`).removeClass("active");
-        content.find(`${this.wz_step}`).removeClass("active");
+        let $wz_nav = $.getSelectorAll(this.wz_step, nav)
+        $.removeClassList($wz_nav, "active");
 
-        this.setStep(content, step)
+        let $wz_content = $.getSelectorAll(this.wz_step, content)
+        $.removeClassList($wz_content, "active");
 
-        nav.find(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).addClass("active");
-        content.find(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).addClass("active");
+        if ($.str2bool(step)) {
+            this.setStep(content, step)
+        }
+
+        $.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, nav).classList.add("active");
+        $.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
     }
 
     setStep(content, step) {
-        let check_content = content.find(`${this.wz_step}[data-step="${step}"]`);
+        let check_content = $.getSelector(`${this.wz_step}[data-step="${step}"]`, content);
 
-        if (Utils.exists(check_content) === false) {
-            let content_length = (content.find(`${this.wz_step}`).length) - 1;
+        if ($.exists(check_content) === false) {
+            let content_length = ($.getSelectorAll(this.wz_step, content).length) - 1;
 
             let diff = this.closetNubmer(content_length, step)
 
@@ -331,14 +403,16 @@ class Wizard {
 
     setNavEvent() {
         let _self = this;
-        $(document).on("click", `${this.wz_nav} ${this.wz_step}`, function (e) {
-            _self.onClick(e.currentTarget)
+
+        $.delegate(document, "click", this.wz_nav + " " + this.wz_step, function (event) {
+            _self.onClick(this)
         });
+
     }
 
     setBtnEvent() {
         let _self = this;
-        $(document).on("click", `${this.wz_nav} ${this.wz_step}`, function (e) {
+        $(document).on("click", `${this.wz_buttons} ${this.wz_step}`, function (e) {
             _self.onClick(e.currentTarget)
         });
     }
@@ -346,40 +420,41 @@ class Wizard {
     init() {
         try {
             let _self = this;
-            let wz = (Utils.exists($(this.wz_class))) ? $(this.wz_class) : Utils.throwException(error_list.empty_wz);
 
-            let wz_nav = (Utils.exists(wz.find(this.wz_nav))) ? wz.find(this.wz_nav) : Utils.throwException(error_list.empty_nav);
+            let wz = ($.exists($.getSelector(this.wz_class))) ? $.getSelector(this.wz_class) : $.throwException(error_list.empty_wz);
 
-            let wz_content = (Utils.exists(wz.find(this.wz_content))) ? wz.find(this.wz_content) : Utils.throwException(error_list.empty_content);
+            let wz_nav = ($.exists($.getSelector(this.wz_nav, wz))) ? $.getSelector(this.wz_nav, wz) : $.throwException(error_list.empty_nav);
 
-            let wz_type = (typeof wz.attr("data-type") !== 'undefined' && wz.attr("data-type") !== false) ? wz.attr("data-type") : "default";
+            let wz_content = ($.exists($.getSelector(this.wz_content, wz))) ? $.getSelector(this.wz_content, wz) : $.throwException(error_list.empty_content);
 
-            var wz_nav_steps = wz_nav.find(`${this.wz_step}`);
-            var wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : Utils.throwException(error_list.empty_nav);;
+            let wz_type = (typeof wz.getAttribute("data-type") !== 'undefined' && wz.getAttribute("data-type") !== false) ? wz.getAttribute("data-type") : "default";
 
-            var wz_content_steps = wz_content.find(`${this.wz_step}`);
-            var wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : Utils.throwException(error_list.empty_content);
+            var wz_nav_steps = $.getSelectorAll(this.wz_step, wz_nav);
+            var wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $.throwException(error_list.empty_nav);;
+
+            var wz_content_steps = $.getSelectorAll(this.wz_step, wz_content);
+            var wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $.throwException(error_list.empty_content);
 
             if (wz_nav_steps_length != wz_content_steps_length) {
-                Utils.throwException(error_list.diff_steps);
+                $.throwException(error_list.diff_steps);
             }
 
             this.set(wz_nav_steps, wz_content_steps, wz_type)
 
             switch (this.navigation) {
                 case "all":
+                    this.setNavEvent()
+                    // this.setBtnEvent()
+                    break;
                 case "nav":
-                    $(document).on("click", `${this.wz_nav} ${this.wz_step}`, function (e) {
-                        console.log(e.currentTarget)
-                        _self.onClick(e.currentTarget)
-                    });
+                    this.setNavEvent();
                     break;
                 case "buttons":
+                    this.setBtnEvent();
                     break;
-
             }
 
-            wz.show()
+            wz.style.display = "block"
 
         } catch (error) {
             throw error;
