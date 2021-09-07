@@ -21,7 +21,7 @@ class Wizard {
             wz_form: (args != undefined && args.hasOwnProperty("wz_form")) ? args.wz_form : ".wizard-form",
             wz_next: (args != undefined && args.hasOwnProperty("next")) ? args.wz_next : ".next",
             wz_prev: (args != undefined && args.hasOwnProperty("prev")) ? args.wz_prev : ".prev",
-            
+
             current_step: (args != undefined && args.hasOwnProperty("current_step")) ? args.current_step : 0,
             steps: (args != undefined && args.hasOwnProperty("steps")) ? args.steps : 0,
             navigation: (args != undefined && args.hasOwnProperty("navigation")) ? args.navigation : "all",
@@ -150,6 +150,26 @@ class Wizard {
         }
     }
 
+    checkForm() {
+        let wz = $.getSelector(this.wz_class);
+        let wz_content = $.getSelector(this.wz_content, wz);
+
+        let steps = $.getSelectorAll(this.wz_step, wz_content);
+        let target = steps[this.getCurrentStep()];
+        var validation = false;
+
+        let inputs = $.getSelectorAll("input,textarea,select", target);
+
+        if (inputs.length > 0) {
+            validation = $.formValidator(inputs);
+        } else {
+            this.throwException(error_list.random);
+        }
+
+
+        return validation;
+    }
+
     setButtons() {
         let wz = $.getSelector(this.wz_class);
         let wz_btns = $.getSelector(this.wz_buttons, wz);
@@ -197,13 +217,18 @@ class Wizard {
 
     onClick(e) {
         let $this = e
-        var is_btn = false;
+
+        let parent = $.getParent($this, this.wz_class);
+        let nav = $.getSelector(this.wz_nav, parent);
+        let content = $.getSelector(this.wz_content, parent);
+        let steps = $.getSelectorAll(this.wz_step, content);
+
+        var is_btn = ($.hasClass($this, this.wz_button));
 
         let step = ($.str2bool($this.getAttribute("data-step")) !== false) ? $this.getAttribute("data-step") : this.getCurrentStep();
+        let type = steps[this.getCurrentStep()].getAttribute("data-type");
 
-        if ($.hasClass($this, this.wz_button)) {
-            is_btn = true;
-
+        if (is_btn) {
             if ($.hasClass($this, this.wz_prev)) {
                 step = step - 1;
             } else if ($.hasClass($this, this.wz_next)) {
@@ -211,16 +236,19 @@ class Wizard {
             }
         }
 
-        let parent = $.getParent($this, this.wz_class);
+        switch (type) {
+            case "form":
+                if (this.checkForm() === true) {
+                    return false;
+                }
+                break;
 
-        let nav = $.getSelector(this.wz_nav, parent);
-
-        let content = $.getSelector(this.wz_content, parent);
-
-        let type = (!nav.getAttribute("data-type")) ? "default" : nav.getAttribute("data-type");
+            default:
+                break;
+        }
 
         if ($.str2bool(step)) {
-            this.setStep(content, step)
+            this.setCurrentStep(step)
         }
 
         if (is_btn) {
@@ -241,7 +269,18 @@ class Wizard {
         $.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
     }
 
-    setStep(content, step) {
+    setCurrentStep(step) {
+        this.current_step = this.setStep(step);
+    }
+
+    getCurrentStep() {
+        return this.current_step;
+    }
+
+    setStep(step) {
+        let parent = $.getSelector(this.wz_class);
+        let content = $.getSelector(this.wz_content, parent);
+
         let check_content = $.getSelector(`${this.wz_step}[data-step="${step}"]`, content);
 
         if ($.exists(check_content) === false) {
@@ -252,15 +291,7 @@ class Wizard {
             step = diff;
         }
 
-        this.setCurrentStep(step);
-    }
-
-    setCurrentStep(step) {
-        this.current_step = parseInt(step);
-    }
-
-    getCurrentStep() {
-        return this.current_step;
+        return parseInt(step);
     }
 
     closetNubmer(length, step) {
@@ -364,6 +395,11 @@ var $ = {
         return str;
     },
 
+    isHidden: function (el) {
+        var style = window.getComputedStyle(el);
+        return (style.display === 'none')
+    },
+
     str2bool: function (str) {
         str = String(str);
         switch (str.toLowerCase()) {
@@ -398,105 +434,76 @@ var $ = {
         throw message + ' \n' + aux;
     },
 
-    checkJQuery() {
-        if (typeof jQuery != 'undefined') {
-            this.throwException(error_list.jquery);
-        }
-    }
-}
+    formValidator: function (formData) {
+        var error = false;
+        for (let e of formData) {
+            if ($.hasClass(e, "required") || $.exists(e.getAttribute("required"))) {
 
-var Validator = {
+                var check = false
+                switch (e.tagName) {
+                    case "INPUT":
+                        check = $.dispatchInput(e);
+                        break;
+                    case "SELECT":
+                    case "TEXTAREA":
+                        check = $.isEmpty(e.value);
+                        break;
+                }
 
-    checkForm: function (id) {
-        let form = $(id);
-
-        if (form.length > 0) {
-            let formData = form.formData();
-            let validator = formValidator(formData, id);
-
-            if (validator === "") {
-                return true;
+                if (check === false) {
+                    error = true;
+                    console.log(e);
+                    $.highlight(e, "error");
+                }
             }
         }
 
-        return false;
+        return error;
     },
 
-    formValidator: function (formData, form) {
-        var error = "0";
+    highlight: function (e, highlight = "error") {
+        let classHigh = "highlight-" + highlight
 
-        for (var [key, value] of formData.entries()) {
-            if (($(`${form} input[name='${key}']`).val() == "") && (!$(`${form} input[name='${key}']`).hasClass("no-required"))) {
-                inputValidationFormat("input", form, key, "error")
-                error += "-1";
-            } else {
-                inputValidationFormat("input", form, key, "correct")
-            }
+        e.classList.add(classHigh)
+        setTimeout(function () {
+            document.querySelectorAll('[class*="highlight"]')
+                .forEach((el) => {
+                    for (let i = el.classList.length - 1; i >= 0; i--) {
+                        let className = el.classList[i];
+                        if (className.startsWith('highlight')) {
+                            el.classList.remove(className);
+                        }
+                    }
+                });
+        }, 5000);
 
-            if ($(`${form} textarea[name='${key}']`).val() == "" && (!$(`${form} textarea[name='${key}']`).hasClass("no-required"))) {
-                inputValidationFormat("textarea", form, key, "error")
-                error += "-1";
-            } else {
-                inputValidationFormat("textarea", form, key, "correct")
-            }
-
-            if ($(`${form} select[name='${key}']`).val() == "" && (!$(`${form} select[name='${key}']`).hasClass("no-required"))) {
-                inputValidationFormat("select", form, key, "error")
-                error += "-1";
-            } else {
-                inputValidationFormat("select", form, key, "correct")
-            }
-
-            if (($(`${form} input[name='${key}']`).getAttribute("type") == "email") && (!$(`${form} input[name='${key}']`).hasClass("no-required"))) {
-                if (!isEmail(value)) {
-                    error += "-2";
-                    inputValidationFormat("input", form, key, "error")
-                }
-            }
-
-            if (($(`${form} input[name='${key}']`).getAttribute("data-type") == "url") && (!$(`${form} input[name='${key}']`).hasClass("no-required"))) {
-                if (!isValidURL(value)) {
-                    error += "-3";
-                    inputValidationFormat("input", form, key, "error")
-                }
-            }
-        }
-
-        var validator = unique(error.split('-'));
-        var message = "";
-
-        $.each(validator, function (i, e) {
-            if (e == "1") {
-                message += `<li>${msg_required}</li>`;
-            }
-
-            if (e == "2") {
-                message += `<li>${msg_email}</li>`;
-            }
-
-        });
-
-        return message;
     },
 
-    inputValidationFormat: function (type, form, key, action) {
-        switch (action) {
-            case "error":
-                if (type == "select") {
-                    $(`${form} .select`).css("border-color", "#dc3545");
-                } else {
-                    $(`${form} ${type}[name='${key}']`).css("border-color", "#dc3545");
-                }
-                break;
+    dispatchInput: function (e) {
+        let type = e.getAttribute("type");
+        var check = false;
 
-            case "correct":
-                if (type == "select") {
-                    $(`${form} .select`).css("border-color", "#ced4da");
-                } else {
-                    $(`${form} ${type}[name='${key}']`).css("border-color", "#ced4da");
-                }
+        switch (type) {
+            case "email":
+                check = $.isEmail(e.value);
+                break;
+            case "url":
+                check = $.isValidURL(e.value);
+                break;
+            case "checkbox":
+            case "radio":
+                check = e.checked;
+                break;
+            default:
+                check = $.isEmpty(e.value);
                 break;
         }
+
+        return check
+    },
+
+    isEmpty: function (val) {
+        return (val != undefined && val != null && val.length > 0);
     },
 
     isEmail: function (email) {
