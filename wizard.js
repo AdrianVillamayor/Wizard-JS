@@ -3,8 +3,260 @@ let error_list = {
     "empty_nav": "Nav does not exist or is empty.",
     "empty_content": "Content does not exist or is empty.",
     "diff_steps": "Discordance between the steps of nav and content.",
-    "random": "There has been a problem, check the configuration and use of the wizard.",
-    "jquery": "This plugin needs JQuery to work properly."
+    "random": "There has been a problem, check the configuration and use of the wizard."
+};
+
+class Wizard {
+
+    constructor(args) {
+
+        let opts = {
+            wz_class: (args != undefined && args.hasOwnProperty("wz_class")) ? args.wz_class : ".wizard",
+            wz_nav: (args != undefined && args.hasOwnProperty("wz_nav")) ? args.wz_nav : ".wizard-nav",
+            wz_nav_style: (args != undefined && args.hasOwnProperty("wz_nav_style")) ? args.wz_nav_style : "dots",
+            wz_content: (args != undefined && args.hasOwnProperty("wz_content")) ? args.wz_content : ".wizard-content",
+            wz_buttons: (args != undefined && args.hasOwnProperty("wz_buttons")) ? args.wz_buttons : ".wizard-buttons",
+            wz_button: (args != undefined && args.hasOwnProperty("wz_button")) ? args.wz_button : ".wizard-btn",
+            wz_step: (args != undefined && args.hasOwnProperty("wz_step")) ? args.wz_step : ".wizard-step",
+            wz_form: (args != undefined && args.hasOwnProperty("wz_form")) ? args.wz_form : ".wizard-form",
+            current_step: (args != undefined && args.hasOwnProperty("current_step")) ? args.current_step : 0,
+            navigation: (args != undefined && args.hasOwnProperty("navigation")) ? args.navigation : "all",
+            buttons: (args != undefined && args.hasOwnProperty("buttons")) ? args.buttons : true,
+            next: (args != undefined && args.hasOwnProperty("next")) ? args.wz_form : "Next",
+            prev: (args != undefined && args.hasOwnProperty("prev")) ? args.wz_form : "Prev",
+        };
+
+        this.wz_class = opts.wz_class;
+        this.wz_nav = opts.wz_nav;
+        this.wz_nav_style = opts.wz_nav_style;
+        this.wz_content = opts.wz_content;
+        this.wz_buttons = opts.wz_buttons;
+        this.wz_button = opts.wz_button;
+        this.wz_step = opts.wz_step;
+        this.wz_form = opts.wz_form;
+        this.current_step = opts.current_step;
+        this.navigation = opts.navigation;
+        this.buttons = opts.buttons;
+        this.prev = opts.prev;
+        this.next = opts.next;
+    }
+
+    init() {
+        try {
+            let _self = this;
+
+            let wz = ($.exists($.getSelector(this.wz_class))) ? $.getSelector(this.wz_class) : $.throwException(error_list.empty_wz);
+
+            let wz_nav = ($.exists($.getSelector(this.wz_nav, wz))) ? $.getSelector(this.wz_nav, wz) : $.throwException(error_list.empty_nav);
+
+            let wz_content = ($.exists($.getSelector(this.wz_content, wz))) ? $.getSelector(this.wz_content, wz) : $.throwException(error_list.empty_content);
+
+            let wz_type = (typeof wz.getAttribute("data-type") !== 'undefined' && wz.getAttribute("data-type") !== false) ? wz.getAttribute("data-type") : "default";
+
+            var wz_nav_steps = $.getSelectorAll(this.wz_step, wz_nav);
+            var wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $.throwException(error_list.empty_nav);;
+
+            var wz_content_steps = $.getSelectorAll(this.wz_step, wz_content);
+            var wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $.throwException(error_list.empty_content);
+
+            if (wz_nav_steps_length != wz_content_steps_length) {
+                $.throwException(error_list.diff_steps);
+            }
+
+            this.set(wz_nav_steps, wz_content_steps, wz_type)
+
+            switch (this.navigation) {
+                case "all":
+                    this.setNavEvent()
+                    this.setBtnEvent()
+                    break;
+                case "nav":
+                    this.setNavEvent();
+                    break;
+                case "buttons":
+                    this.setBtnEvent();
+                    break;
+            }
+
+            wz.style.display = "block"
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    set($wz_nav, $wz_content, type) {
+        var active = false;
+        var active_index = 0;
+        var is_form = false;
+
+        for (let i = 0; i < $wz_nav.length; i++) {
+            let $this = $wz_nav[i];
+            let attr = (typeof $this.getAttribute("data-type") !== undefined && $.str2bool($this.getAttribute("data-type")) !== false) ? $this.getAttribute("data-type") : "default";
+
+            is_form = (attr === "form") ? true : is_form;
+
+            active = (active === false) ? $.hasClass($this, "active") : active;
+            active_index = ($.hasClass($this, "active")) ? i : active_index;
+
+            $this.setAttribute("data-step", i);
+            $wz_content[i].setAttribute("data-step", i);
+
+            $this.setAttribute("data-type", attr);
+            $wz_content[i].setAttribute("data-type", attr);
+        };
+
+        $.removeClassList($wz_nav, "active");
+        $wz_nav[active_index].classList.add("active");
+
+        $.removeClassList($wz_content, "active");
+        $wz_content[active_index].classList.add("active");
+
+        $.getSelector(this.wz_nav).classList.add(this.wz_nav_style);
+
+        if (is_form) {
+            this.update2Form();
+        }
+
+        this.setButtons();
+    }
+
+    update2Form() {
+        let wz = $.getSelector(this.wz_class);
+        let wz_content = $.getSelector(this.wz_content, wz);
+
+        if (wz_content.tagName !== "FORM") {
+            let wz_content_class = wz_content.getAttribute("class");
+            let wz_content_content = wz_content.innerHTML
+
+            wz_content.remove();
+            var $form = document.createElement("form");
+
+            $form.setAttribute("method", "POST");
+            $form.setAttribute("class", wz_content_class + " " + this.wz_form);
+
+            $form.innerHTML = wz_content_content;
+
+            wz.appendChild($form)
+        }
+    }
+
+    setButtons() {
+        let wz = $.getSelector(this.wz_class);
+        let wz_btns = $.getSelector(this.wz_buttons, wz);
+
+        if ($.exists(wz_btns) === false && $.str2bool(this.buttons)) {
+            var buttons = document.createElement("ASIDE");
+            buttons.classList.add((this.wz_buttons).replace(".", ""));
+
+            var prev = document.createElement("BUTTON");
+            prev.innerHTML = this.prev;
+
+            prev.classList.add((this.wz_button).replace(".", ""));
+            prev.classList.add("prev");
+            buttons.appendChild(prev);
+
+            var next = document.createElement("BUTTON");
+            next.innerHTML = this.next;
+            next.classList.add((this.wz_button).replace(".", ""));
+            next.classList.add("next");
+
+            buttons.appendChild(next);
+
+            wz.appendChild(buttons);
+        }
+
+        return true;
+    }
+
+    onClick(e) {
+        let $this = e
+
+        let step = ($.str2bool($this.getAttribute("data-step")) !== false) ? $this.getAttribute("data-step") : this.getCurrentStep();
+
+        if ($.hasClass($this, this.wz_button)) {
+            if ($.hasClass($this, "prev")) {
+                step = step - 1;
+            } else if ($.hasClass($this, "next")) {
+                step = step + 1;
+            }
+        }
+
+        let parent = $.getParent($this, this.wz_class);
+
+        let nav = $.getSelector(this.wz_nav, parent);
+
+        let content = $.getSelector(this.wz_content, parent);
+
+        let type = (!nav.getAttribute("data-type")) ? "default" : nav.getAttribute("data-type");
+
+
+        let $wz_nav = $.getSelectorAll(this.wz_step, nav)
+        $.removeClassList($wz_nav, "active");
+
+        let $wz_content = $.getSelectorAll(this.wz_step, content)
+        $.removeClassList($wz_content, "active");
+
+        if ($.str2bool(step)) {
+            this.setStep(content, step)
+        }
+
+        $.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, nav).classList.add("active");
+        $.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
+    }
+
+    setStep(content, step) {
+        let check_content = $.getSelector(`${this.wz_step}[data-step="${step}"]`, content);
+
+        if ($.exists(check_content) === false) {
+            let content_length = ($.getSelectorAll(this.wz_step, content).length) - 1;
+
+            let diff = this.closetNubmer(content_length, step)
+
+            step = diff;
+        }
+
+        this.setCurrentStep(step);
+    }
+
+    setCurrentStep(step) {
+        this.current_step = parseInt(step);
+    }
+
+    getCurrentStep() {
+        return this.current_step;
+    }
+
+    closetNubmer(length, step) {
+        var counts = [];
+
+        for (let index = 0; index <= length; index++) {
+            counts.push(index)
+        }
+
+        let closet = counts.reduce(function (prev, curr) {
+            return (Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev);
+        });
+
+        return closet;
+    }
+
+    setNavEvent() {
+        let _self = this;
+
+        $.delegate(document, "click", this.wz_nav + " " + this.wz_step, function (event) {
+            _self.onClick(this)
+        });
+
+    }
+
+    setBtnEvent() {
+        let _self = this;
+
+        $.delegate(document, "click", this.wz_buttons + " " + this.wz_button, function (event) {
+            _self.onClick(this)
+        });
+    }
 };
 
 var $ = {
@@ -30,6 +282,7 @@ var $ = {
     },
 
     hasClass: function (e, className) {
+        className = className.replace(".", "");
         return new RegExp('(\\s|^)' + className + '(\\s|$)').test(e.className);
     },
 
@@ -226,238 +479,3 @@ var Validator = {
         return !!pattern.test(str);
     }
 }
-
-class Wizard {
-
-    constructor(args) {
-
-        let opts = {
-            wz_class: (args != undefined && args.hasOwnProperty("wz_class")) ? args.wz_class : ".wizard",
-            wz_nav: (args != undefined && args.hasOwnProperty("wz_nav")) ? args.wz_nav : ".wizard-nav",
-            wz_nav_style: (args != undefined && args.hasOwnProperty("wz_nav_style")) ? args.wz_nav_style : "dots",
-            wz_content: (args != undefined && args.hasOwnProperty("wz_content")) ? args.wz_content : ".wizard-content",
-            wz_buttons: (args != undefined && args.hasOwnProperty("wz_buttons")) ? args.wz_buttons : ".wizard-buttons",
-            wz_button: (args != undefined && args.hasOwnProperty("wz_button")) ? args.wz_button : ".wizard-btn",
-            wz_step: (args != undefined && args.hasOwnProperty("wz_step")) ? args.wz_step : ".wizard-step",
-            wz_form: (args != undefined && args.hasOwnProperty("wz_form")) ? args.wz_form : ".wizard-form",
-            current_step: (args != undefined && args.hasOwnProperty("current_step")) ? args.current_step : 0,
-            navigation: (args != undefined && args.hasOwnProperty("navigation")) ? args.navigation : "all",
-            buttons: (args != undefined && args.hasOwnProperty("buttons")) ? args.buttons : true
-        };
-
-        this.wz_class = opts.wz_class;
-        this.wz_nav = opts.wz_nav;
-        this.wz_nav_style = opts.wz_nav_style;
-        this.wz_content = opts.wz_content;
-        this.wz_buttons = opts.wz_buttons;
-        this.wz_button = opts.wz_button;
-        this.wz_step = opts.wz_step;
-        this.wz_form = opts.wz_form;
-        this.current_step = opts.current_step;
-        this.navigation = opts.navigation;
-        this.buttons = opts.buttons;
-    }
-
-    set($wz_nav, $wz_content, type) {
-        var active = false;
-        var active_index = 0;
-        var is_form = false;
-
-        for (let i = 0; i < $wz_nav.length; i++) {
-            let $this = $wz_nav[i];
-            let attr = (typeof $this.getAttribute("data-type") !== undefined && $this.getAttribute("data-type") !== false) ? $this.getAttribute("data-type") : type;
-
-            is_form = (attr === "form") ? true : is_form;
-
-            active = (active === false) ? $.hasClass($this, "active") : active;
-            active_index = ($.hasClass($this, "active")) ? i : active_index;
-
-            $this.setAttribute("data-step", i);
-            $wz_content[i].setAttribute("data-step", i);
-
-            $this.setAttribute("data-type", attr);
-            $wz_content[i].setAttribute("data-type", attr);
-        };
-
-        $.removeClassList($wz_nav, "active");
-        $wz_nav[active_index].classList.add("active");
-
-        $.removeClassList($wz_content, "active");
-        $wz_content[active_index].classList.add("active");
-
-        $.getSelector(this.wz_nav).classList.add(this.wz_nav_style);
-
-        if (is_form) {
-            this.update2Form()
-        }
-    }
-
-    update2Form() {
-        let wz = $.getSelector(this.wz_class);
-        let wz_content = $.getSelector(this.wz_content, wz);
-
-        if (wz_content.tagName !== "FORM") {
-            let wz_content_class = wz_content.getAttribute("class");
-            let wz_content_content = wz_content.innerHTML
-
-            wz_content.remove();
-            var $form = document.createElement("form");
-
-            $form.setAttribute("method", "POST");
-            $form.setAttribute("class", wz_content_class + " " + this.wz_form);
-
-            $form.innerHTML = wz_content_content;
-
-            wz.appendChild($form)
-        }
-    }
-
-    createButtons() {
-        let wz = $.getSelector(this.wz_class);
-        let wz_btns = $.getSelector(this.wz_buttons, wz);
-
-        if ($.exists(wz_btns) === false && $.str2bool(this.buttons)) {
-            var buttons = document.createElement("aside");
-            buttons.classList.add(this);
-            document.body.appendChild(x);
-        }
-
-        return true;
-    }
-
-    checkForm() {
-
-    }
-
-    onClick(e) {
-        let $this = e
-
-        let step = $this.getAttribute("data-step");
-
-        let parent = $.getParent($this, this.wz_class);
-
-        let nav = $.getSelector(this.wz_nav, parent);
-
-        let content = $.getSelector(this.wz_content, parent);
-
-        let type = (!nav.getAttribute("data-type")) ? "default" : nav.getAttribute("data-type");
-
-        // switch (type) {
-        //     case 'form':
-        //         return false;
-        //         break;
-        //     case 'multi':
-
-        //         break;
-        // }
-
-        let $wz_nav = $.getSelectorAll(this.wz_step, nav)
-        $.removeClassList($wz_nav, "active");
-
-        let $wz_content = $.getSelectorAll(this.wz_step, content)
-        $.removeClassList($wz_content, "active");
-
-        if ($.str2bool(step)) {
-            this.setStep(content, step)
-        }
-
-        $.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, nav).classList.add("active");
-        $.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
-    }
-
-    setStep(content, step) {
-        let check_content = $.getSelector(`${this.wz_step}[data-step="${step}"]`, content);
-
-        if ($.exists(check_content) === false) {
-            let content_length = ($.getSelectorAll(this.wz_step, content).length) - 1;
-
-            let diff = this.closetNubmer(content_length, step)
-
-            step = diff;
-        }
-
-        this.setCurrentStep(step);
-    }
-
-    setCurrentStep(step) {
-        this.current_step = parseInt(step);
-    }
-
-    getCurrentStep() {
-        return this.current_step;
-    }
-
-    closetNubmer(length, step) {
-        var counts = [];
-
-        for (let index = 0; index <= length; index++) {
-            counts.push(index)
-        }
-
-        let closet = counts.reduce(function (prev, curr) {
-            return (Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev);
-        });
-
-        return closet;
-    }
-
-    setNavEvent() {
-        let _self = this;
-
-        $.delegate(document, "click", this.wz_nav + " " + this.wz_step, function (event) {
-            _self.onClick(this)
-        });
-
-    }
-
-    setBtnEvent() {
-        let _self = this;
-        $(document).on("click", `${this.wz_buttons} ${this.wz_step}`, function (e) {
-            _self.onClick(e.currentTarget)
-        });
-    }
-
-    init() {
-        try {
-            let _self = this;
-
-            let wz = ($.exists($.getSelector(this.wz_class))) ? $.getSelector(this.wz_class) : $.throwException(error_list.empty_wz);
-
-            let wz_nav = ($.exists($.getSelector(this.wz_nav, wz))) ? $.getSelector(this.wz_nav, wz) : $.throwException(error_list.empty_nav);
-
-            let wz_content = ($.exists($.getSelector(this.wz_content, wz))) ? $.getSelector(this.wz_content, wz) : $.throwException(error_list.empty_content);
-
-            let wz_type = (typeof wz.getAttribute("data-type") !== 'undefined' && wz.getAttribute("data-type") !== false) ? wz.getAttribute("data-type") : "default";
-
-            var wz_nav_steps = $.getSelectorAll(this.wz_step, wz_nav);
-            var wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $.throwException(error_list.empty_nav);;
-
-            var wz_content_steps = $.getSelectorAll(this.wz_step, wz_content);
-            var wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $.throwException(error_list.empty_content);
-
-            if (wz_nav_steps_length != wz_content_steps_length) {
-                $.throwException(error_list.diff_steps);
-            }
-
-            this.set(wz_nav_steps, wz_content_steps, wz_type)
-
-            switch (this.navigation) {
-                case "all":
-                    this.setNavEvent()
-                    // this.setBtnEvent()
-                    break;
-                case "nav":
-                    this.setNavEvent();
-                    break;
-                case "buttons":
-                    this.setBtnEvent();
-                    break;
-            }
-
-            wz.style.display = "block"
-
-        } catch (error) {
-            throw error;
-        }
-    }
-};
