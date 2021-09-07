@@ -239,6 +239,7 @@ $color-active: #198FD1;
             }
 
             &:disabled{
+                cursor: not-allowed !important;
                 pointer-events: none;
                 opacity: .65;
             }
