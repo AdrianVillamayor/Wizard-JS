@@ -203,6 +203,48 @@ $color-active: #198FD1;
         }
     }
 
+    .wizard-buttons {
+        transition: all .3s ease-in;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .wizard-btn {
+            display: inline-block;
+            font-weight: 400;
+            line-height: 1.5;
+
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+
+            border: 1px solid transparent;
+            padding: .375rem .75rem;
+
+            border-radius: .15rem;
+            
+            transition: all .3s ease-in;
+            margin: 0 10px;
+            background-color: $color-active;
+            color: $white;
+
+            &:hover{
+                background-color: rgba($color-active, .8);
+            }
+
+            &:disabled{
+                pointer-events: none;
+                opacity: .65;
+            }
+        }
+    }
+
     &.vertical {
         display: flex;
         transition: all .3s ease-in;
