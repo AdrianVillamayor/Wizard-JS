@@ -18,13 +18,14 @@ class Wizard {
             wz_buttons: (args != undefined && args.hasOwnProperty("wz_buttons")) ? args.wz_buttons : ".wizard-buttons",
             wz_button: (args != undefined && args.hasOwnProperty("wz_button")) ? args.wz_button : ".wizard-btn",
             wz_step: (args != undefined && args.hasOwnProperty("wz_step")) ? args.wz_step : ".wizard-step",
-            wz_steps: (args != undefined && args.hasOwnProperty("wz_steps")) ? args.wz_steps : 0,
             wz_form: (args != undefined && args.hasOwnProperty("wz_form")) ? args.wz_form : ".wizard-form",
+            wz_next: (args != undefined && args.hasOwnProperty("next")) ? args.wz_next : ".next",
+            wz_prev: (args != undefined && args.hasOwnProperty("prev")) ? args.wz_prev : ".prev",
+            
             current_step: (args != undefined && args.hasOwnProperty("current_step")) ? args.current_step : 0,
+            steps: (args != undefined && args.hasOwnProperty("steps")) ? args.steps : 0,
             navigation: (args != undefined && args.hasOwnProperty("navigation")) ? args.navigation : "all",
             buttons: (args != undefined && args.hasOwnProperty("buttons")) ? args.buttons : true,
-            btn_next: (args != undefined && args.hasOwnProperty("next")) ? args.btn_next : ".next",
-            btn_prev: (args != undefined && args.hasOwnProperty("prev")) ? args.btn_prev : ".prev",
             next: (args != undefined && args.hasOwnProperty("next")) ? args.wz_form : "Next",
             prev: (args != undefined && args.hasOwnProperty("prev")) ? args.wz_form : "Prev",
         };
@@ -36,15 +37,15 @@ class Wizard {
         this.wz_buttons = opts.wz_buttons;
         this.wz_button = opts.wz_button;
         this.wz_step = opts.wz_step;
-        this.wz_steps = opts.wz_steps;
+        this.steps = opts.steps;
         this.wz_form = opts.wz_form;
         this.current_step = opts.current_step;
         this.navigation = opts.navigation;
         this.buttons = opts.buttons;
         this.prev = opts.prev;
         this.next = opts.next;
-        this.btn_next = opts.btn_next;
-        this.btn_prev = opts.btn_prev;
+        this.wz_next = opts.wz_next;
+        this.wz_prev = opts.wz_prev;
     }
 
     init() {
@@ -69,7 +70,7 @@ class Wizard {
                 $.throwException(error_list.diff_steps);
             }
 
-            this.wz_steps = wz_nav_steps_length;
+            this.steps = wz_nav_steps_length;
 
             this.set(wz_nav_steps, wz_content_steps, wz_type)
 
@@ -160,13 +161,13 @@ class Wizard {
             var prev = document.createElement("BUTTON");
             prev.innerHTML = this.prev;
             prev.classList.add((this.wz_button).replace(".", ""));
-            prev.classList.add((this.btn_prev).replace(".", ""));
+            prev.classList.add((this.wz_prev).replace(".", ""));
             buttons.appendChild(prev);
 
             var next = document.createElement("BUTTON");
             next.innerHTML = this.next;
             next.classList.add((this.wz_button).replace(".", ""));
-            next.classList.add((this.btn_next).replace(".", ""));
+            next.classList.add((this.wz_next).replace(".", ""));
             buttons.appendChild(next);
 
             this.checkButtons(next, prev)
@@ -179,7 +180,7 @@ class Wizard {
 
     checkButtons(next, prev) {
         let current_step = this.getCurrentStep();
-        let n_steps = this.wz_steps - 1;
+        let n_steps = this.steps - 1;
 
         if (current_step == 0) {
             prev.setAttribute("disabled", true);
@@ -203,9 +204,9 @@ class Wizard {
         if ($.hasClass($this, this.wz_button)) {
             is_btn = true;
 
-            if ($.hasClass($this, this.btn_prev)) {
+            if ($.hasClass($this, this.wz_prev)) {
                 step = step - 1;
-            } else if ($.hasClass($this, this.btn_next)) {
+            } else if ($.hasClass($this, this.wz_next)) {
                 step = step + 1;
             }
         }
@@ -224,8 +225,8 @@ class Wizard {
 
         if (is_btn) {
             let buttons = $.getSelector(this.wz_buttons, parent);
-            let next = $.getSelector(this.wz_button + this.btn_next, buttons);
-            let prev = $.getSelector(this.wz_button + this.btn_prev, buttons);
+            let next = $.getSelector(this.wz_button + this.wz_next, buttons);
+            let prev = $.getSelector(this.wz_button + this.wz_prev, buttons);
 
             this.checkButtons(next, prev)
         }
