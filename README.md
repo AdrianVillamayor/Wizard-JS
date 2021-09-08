@@ -8,11 +8,12 @@ A lightweight wizard UI component that supports accessibility and HTML5 in JavaS
 ## Demo
 Try it 
 
-[![Codepen](https://codepen.io/adrianvillamayor/pen/VwWPVME)
+
+[![Codepen](https://user-images.githubusercontent.com/29653964/116972608-8f6bca80-acbb-11eb-98c1-8a3b19705de1.png)](https://codepen.io/adrianvillamayor/pen/VwWPVME)
 
 
-## Installation
-Add this code before the closing `<body>` tag. ([cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS))
+## Installation 
+Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1/styles/css/main.css">
