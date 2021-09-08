@@ -302,38 +302,3 @@ $color-active: #198FD1;
         outline: 1px solid tomato;
     }
 }
-
-.preview {
-     max-width: 315px;
-    .banner-card {
-        display: flex;
-        justify-content: space-between;
-
-        padding: 8px;
-
-        border-radius: 0px;
-        border: 1px solid rgba(0, 0, 0, .125);
-
-        .banner-text {
-            font-size: 10px;
-            min-height: 28px;
-            text-align: left;
-            overflow: hidden;
-
-            .title{
-                font-weight: 500;
-            }
-            .title, .text {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: pre;
-            }
-        }
-
-        .banner-image {
-            width: auto;
-            height: 40px;
-            margin-left: 8px;
-        }
-    }
-}
