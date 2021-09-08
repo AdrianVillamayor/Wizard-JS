@@ -4,7 +4,6 @@ let args = {
     "navigation": 'buttons'
 };
 
-
 const wizard = new Wizard(args);
-const ajax = new Fetch("https://httpbin.org/");
+
 wizard.init();
