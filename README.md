@@ -20,6 +20,19 @@ Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard
 <script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1/src/wizard.min.js"></script>
 ```
 
+### Events Management
+When accepting or rejecting an event is generated without params
+```javascript
+document.addEventListener("prevWizard", function (e) {
+	alert("Prev Step");
+});
+document.addEventListener("nextWizard", function (e) {
+	alert("Next Step");
+});
+document.addEventListener("submitWizard", function (e) {
+	alert("Form Submit");
+});
+```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
