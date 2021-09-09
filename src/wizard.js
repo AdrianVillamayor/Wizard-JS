@@ -246,8 +246,10 @@ class Wizard {
         if (is_btn) {
             if ($_.hasClass($this, this.wz_prev)) {
                 step = step - 1;
+                document.dispatchEvent(new Event("prevWizard"));
             } else if ($_.hasClass($this, this.wz_next)) {
                 step = step + 1;
+                document.dispatchEvent(new Event("nextWizard"));
             }
         }
 
@@ -256,9 +258,6 @@ class Wizard {
                 if (this.checkForm() === true) {
                     return false;
                 }
-                break;
-
-            default:
                 break;
         }
 
