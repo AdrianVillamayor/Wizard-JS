@@ -21,7 +21,7 @@ Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard
 ```
 
 ### Events Management
-When accepting or rejecting an event is generated without params
+When any wizard button is used, it will generate an event.
 ```javascript
 document.addEventListener("prevWizard", function (e) {
 	alert("Prev Step");
