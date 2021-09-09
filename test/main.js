@@ -7,3 +7,8 @@ let args = {
 const wizard = new Wizard(args);
 
 wizard.init();
+
+
+document.addEventListener("submitWizard", function (e) {
+	alert("All cookies accepted");
+});

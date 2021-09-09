@@ -25,16 +25,6 @@
                     <span class="dot"></span>
                     <span>Destiny</span>
                 </div>
-                <div class="form-group">
-                    <label for="bodyNoti">Segment</label>
-                    <select class="form-control fetch-info" name="segment">
-                        <option>Select one ...</option>
-                        <option value="0">País</option>
-                        <option value="1">Language</option>
-                        <option value="2">Diabetes Type</option>
-                        <option value="3">Center</option>
-                    </select>
-                </div>
             </aside>
 
             <aside class="wizard-content container">
@@ -66,7 +56,7 @@
 
                     <div class="form-group">
                         <label for="imageNoti">Image</label>
-                        <input type="file" name="image" class="form-control required banner-info" id="imageNoti">
+                        <input type="file" name="image" class="form-control banner-info" id="imageNoti">
                     </div>
                 </div>
 
@@ -74,15 +64,15 @@
                     <div class="form-group">
                         <label for="titleNoti">Action</label>
                         <select class="form-control" name="action">
-                            <option>Select one ...</option>
+                            <option value="">Select one ...</option>
                             <option value="0">Open bolus configurator</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="bodyNoti">Segment</label>
-                        <select class="form-control fetch-info" name="segment">
-                            <option>Select one ...</option>
+                        <select class="form-control required fetch-info" name="segment">
+                            <option value="">Select one ...</option>
                             <option value="0">País</option>
                             <option value="1">Language</option>
                             <option value="2">Diabetes Type</option>
@@ -99,7 +89,7 @@
     </div>
 
 
-    <script src="../src/wizard.min.js"></script>
+    <script src="../src/wizard.js"></script>
     <script src="main.js"></script>
 
 </body>

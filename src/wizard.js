@@ -324,15 +324,6 @@ class Wizard {
         return closet;
     }
 
-    // setSubmitEvent() {
-    //     let _self = this;
-
-    //     $_.delegate(document, "click", this.wz_form + " " + this.wz_finish, function (e) {
-    //         console.log(`Form Submitted! Time stamp: ${e.timeStamp}`);
-    //         e.preventDefault();
-    //     });
-    // }
-
     setNavEvent() {
         let _self = this;
 
@@ -346,10 +337,9 @@ class Wizard {
 
         $_.delegate(document, "click", this.wz_buttons + " " + this.wz_button, function (event) {
             if ($_.hasClass(event.target, _self.wz_finish)) {
-                if (_self.checkForm() === true) {
-                    return false;
+                if (_self.checkForm() !== true) {
+                    document.dispatchEvent(new Event("submitWizard"))
                 }
-                console.log("Submit")
             } else {
                 _self.onClick(this)
 
