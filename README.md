@@ -1,5 +1,5 @@
 
-![Badge-glow](https://img.shields.io/badge/WizardJS-v.1.1-blue?style=flat-square) ![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
+![Badge-glow](https://img.shields.io/badge/WizardJS-v.1.2-blue?style=flat-square) ![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 # Wizard-JS - Wizard Vanilla JavaScript
 
 A lightweight wizard UI component that supports accessibility and HTML5 in JavaScript Vanilla.
@@ -16,8 +16,8 @@ Try it
 Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1/styles/css/main.css">
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1/src/wizard.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.2/styles/css/main.css">
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.2/src/wizard.min.js"></script>
 ```
 
 ### Events Management
