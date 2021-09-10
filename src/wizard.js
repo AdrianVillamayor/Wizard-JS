@@ -265,14 +265,15 @@ class Wizard {
             }
         }
 
-        if (this.getCurrentStep() < step) {
-            switch (type) {
-                case "form":
-                    if (this.checkForm() === true) {
+        switch (type) {
+            case "form":
+                if (this.checkForm() === true) {
+                    this.last_step = this.getCurrentStep();
+                    if (this.getCurrentStep() < step) {
                         return false;
                     }
-                    break;
-            }
+                }
+                break;
         }
 
 
@@ -513,7 +514,7 @@ var $_ = {
                         }
                     }
                 });
-        }, 1500);
+        }, 1000);
 
     },
 
