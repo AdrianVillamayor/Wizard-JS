@@ -46,6 +46,7 @@ class Wizard {
 
         this.steps = opts.steps;
         this.current_step = opts.current_step;
+        this.last_step = this.current_step;
         this.navigation = opts.navigation;
         this.buttons = opts.buttons;
         this.prev = opts.prev;
@@ -240,7 +241,7 @@ class Wizard {
 
         var is_btn = ($_.hasClass($this, this.wz_button));
 
-        let step = ($_.str2bool($this.getAttribute("data-step")) !== false) ? $this.getAttribute("data-step") : this.getCurrentStep();
+        let step = ($_.str2bool($this.getAttribute("data-step")) !== false) ? parseInt($this.getAttribute("data-step")) : this.getCurrentStep();
         let type = steps[this.getCurrentStep()].getAttribute("data-type");
 
         if (is_btn) {
@@ -252,14 +253,28 @@ class Wizard {
                 document.dispatchEvent(new Event("nextWizard"));
             }
         }
-
-        switch (type) {
-            case "form":
-                if (this.checkForm() === true) {
-                    return false;
+        if (this.form && this.navigation != "buttons") {
+            if (step > this.getCurrentStep()) {
+                if ((step !== this.getCurrentStep() + 1)) {
+                    if (step >= this.last_step) {
+                        step = this.last_step;
+                    } else {
+                        step = this.getCurrentStep() + 1;
+                    }
                 }
-                break;
+            }
         }
+
+        if (this.getCurrentStep() < step) {
+            switch (type) {
+                case "form":
+                    if (this.checkForm() === true) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
 
         if ($_.str2bool(step)) {
             this.setCurrentStep(step)
@@ -305,6 +320,8 @@ class Wizard {
 
             step = diff;
         }
+
+        this.last_step = (step > this.last_step) ? step : this.last_step;
 
         return parseInt(step);
     }
