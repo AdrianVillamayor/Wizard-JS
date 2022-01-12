@@ -77,11 +77,19 @@ When any wizard button is used, it will generate an event.
 document.addEventListener("prevWizard", function (e) {
 	alert("Prev Step");
 });
+
 document.addEventListener("nextWizard", function (e) {
 	alert("Next Step");
 });
+
+//When it is a form
 document.addEventListener("submitWizard", function (e) {
 	alert("Form Submit");
+});
+
+//When it is not a form
+document.addEventListener("endWizard", function (e) {
+	alert("Wizard is finished");
 });
 ```
 
