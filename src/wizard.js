@@ -80,17 +80,22 @@ class Wizard {
                 $_.throwException(error_list.diff_steps);
             }
 
+            switch (this.navigation) {
+                case "nav":
+                    this.buttons = false;
+                    break;
+            }
+
             this.steps = wz_nav_steps_length;
 
             this.set(wz_nav_steps, wz_content_steps, wz_type)
 
             switch (this.navigation) {
                 case "all":
+                case "nav":
                     this.setNavEvent()
                     this.setBtnEvent()
-                    break;
-                case "nav":
-                    this.setNavEvent();
+
                     break;
                 case "buttons":
                     this.setBtnEvent();
@@ -112,7 +117,9 @@ class Wizard {
             let $this = $wz_nav[i];
             let attr = (typeof $this.getAttribute("data-type") !== undefined && $_.str2bool($this.getAttribute("data-type")) !== false) ? $this.getAttribute("data-type") : "default";
 
-            this.form = (attr === "form") ? true : this.is_form;
+            if (attr === "form") {
+                this.form = true;
+            }
 
             active = (active === false) ? $_.hasClass($this, "active") : active;
             active_index = ($_.hasClass($this, "active")) ? i : active_index;
@@ -132,7 +139,7 @@ class Wizard {
 
         $_.getSelector(this.wz_nav).classList.add(this.wz_nav_style);
 
-        if (this.form) {
+        if (this.form || this.is_form) {
             this.update2Form();
         }
 
@@ -183,7 +190,7 @@ class Wizard {
         let wz = $_.getSelector(this.wz_class);
         let wz_btns = $_.getSelector(this.wz_buttons, wz);
 
-        if ($_.exists(wz_btns) === false && $_.str2bool(this.buttons)) {
+        if ($_.exists(wz_btns) === false) {
             var buttons = document.createElement("ASIDE");
             buttons.classList.add((this.wz_buttons).replace(".", ""));
 
@@ -191,12 +198,18 @@ class Wizard {
             prev.innerHTML = this.prev;
             prev.classList.add((this.wz_button).replace(".", ""));
             prev.classList.add((this.wz_prev).replace(".", ""));
+
+            if ($_.str2bool(this.buttons) === false) prev.style.display = "none";
+
             buttons.appendChild(prev);
 
             var next = document.createElement("BUTTON");
             next.innerHTML = this.next;
             next.classList.add((this.wz_button).replace(".", ""));
             next.classList.add((this.wz_next).replace(".", ""));
+
+            if ($_.str2bool(this.buttons) === false) next.style.display = "none";
+
             buttons.appendChild(next);
 
             if (this.form) {
@@ -256,6 +269,7 @@ class Wizard {
                 document.dispatchEvent(new Event("nextWizard"));
             }
         }
+
         if (this.form && this.navigation != "buttons") {
             if (step > this.getCurrentStep()) {
                 if ((step !== this.getCurrentStep() + 1)) {
@@ -284,14 +298,12 @@ class Wizard {
             this.setCurrentStep(step)
         }
 
-        if (is_btn) {
-            let buttons = $_.getSelector(this.wz_buttons, parent);
-            let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
-            let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
-            let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
+        let buttons = $_.getSelector(this.wz_buttons, parent);
+        let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
+        let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
+        let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
 
-            this.checkButtons(next, prev, finish)
-        }
+        this.checkButtons(next, prev, finish)
 
         let $wz_nav = $_.getSelectorAll(this.wz_step, nav)
         $_.removeClassList($wz_nav, "active");
@@ -302,6 +314,28 @@ class Wizard {
         $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, nav).classList.add("active");
         $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
     }
+
+    onClickFinish(e) {
+        let $this = e
+
+        let parent = $_.getParent($this, this.wz_class);
+        let nav = $_.getSelector(this.wz_nav, parent);
+        let content = $_.getSelector(this.wz_content, parent);
+        let steps = $_.getSelectorAll(this.wz_step, content);
+
+        let type = steps[this.getCurrentStep()].getAttribute("data-type");
+
+        switch (type) {
+            case "form":
+                if (this.checkForm() !== true) {
+                    document.dispatchEvent(new Event("submitWizard"))
+                }
+                break;
+            default:
+                document.dispatchEvent(new Event("endWizard"))
+        }
+    }
+
 
     setCurrentStep(step) {
         this.current_step = this.setStep(step);
@@ -357,9 +391,7 @@ class Wizard {
 
         $_.delegate(document, "click", this.wz_buttons + " " + this.wz_button, function (event) {
             if ($_.hasClass(event.target, _self.wz_finish)) {
-                if (_self.checkForm() !== true) {
-                    document.dispatchEvent(new Event("submitWizard"))
-                }
+                _self.onClickFinish(this)
             } else {
                 _self.onClick(this)
 
