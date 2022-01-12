@@ -12,7 +12,7 @@ class Wizard {
 
         let opts = {
             wz_class: (args != undefined && args.hasOwnProperty("wz_class")) ? args.wz_class : ".wizard",
-            wz_nav: (args != undefined && args.hasOwnProperty("wz_nav")) ? args.wz_nav : ".wizard-nav",
+            wz_nav: (args != undefined && args.hasOwnProperty("wz_nav")) ? args.wz_nav : ".xwizard-nav",
             wz_nav_style: (args != undefined && args.hasOwnProperty("wz_nav_style")) ? args.wz_nav_style : "dots",
             wz_content: (args != undefined && args.hasOwnProperty("wz_content")) ? args.wz_content : ".wizard-content",
             wz_buttons: (args != undefined && args.hasOwnProperty("wz_buttons")) ? args.wz_buttons : ".wizard-buttons",
@@ -30,6 +30,8 @@ class Wizard {
             next: (args != undefined && args.hasOwnProperty("next")) ? args.next : "Next",
             prev: (args != undefined && args.hasOwnProperty("prev")) ? args.prev : "Prev",
             finish: (args != undefined && args.hasOwnProperty("finish")) ? args.finish : "Submit",
+
+            is_form: (args != undefined && args.hasOwnProperty("is_form")) ? args.is_form : false
         };
 
         this.wz_class = opts.wz_class;
@@ -53,6 +55,7 @@ class Wizard {
         this.next = opts.next;
         this.finish = opts.finish;
         this.form = false;
+        this.is_form = false;
     }
 
     init() {
@@ -109,7 +112,7 @@ class Wizard {
             let $this = $wz_nav[i];
             let attr = (typeof $this.getAttribute("data-type") !== undefined && $_.str2bool($this.getAttribute("data-type")) !== false) ? $this.getAttribute("data-type") : "default";
 
-            this.form = (attr === "form") ? true : is_form;
+            this.form = (attr === "form") ? true : this.is_form;
 
             active = (active === false) ? $_.hasClass($this, "active") : active;
             active_index = ($_.hasClass($this, "active")) ? i : active_index;
