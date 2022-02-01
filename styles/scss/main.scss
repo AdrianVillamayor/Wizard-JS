@@ -64,7 +64,7 @@ $color-active: #198fd1;
                 transition: all 0.3s ease-in;
 
                 &.active {
-                    ~.wizard-step {
+                    ~ .wizard-step {
                         background-color: $white;
                         color: $black;
                     }
@@ -255,6 +255,18 @@ $color-active: #198fd1;
 
             transition: all 0.3s linear;
 
+            @media screen and (min-width: 1024px) {
+                max-width: 250px;
+            }
+
+
+            @media screen and (max-width: 767px) {
+                .wizard-step {
+                    text-align: left;
+                    padding-left: 1rem;
+                }
+            }
+
             .wizard-step {
                 &:before {
                     top: 7px;
@@ -283,21 +295,21 @@ $color-active: #198fd1;
                     }
                 }
             }
+        }
 
-            .wizard-content {
-                width: 75%;
-                transition: all 0.3s ease-in;
-                padding: 0 0 3rem 0;
+        .wizard-content {
+            width: 75%;
+            transition: all 0.3s ease-in;
+            padding: 0 0 3rem 0;
 
-                @media screen and (min-width: 1024) {
-                    max-width: 250px;
-                }
+            @media screen and (max-width: 767px) {
+                padding: 2rem 0;
             }
+        }
 
-            .wizard-buttons {
-                flex-basis: 100%;
-                transition: all 0.3s ease-in;
-            }
+        .wizard-buttons {
+            flex-basis: 100%;
+            transition: all 0.3s ease-in;
         }
     }
 }
