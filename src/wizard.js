@@ -19,9 +19,9 @@ class Wizard {
             wz_button: (args != undefined && args.hasOwnProperty("wz_button")) ? args.wz_button : ".wizard-btn",
             wz_step: (args != undefined && args.hasOwnProperty("wz_step")) ? args.wz_step : ".wizard-step",
             wz_form: (args != undefined && args.hasOwnProperty("wz_form")) ? args.wz_form : ".wizard-form",
-            wz_next: (args != undefined && args.hasOwnProperty("next")) ? args.wz_next : ".next",
-            wz_prev: (args != undefined && args.hasOwnProperty("prev")) ? args.wz_prev : ".prev",
-            wz_finish: (args != undefined && args.hasOwnProperty("prev")) ? args.wz_prev : ".finish",
+            wz_next: (args != undefined && args.hasOwnProperty("wz_next")) ? args.wz_next : ".next",
+            wz_prev: (args != undefined && args.hasOwnProperty("wz_prev")) ? args.wz_prev : ".prev",
+            wz_finish: (args != undefined && args.hasOwnProperty("wz_finish")) ? args.wz_prev : ".finish",
 
             current_step: (args != undefined && args.hasOwnProperty("current_step")) ? args.current_step : 0,
             steps: (args != undefined && args.hasOwnProperty("steps")) ? args.steps : 0,
@@ -102,7 +102,8 @@ class Wizard {
                     break;
             }
 
-            wz.style.display = "block"
+
+            wz.style.display = ($_.hasClass(wz, "vertical")) ? "flex" : "block";
 
         } catch (error) {
             throw error;

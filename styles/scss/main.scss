@@ -1,27 +1,26 @@
-$white : #fff;
-$black : #000;
+$white: #fff;
+$black: #000;
 
-$color-done: #19D184;
+$color-done: #19d184;
 $color-default: $white;
 $color-border: #dee2e6;
 
-$color-active: #198FD1;
+$color-active: #198fd1;
 
 .wizard {
-    transition: all .3s ease-in;
+    transition: all 0.3s ease-in;
     display: none;
 
     .wizard-nav {
         display: flex;
         flex-wrap: wrap;
-        transition: all .3s ease-in;
+        transition: all 0.3s ease-in;
 
         .wizard-step {
             cursor: pointer;
         }
 
         &.tabs {
-
             .wizard-step {
                 position: relative;
                 font-size: 14px;
@@ -30,17 +29,15 @@ $color-active: #198FD1;
                 max-width: 100%;
                 text-align: center;
                 border-bottom: 1px solid $color-border;
-                padding: .5rem 1rem;
+                padding: 0.5rem 1rem;
 
                 // transition: all .3s ease-in;
 
-
                 &.active {
                     border: 1px solid $color-border;
-                    border-top-left-radius: .25rem;
-                    border-top-right-radius: .25rem;
+                    border-top-left-radius: 0.25rem;
+                    border-top-right-radius: 0.25rem;
                     border-bottom: 0px;
-
                 }
             }
         }
@@ -50,7 +47,7 @@ $color-active: #198FD1;
             overflow: auto;
             line-height: 1.5;
             font-size: 1rem;
-            border-radius: .25rem;
+            border-radius: 0.25rem;
 
             .wizard-step {
                 position: relative;
@@ -62,18 +59,15 @@ $color-active: #198FD1;
                 border: 1px solid $color-border;
                 background-color: $color-done;
                 color: white;
-                padding: .5rem 1rem;
+                padding: 0.5rem 1rem;
 
-                transition: all .3s ease-in;
-
+                transition: all 0.3s ease-in;
 
                 &.active {
-
                     ~.wizard-step {
                         background-color: $white;
                         color: $black;
                     }
-
                 }
             }
         }
@@ -86,7 +80,7 @@ $color-active: #198FD1;
                 flex-grow: 1;
                 max-width: 100%;
                 text-align: center;
-                transition: all .3s ease-in;
+                transition: all 0.3s ease-in;
 
                 &:last-child {
                     &:before {
@@ -105,14 +99,14 @@ $color-active: #198FD1;
                 @for $i from 1 to 10 {
                     &:nth-of-type(#{$i}).dot {
                         transition-property: all;
-                        transition-duration: .2s;
+                        transition-duration: 0.2s;
                         transition-timing-function: ease-in;
                         transition-delay: $i * 0.1s;
                     }
                 }
 
                 .dot {
-                    content: '';
+                    content: "";
                     position: absolute;
                     top: -20px;
                     left: 50%;
@@ -122,20 +116,20 @@ $color-active: #198FD1;
                     background: $color-active;
                     border-radius: 50%;
                     box-shadow: 0 0 0 2px rgb(255, 255, 255);
-                    transition: all .5s ease-in-out;
+                    transition: all 0.5s ease-in-out;
                 }
 
                 @for $i from 1 to 10 {
                     &:nth-of-type(#{$i}):before {
                         transition-property: all;
-                        transition-duration: .2s;
+                        transition-duration: 0.2s;
                         transition-timing-function: ease-in;
                         transition-delay: $i * 0.1s;
                     }
                 }
 
                 &:before {
-                    content: '';
+                    content: "";
                     position: absolute;
                     top: -17px;
                     left: 50%;
@@ -146,7 +140,7 @@ $color-active: #198FD1;
                 }
 
                 &:after {
-                    content: '';
+                    content: "";
                     position: absolute;
                     top: -17px;
                     left: 50%;
@@ -157,7 +151,7 @@ $color-active: #198FD1;
                 }
 
                 &.active {
-                    ~.wizard-step {
+                    ~ .wizard-step {
                         .dot {
                             background: $color-border;
                         }
@@ -190,11 +184,11 @@ $color-active: #198FD1;
     }
 
     .wizard-content {
-        transition: all .3s ease-in;
+        transition: all 0.3s ease-in;
         padding: 3rem 0;
 
         .wizard-step {
-            transition: all .3s ease-in;
+            transition: all 0.3s ease-in;
             display: none;
 
             &.active {
@@ -204,7 +198,7 @@ $color-active: #198FD1;
     }
 
     .wizard-buttons {
-        transition: all .3s ease-in;
+        transition: all 0.3s ease-in;
 
         display: flex;
         align-items: center;
@@ -225,37 +219,41 @@ $color-active: #198FD1;
             user-select: none;
 
             border: 1px solid transparent;
-            padding: .375rem .75rem;
+            padding: 0.375rem 0.75rem;
 
-            border-radius: .15rem;
+            border-radius: 0.15rem;
 
-            transition: all .3s ease-in;
+            transition: all 0.3s ease-in;
             margin: 0 10px;
             background-color: $color-active;
             color: $white;
 
             &:hover {
-                background-color: rgba($color-active, .8);
+                background-color: rgba($color-active, 0.8);
             }
 
             &:disabled {
                 cursor: not-allowed !important;
                 pointer-events: none;
-                opacity: .65;
+                opacity: 0.65;
             }
         }
     }
 
     &.vertical {
         display: flex;
-        transition: all .3s ease-in;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+
+        transition: all 0.3s ease-in;
 
         .wizard-nav {
             flex-direction: column;
-            width: 25%;
+            flex: 1;
             padding: 0 3rem;
 
-            transition: all .3s linear;
+            transition: all 0.3s linear;
 
             .wizard-step {
                 &:before {
@@ -277,27 +275,34 @@ $color-active: #198FD1;
                     left: -15px;
                 }
 
-
                 &.active {
-                    ~.wizard-step {
+                    ~ .wizard-step {
                         &:before {
                             height: 0%;
                         }
                     }
                 }
+            }
 
-                .wizard-content {
-                    width: 75%;
-                    transition: all .3s ease-in;
+            .wizard-content {
+                width: 75%;
+                transition: all 0.3s ease-in;
+                padding: 0 0 3rem 0;
 
+                @media screen and (min-width: 1024) {
+                    max-width: 250px;
                 }
+            }
+
+            .wizard-buttons {
+                flex-basis: 100%;
+                transition: all 0.3s ease-in;
             }
         }
     }
 }
 
 .highlight {
-
     &-error {
         outline: 1px solid tomato;
     }
