@@ -16,8 +16,9 @@ Try it
 Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.6/styles/css/main.css" integrity="sha256-fzh2SI0FhNBETzlD6atqnrNKf0m7g85OREoqtbdCuuM=" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.6/src/wizard.min.js" integrity="sha256-x8IFm01zeoF8EUDlpC5vaSvL0sSMkPhlrKD8xvhK3Hk=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.1/styles/css/main.css" integrity="sha256-btHibfSEWQ4O0dUO3Jo22dZVkFr4T75RU7+EU5SGS0A=" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.1/src/wizard.min.js" integrity="sha256-mJVNHvVixlbCbAdxkmLIEsgLGvm3zaxsdChv0BXjRU0=" crossorigin="anonymous"></script>
 ```
 
 ## Usage
