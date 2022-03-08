@@ -46,7 +46,6 @@ For wizards with form purpose, it manages the required fields and validates them
 </form>
 ```
 
-
 ```javascript
 let args = {
 	"wz_nav_style": "dots",
@@ -60,6 +59,13 @@ const wizard = new Wizard(args);
 
 wizard.init();
 ```
+
+## HTML Tags
+- `[data-title]` => Set the step title for the nav, if left blank the system will automatically add `Step + step number` as the title.
+```html
+<div class="wizard-step" data-title="Configuration"> 
+```
+If not defined, it is treated as `default`.
 
 ## Config Wizard
 Options allowing to modify the behavior and actions
