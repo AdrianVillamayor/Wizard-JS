@@ -74,6 +74,7 @@ Options allowing to modify the behavior and actions
 | Parameter      | Type   | Default          |  Definition / Value   |
 | -------------  | ------ | ---------------- | --------------------- |
 | `wz_class`     | String | .wizard          | Wizard main container class |
+| `wz_ori`       | String | .horizontal      | Wizard orientation |
 | `wz_nav`       | String | .wizard-nav      | Nav container class |
 | `wz_nav_style` | String | dots             | Style of navigation steps / `dots`, `tabs`, `progress` |
 | `wz_content`   | String | .wizard-content  | Body container class |
