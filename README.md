@@ -17,7 +17,9 @@ Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.1/styles/css/main.css" integrity="sha256-btHibfSEWQ4O0dUO3Jo22dZVkFr4T75RU7+EU5SGS0A=" crossorigin="anonymous">
+```
 
+```html
 <script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.1/src/wizard.min.js" integrity="sha256-mJVNHvVixlbCbAdxkmLIEsgLGvm3zaxsdChv0BXjRU0=" crossorigin="anonymous"></script>
 ```
 
