@@ -25,6 +25,7 @@ Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard
 ```javascript
 let args = {
 	"wz_nav_style": "dots",
+	"wz_ori": "vertical",
 	"buttons": true,
 	"navigation": 'buttons',
 	"finish": "Save!"
@@ -57,18 +58,6 @@ Options allowing to modify the behavior and actions
 | `next`         | String | Next             | Next button text |
 | `prev`         | String | Prev             | Prev button text |
 | `finish`       | String | Submit           | Finish button text |
-| `is_form`      | Bool   | false            | Defines whether the wizard will act as a form |
-
-
-## HTML Tags
-- Define the step type as a form, to validate the fields marked as required and change the wizard to form in case it is not defined.
-  
-	`[data-type]` => `form`, `default`	
-	```html
-	<div class="wizard-step" data-type="form"> 
-	```
-	If not defined, it is treated as `default`.
-
 
 
 
