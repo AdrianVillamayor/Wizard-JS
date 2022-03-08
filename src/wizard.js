@@ -14,6 +14,7 @@ class Wizard {
         let opts = {
             wz_class: (args != undefined && args.hasOwnProperty("wz_class")) ? args.wz_class : ".wizard",
             wz_nav: (args != undefined && args.hasOwnProperty("wz_nav")) ? args.wz_nav : ".wizard-nav",
+            wz_ori: (args != undefined && args.hasOwnProperty("wz_ori")) ? args.wz_ori : ".horizontal",
             wz_nav_style: (args != undefined && args.hasOwnProperty("wz_nav_style")) ? args.wz_nav_style : "dots",
             wz_content: (args != undefined && args.hasOwnProperty("wz_content")) ? args.wz_content : ".wizard-content",
             wz_buttons: (args != undefined && args.hasOwnProperty("wz_buttons")) ? args.wz_buttons : ".wizard-buttons",
@@ -34,6 +35,7 @@ class Wizard {
         };
 
         this.wz_class = opts.wz_class;
+        this.wz_ori = opts.wz_ori;
         this.wz_nav = opts.wz_nav;
         this.wz_nav_style = opts.wz_nav_style;
         this.wz_content = opts.wz_content;
@@ -60,6 +62,8 @@ class Wizard {
         try {
             let wz = ($_.exists($_.getSelector(this.wz_class))) ? $_.getSelector(this.wz_class) : $_.throwException(i18n.empty_wz);
 
+            wz.classList.add((this.wz_ori).replace(".", ""));
+            
             if (wz.tagName === "FORM") {
                 this.form = true;
             }

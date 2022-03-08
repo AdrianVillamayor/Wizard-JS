@@ -1,6 +1,7 @@
 let args = {
     "wz_nav_style": "dots",
     "navigation": "all",
+    "wz_ori": "horizontal"
 };
 
 const wizard = new Wizard(args);
