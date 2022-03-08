@@ -22,6 +22,31 @@ Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard
 ```
 
 ## Usage
+
+To display content without field control
+```html
+<div class="wizard">
+    <aside class="wizard-content container">
+        <div class="wizard-step">
+            <!-- Step content -->
+        </div>
+    </aside>
+</div>
+```
+
+
+For wizards with form purpose, it manages the required fields and validates them.
+```html
+<form class="wizard" method="POST">
+    <aside class="wizard-content container">
+        <div class="wizard-step">
+	   <input type="text" name="name" class="required" placeholder="Enter a short campaign name">
+        </div>
+    </aside>
+</form>
+```
+
+
 ```javascript
 let args = {
 	"wz_nav_style": "dots",
