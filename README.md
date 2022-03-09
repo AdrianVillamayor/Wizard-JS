@@ -1,4 +1,4 @@
-![Badge-glow](https://img.shields.io/badge/WizardJS-v1.7.2-blue?style=flat-square) [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
+![Badge-glow](https://img.shields.io/badge/WizardJS-v1.7.3-blue?style=flat-square) [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
 # Wizard-JS - Wizard Vanilla JavaScript
 
@@ -16,11 +16,11 @@ Try it
 Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.2/styles/css/main.css" integrity="sha256-btHibfSEWQ4O0dUO3Jo22dZVkFr4T75RU7+EU5SGS0A=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.3/styles/css/main.css" integrity="sha256-btHibfSEWQ4O0dUO3Jo22dZVkFr4T75RU7+EU5SGS0A=" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.2/src/wizard.min.js" integrity="sha256-N2Mgc0suz8S5LFisxY49rZEqDb6HbyR32C/bJ1mhOTc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.3/src/wizard.min.js" integrity="sha256-3ozwmRTxS27wi6eUihGDTRNxYvezJ3mRt97zi19XBYs=" crossorigin="anonymous"></script>
 ```
 
 ## Usage
