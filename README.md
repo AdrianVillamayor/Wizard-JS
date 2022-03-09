@@ -80,6 +80,7 @@ Options allowing to modify the behavior and actions
 | `wz_content`   | String | .wizard-content  | Body container class |
 | `wz_buttons`   | String | .wizard-buttons  | Action button container class |
 | `wz_button`    | String | .wizard-btn      | Class of Prev, Next and Finish action buttons |
+| `wz_button_style`    | String | .btn       | Basic button style |
 | `wz_step`      | String | .wizard-step     | Class for both nav and body steps |
 | `wz_form`      | String | .wizard-form     | Class of the form that contains the wizard |
 | `wz_next`      | String | .next            | Class of Next action button |
