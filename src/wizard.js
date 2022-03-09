@@ -226,13 +226,13 @@ class Wizard {
             var buttons = document.createElement("ASIDE");
             buttons.classList.add((this.wz_buttons).replace(".", ""));
 
-            var btn_style = (this.wz_button_style).replace(".", "");
+            var btn_style = (this.wz_button_style).replaceAll(".", "");
             btn_style = btn_style.split(" ");
 
             var prev = document.createElement("BUTTON");
             prev.innerHTML = this.prev;
             prev.classList.add((this.wz_button).replace(".", ""));
-            prev.classList.add(btn_style);
+            prev.classList.add(...btn_style);
             prev.classList.add((this.wz_prev).replace(".", ""));
 
             if ($_.str2bool(this.buttons) === false) prev.style.display = "none";
@@ -242,7 +242,7 @@ class Wizard {
             var next = document.createElement("BUTTON");
             next.innerHTML = this.next;
             next.classList.add((this.wz_button).replace(".", ""));
-            next.classList.add(btn_style);
+            next.classList.add(...btn_style);
             next.classList.add((this.wz_next).replace(".", ""));
 
             if ($_.str2bool(this.buttons) === false) next.style.display = "none";
@@ -252,7 +252,7 @@ class Wizard {
             var finish = document.createElement("BUTTON");
             finish.innerHTML = this.finish;
             finish.classList.add((this.wz_button).replace(".", ""));
-            finish.classList.add(btn_style);
+            finish.classList.add(...btn_style);
             finish.classList.add((this.wz_finish).replace(".", ""));
             buttons.appendChild(finish);
 
