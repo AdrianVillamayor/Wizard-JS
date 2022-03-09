@@ -19,6 +19,7 @@ class Wizard {
             wz_content: (args != undefined && args.hasOwnProperty("wz_content")) ? args.wz_content : ".wizard-content",
             wz_buttons: (args != undefined && args.hasOwnProperty("wz_buttons")) ? args.wz_buttons : ".wizard-buttons",
             wz_button: (args != undefined && args.hasOwnProperty("wz_button")) ? args.wz_button : ".wizard-btn",
+            wz_button_style: (args != undefined && args.hasOwnProperty("wz_button_style")) ? args.wz_button_style : ".btn",
             wz_step: (args != undefined && args.hasOwnProperty("wz_step")) ? args.wz_step : ".wizard-step",
             wz_form: (args != undefined && args.hasOwnProperty("wz_form")) ? args.wz_form : ".wizard-form",
             wz_next: (args != undefined && args.hasOwnProperty("wz_next")) ? args.wz_next : ".next",
@@ -41,6 +42,7 @@ class Wizard {
         this.wz_content = opts.wz_content;
         this.wz_buttons = opts.wz_buttons;
         this.wz_button = opts.wz_button;
+        this.wz_button_style = opts.wz_button_style;
         this.wz_step = opts.wz_step;
         this.wz_form = opts.wz_form;
         this.wz_next = opts.wz_next;
@@ -227,6 +229,7 @@ class Wizard {
             var prev = document.createElement("BUTTON");
             prev.innerHTML = this.prev;
             prev.classList.add((this.wz_button).replace(".", ""));
+            prev.classList.add((this.wz_button_style).replace(".", ""));
             prev.classList.add((this.wz_prev).replace(".", ""));
 
             if ($_.str2bool(this.buttons) === false) prev.style.display = "none";
@@ -236,6 +239,7 @@ class Wizard {
             var next = document.createElement("BUTTON");
             next.innerHTML = this.next;
             next.classList.add((this.wz_button).replace(".", ""));
+            next.classList.add((this.wz_button_style).replace(".", ""));
             next.classList.add((this.wz_next).replace(".", ""));
 
             if ($_.str2bool(this.buttons) === false) next.style.display = "none";
@@ -245,6 +249,7 @@ class Wizard {
             var finish = document.createElement("BUTTON");
             finish.innerHTML = this.finish;
             finish.classList.add((this.wz_button).replace(".", ""));
+            finish.classList.add((this.wz_button_style).replace(".", ""));
             finish.classList.add((this.wz_finish).replace(".", ""));
             buttons.appendChild(finish);
 
