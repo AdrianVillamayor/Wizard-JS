@@ -58,6 +58,8 @@ class Wizard {
         this.next = opts.next;
         this.finish = opts.finish;
         this.form = false;
+        this.locked = false;
+        this.locked_step = null;
     }
 
     init() {
@@ -142,6 +144,44 @@ class Wizard {
         // }
 
         this.setButtons();
+    }
+
+    reset() {
+        this.setCurrentStep(0);
+
+        let wz = $_.getSelector(this.wz_class);
+        let nav = $_.getSelector(this.wz_nav, wz);
+        let content = $_.getSelector(this.wz_content, wz);
+
+        let buttons = $_.getSelector(this.wz_buttons, wz);
+        let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
+        let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
+        let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
+
+        this.checkButtons(next, prev, finish)
+
+        let $wz_nav = $_.getSelectorAll(this.wz_step, nav)
+        $_.removeClassList($wz_nav, "active");
+
+        let $wz_content = $_.getSelectorAll(this.wz_step, content)
+        $_.removeClassList($wz_content, "active");
+
+        $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, nav).classList.add("active");
+        $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
+
+        document.dispatchEvent(new Event("resetWizard"));
+    }
+
+    lock() {
+        this.locked = true;
+        this.locked_step = this.getCurrentStep();
+    }
+   
+    unlock() {
+        this.locked = false;
+        this.locked_step = null;
+
+        document.dispatchEvent(new Event("unlockWizard"));
     }
 
     update2Form() {
@@ -285,6 +325,11 @@ class Wizard {
 
     onClick(e) {
         let $this = e
+
+        if(this.locked && this.locked_step === this.getCurrentStep()){
+            document.dispatchEvent(new Event("lockWizard"));
+            return false;
+        }
 
         let parent = $_.getParent($this, this.wz_class);
         let nav = $_.getSelector(this.wz_nav, parent);
