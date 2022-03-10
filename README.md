@@ -1,25 +1,20 @@
 ![Badge-glow](https://img.shields.io/badge/WizardJS-v1.7.6-blue?style=flat-square) [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
-
-<br>
-
-
 # Wizard-JS - Wizard Vanilla JavaScript
 
 A lightweight wizard UI component that supports accessibility and HTML5 in JavaScript Vanilla.
 
 <br>
 
-
 # Installation 
 Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.5/styles/css/main.css" integrity="sha256-btHibfSEWQ4O0dUO3Jo22dZVkFr4T75RU7+EU5SGS0A=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.6/styles/css/main.css" integrity="sha256-btHibfSEWQ4O0dUO3Jo22dZVkFr4T75RU7+EU5SGS0A=" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.5/src/wizard.min.js" integrity="sha256-dhqXOy6qI1rbZYQROOUYNh8VLWZCdzgOIKwVKX5hYUY=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.7.6/src/wizard.min.js" integrity="sha256-QzrpKWIcD392XcPfvfPPGT6kTt3nGem3edBeJ1qIowE=" crossorigin="anonymous"></script>
 ```
 <br>
 
@@ -53,6 +48,7 @@ To launch the wizard
 ```javascript
 let args = {
 	"wz_nav_style": "dots",
+	"wz_button_style": ".btn .btn-sm .mx-3",
 	"wz_ori": "vertical",
 	"buttons": true,
 	"navigation": 'buttons',
@@ -178,14 +174,12 @@ document.addEventListener("resetWizard", function (e) {
 ```
 <br>
 
-
 # Demo
 Try it 
 
 [![Codepen](https://user-images.githubusercontent.com/29653964/116972608-8f6bca80-acbb-11eb-98c1-8a3b19705de1.png)](https://codepen.io/adrianvillamayor/pen/VwWPVME)
 
 <br>
-
 
 # Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
