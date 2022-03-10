@@ -137,9 +137,9 @@ class Wizard {
 
         $_.getSelector(this.wz_nav).classList.add(this.wz_nav_style);
 
-        if (this.form) {
-            this.update2Form();
-        }
+        // if (this.form) {
+        //     this.update2Form();
+        // }
 
         this.setButtons();
     }
