@@ -75,7 +75,7 @@ wizard.lock();
 
 To unlock the wizard
 ```javascript
-wizard.lock();
+wizard.unlock();
 ```
 <br>
 
