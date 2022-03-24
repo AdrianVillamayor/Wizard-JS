@@ -1,0 +1,28 @@
+{
+  "name": "@adrii_/wizard-js",
+  "version": "1.0.0",
+  "description": "A lightweight wizard UI component that supports accessibility and HTML5 in JavaScript Vanilla.",
+  "main": "src/wizard.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdrianVillamayor/Wizard-JS.git"
+  },
+  "keywords": [
+    "wizard",
+    "lightweight",
+    "wizard-step",
+    "vanilla"
+  ],
+  "author": "Adrii",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AdrianVillamayor/Wizard-JS/issues"
+  },
+  "homepage": "https://github.com/AdrianVillamayor/Wizard-JS#readme"
+}
