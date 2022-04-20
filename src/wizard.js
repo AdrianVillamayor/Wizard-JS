@@ -1,70 +1,76 @@
-let i18n = {
-    "empty_wz": "Not found any element to generate the Wizard with.",
-    "empty_nav": "Nav does not exist or is empty.",
-    "empty_content": "Content does not exist or is empty.",
-    "diff_steps": "Discordance between the steps of nav and content.",
-    "random": "There has been a problem, check the configuration and use of the wizard.",
-    "title": "Step"
-};
-
 class Wizard {
 
     constructor(args) {
 
         let opts = {
-            wz_class: (args != undefined && args.hasOwnProperty("wz_class")) ? args.wz_class : ".wizard",
-            wz_nav: (args != undefined && args.hasOwnProperty("wz_nav")) ? args.wz_nav : ".wizard-nav",
-            wz_ori: (args != undefined && args.hasOwnProperty("wz_ori")) ? args.wz_ori : ".horizontal",
-            wz_nav_style: (args != undefined && args.hasOwnProperty("wz_nav_style")) ? args.wz_nav_style : "dots",
-            wz_content: (args != undefined && args.hasOwnProperty("wz_content")) ? args.wz_content : ".wizard-content",
-            wz_buttons: (args != undefined && args.hasOwnProperty("wz_buttons")) ? args.wz_buttons : ".wizard-buttons",
-            wz_button: (args != undefined && args.hasOwnProperty("wz_button")) ? args.wz_button : ".wizard-btn",
-            wz_button_style: (args != undefined && args.hasOwnProperty("wz_button_style")) ? args.wz_button_style : ".btn",
-            wz_step: (args != undefined && args.hasOwnProperty("wz_step")) ? args.wz_step : ".wizard-step",
-            wz_form: (args != undefined && args.hasOwnProperty("wz_form")) ? args.wz_form : ".wizard-form",
-            wz_next: (args != undefined && args.hasOwnProperty("wz_next")) ? args.wz_next : ".next",
-            wz_prev: (args != undefined && args.hasOwnProperty("wz_prev")) ? args.wz_prev : ".prev",
-            wz_finish: (args != undefined && args.hasOwnProperty("wz_finish")) ? args.wz_prev : ".finish",
+            "wz_class": ".wizard",
+            "wz_nav": ".wizard-nav",
+            "wz_ori": ".horizontal",
+            "wz_nav_style": "dots",
+            "wz_content": ".wizard-content",
+            "wz_buttons": ".wizard-buttons",
+            "wz_button": ".wizard-btn",
+            "wz_button_style": ".btn",
+            "wz_step": ".wizard-step",
+            "wz_form": ".wizard-form",
+            "wz_next": ".next",
+            "wz_prev": ".prev",
+            "wz_finish": ".finish",
 
-            current_step: (args != undefined && args.hasOwnProperty("current_step")) ? args.current_step : 0,
-            steps: (args != undefined && args.hasOwnProperty("steps")) ? args.steps : 0,
-            navigation: (args != undefined && args.hasOwnProperty("navigation")) ? args.navigation : "all",
-            buttons: (args != undefined && args.hasOwnProperty("buttons")) ? args.buttons : true,
-            next: (args != undefined && args.hasOwnProperty("next")) ? args.next : "Next",
-            prev: (args != undefined && args.hasOwnProperty("prev")) ? args.prev : "Prev",
-            finish: (args != undefined && args.hasOwnProperty("finish")) ? args.finish : "Submit",
+            "current_step": 0,
+            "steps": 0,
+            "navigation": "all",
+            "buttons": true,
+            "next": "Next",
+            "prev": "Prev",
+            "finish": "Submit",
+
+            "i18n": {
+                "empty_wz": "Not found any element to generate the Wizard with.",
+                "empty_nav": "Nav does not exist or is empty.",
+                "empty_content": "Content does not exist or is empty.",
+                "diff_steps": "Discordance between the steps of nav and content.",
+                "random": "There has been a problem, check the configuration and use of the wizard.",
+                "title": "Step"
+            }
         };
 
-        this.wz_class = opts.wz_class;
-        this.wz_ori = opts.wz_ori;
-        this.wz_nav = opts.wz_nav;
-        this.wz_nav_style = opts.wz_nav_style;
-        this.wz_content = opts.wz_content;
-        this.wz_buttons = opts.wz_buttons;
-        this.wz_button = opts.wz_button;
-        this.wz_button_style = opts.wz_button_style;
-        this.wz_step = opts.wz_step;
-        this.wz_form = opts.wz_form;
-        this.wz_next = opts.wz_next;
-        this.wz_prev = opts.wz_prev;
-        this.wz_finish = opts.wz_finish;
+        this.prefabOpts(opts, args);
 
-        this.steps = opts.steps;
-        this.current_step = opts.current_step;
+        this.wz_class = this.options.wz_class;
+        this.wz_ori = this.options.wz_ori;
+        this.wz_nav = this.options.wz_nav;
+        this.wz_nav_style = this.options.wz_nav_style;
+        this.wz_content = this.options.wz_content;
+        this.wz_buttons = this.options.wz_buttons;
+        this.wz_button = this.options.wz_button;
+        this.wz_button_style = this.options.wz_button_style;
+        this.wz_step = this.options.wz_step;
+        this.wz_form = this.options.wz_form;
+        this.wz_next = this.options.wz_next;
+        this.wz_prev = this.options.wz_prev;
+        this.wz_finish = this.options.wz_finish;
+
+        this.steps = this.options.steps;
+        this.current_step = this.options.current_step;
         this.last_step = this.current_step;
-        this.navigation = opts.navigation;
-        this.buttons = opts.buttons;
-        this.prev = opts.prev;
-        this.next = opts.next;
-        this.finish = opts.finish;
+        this.navigation = this.options.navigation;
+        this.buttons = this.options.buttons;
+        this.prev = this.options.prev;
+        this.next = this.options.next;
+        this.finish = this.options.finish;
         this.form = false;
         this.locked = false;
         this.locked_step = null;
     }
 
+    set_options(options) {
+        this.options = options;
+    }
+
     init() {
         try {
-            let wz = ($_.exists($_.getSelector(this.wz_class))) ? $_.getSelector(this.wz_class) : $_.throwException(i18n.empty_wz);
+            let wz = ($_.exists($_.getSelector(this.wz_class))) ? $_.getSelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
             wz.classList.add((this.wz_ori).replace(".", ""));
 
@@ -74,18 +80,18 @@ class Wizard {
 
             this.setNav();
 
-            let wz_nav = ($_.exists($_.getSelector(this.wz_nav, wz))) ? $_.getSelector(this.wz_nav, wz) : $_.throwException(i18n.empty_nav);
+            let wz_nav = ($_.exists($_.getSelector(this.wz_nav, wz))) ? $_.getSelector(this.wz_nav, wz) : $_.throwException(this.options.i18n.empty_nav);
 
-            let wz_content = ($_.exists($_.getSelector(this.wz_content, wz))) ? $_.getSelector(this.wz_content, wz) : $_.throwException(i18n.empty_content);
+            let wz_content = ($_.exists($_.getSelector(this.wz_content, wz))) ? $_.getSelector(this.wz_content, wz) : $_.throwException(this.options.i18n.empty_content);
 
             var wz_nav_steps = $_.getSelectorAll(this.wz_step, wz_nav);
-            var wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $_.throwException(i18n.empty_nav);;
+            var wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $_.throwException(this.options.i18n.empty_nav);;
 
             var wz_content_steps = $_.getSelectorAll(this.wz_step, wz_content);
-            var wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $_.throwException(i18n.empty_content);
+            var wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $_.throwException(this.options.i18n.empty_content);
 
             if (wz_nav_steps_length != wz_content_steps_length) {
-                $_.throwException(i18n.diff_steps);
+                $_.throwException(this.options.i18n.diff_steps);
             }
 
             switch (this.navigation) {
@@ -176,7 +182,7 @@ class Wizard {
         this.locked = true;
         this.locked_step = this.getCurrentStep();
     }
-   
+
     unlock() {
         this.locked = false;
         this.locked_step = null;
@@ -217,7 +223,7 @@ class Wizard {
         if (inputs.length > 0) {
             validation = $_.formValidator(inputs);
         } else {
-            this.throwException(i18n.random);
+            this.throwException(this.options.i18n.random);
         }
 
         return validation;
@@ -238,7 +244,7 @@ class Wizard {
 
             for (var i = 0; i < steps_length; i++) {
                 var nav_step = document.createElement("DIV");
-                let title = (steps[i].hasAttribute("data-title")) ? steps[i].getAttribute("data-title") : `${i18n.title} ${i}`;
+                let title = (steps[i].hasAttribute("data-title")) ? steps[i].getAttribute("data-title") : `${this.options.i18n.title} ${i}`;
                 nav_step.classList.add((this.wz_step).replace(".", ""));
 
                 var dot = document.createElement("SPAN");
@@ -326,7 +332,7 @@ class Wizard {
     onClick(e) {
         let $this = e
 
-        if(this.locked && this.locked_step === this.getCurrentStep()){
+        if (this.locked && this.locked_step === this.getCurrentStep()) {
             document.dispatchEvent(new Event("lockWizard"));
             return false;
         }
@@ -466,6 +472,20 @@ class Wizard {
             }
         });
     }
+
+    prefabOpts(options, args) {
+        Object.entries(args).forEach(([key, value]) => {
+            if (typeof value === 'object') {
+                Object.entries(value).forEach(([key_1, value_1]) => {
+                    options[key][key_1] = value_1;
+                });
+            } else {
+                options[key] = value;
+            }
+        });
+
+        this.set_options(options);
+    }
 };
 
 var $_ = {
@@ -594,7 +614,6 @@ var $_ = {
 
                 if (check === false) {
                     error = true;
-                    console.log(e);
                     $_.highlight(e, "error");
                 }
             }

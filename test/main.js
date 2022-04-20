@@ -1,7 +1,11 @@
 let args = {
     "wz_nav_style": "dots",
     "navigation": "all",
-    "wz_ori": "horizontal"
+    "wz_ori": "horizontal",
+    
+    "i18n": {
+        "title": "Progress"
+    }
 };
 
 const wizard = new Wizard(args);
