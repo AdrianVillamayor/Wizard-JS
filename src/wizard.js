@@ -1,3 +1,13 @@
+/**
+* 
+* A lightweight wizard UI component that supports accessibility and HTML5 in JavaScript Vanilla.
+*
+* @link   https://github.com/AdrianVillamayor/Wizard-JS
+* @author Adrii[https://github.com/AdrianVillamayor]
+* 
+* @class  Wizard
+*/
+
 class Wizard {
 
     constructor(args) {
@@ -64,9 +74,17 @@ class Wizard {
         this.locked_step = null;
     }
 
-    set_options(options) {
-        this.options = options;
-    }
+    /**
+    * Initializes the wizard
+    * 
+    * @throws empty_wz      => Not found any element to generate the Wizard with.
+    * @throws empty_nav     => Nav does not exist or is empty.
+    * @throws empty_content => Content does not exist or is empty.
+    * @throws diff_steps    => Discordance between the steps of nav and content.
+    * @throws random        => There has been a problem check the configuration and use of the wizard.
+    * 
+    * @return {void}
+    */
 
     init() {
         try {
@@ -80,7 +98,7 @@ class Wizard {
                 this.form = true;
             }
 
-            this.setNav();
+            this.setNav(wz);
 
             let wz_nav = ($_.exists($_.getSelector(this.wz_nav, wz))) ? $_.getSelector(this.wz_nav, wz) : $_.throwException(this.options.i18n.empty_nav);
 
@@ -104,7 +122,7 @@ class Wizard {
 
             this.steps = wz_nav_steps_length;
 
-            this.set(wz_nav, wz_nav_steps, wz_content_steps)
+            this.prefabSteps(wz_nav, wz_nav_steps, wz_content_steps)
 
             switch (this.navigation) {
                 case "all":
@@ -125,7 +143,17 @@ class Wizard {
         }
     }
 
-    set($wz_nav, $wz_nav_steps, $wz_content_steps) {
+    /**
+    * Generate the steps and define a standard for each step.
+    * 
+    * @param {object}  $wz_nav           => Nav element
+    * @param {object}  $wz_nav_steps     => Steps elements inside Nav
+    * @param {object}  $wz_content_steps => Steps elements inside Content
+    * 
+    * @return {void}
+    */
+
+    prefabSteps($wz_nav, $wz_nav_steps, $wz_content_steps) {
         var active = false;
         var active_index = 0;
 
@@ -147,12 +175,18 @@ class Wizard {
 
         $wz_nav.classList.add(this.wz_nav_style);
 
-        // if (this.form) {
-        //     this.update2Form();
-        // }
+        // if (this.form) this.update2Form();
 
         this.setButtons();
     }
+
+    /**
+    * Restart the wizard
+    * 
+    * @event resetWizard 
+    * 
+    * @return {void}
+    */
 
     reset() {
         this.setCurrentStep(0);
@@ -180,10 +214,24 @@ class Wizard {
         $_.getSelector(this.wz_class).dispatchEvent(new Event("resetWizard"));
     }
 
+    /**
+    * Locks the wizard in the active step
+    * 
+    * @return {void}
+    */
+
     lock() {
         this.locked = true;
         this.locked_step = this.getCurrentStep();
     }
+
+    /**
+    * Unlock wizard
+    * 
+    * @event unlockWizard 
+    * 
+    * @return {void}
+    */
 
     unlock() {
         this.locked = false;
@@ -191,6 +239,12 @@ class Wizard {
 
         $_.getSelector(this.wz_class).dispatchEvent(new Event("unlockWizard"));
     }
+
+    /**
+    * Adds the form tag and converts the wizard into a <form>
+    * 
+    * @return {void}
+    */
 
     update2Form() {
         let wz = $_.getSelector(this.wz_class);
@@ -212,6 +266,14 @@ class Wizard {
         }
     }
 
+    /**
+    * Checks and validates each input/select/textarea of the active step
+    * 
+    * @throws random => There has been a problem check the configuration and use of the wizard.
+    * 
+    * @return {boolean} If everything is OK, it returns false
+    */
+
     checkForm() {
         let wz = $_.getSelector(this.wz_class);
         let wz_content = $_.getSelector(this.wz_content, wz);
@@ -231,13 +293,21 @@ class Wizard {
         return validation;
     }
 
-    setNav() {
-        let wz = $_.getSelector(this.wz_class);
-        let wz_nav = $_.getSelector(this.wz_nav, wz);
-        let wz_content = $_.getSelector(this.wz_content, wz);
-        let steps = $_.getSelectorAll(this.wz_step, wz_content);
+    /**
+    * Generating, styling and shaping the Nav
+    * 
+    * @param {object} $wz => Wizard element
+    * 
+    * @return {void}
+    */
+
+    setNav($wz) {
+        let wz_nav = $_.getSelector(this.wz_nav, $wz);
 
         if ($_.exists(wz_nav) === false) {
+            let wz_content = $_.getSelector(this.wz_content, $wz);
+            let steps = $_.getSelectorAll(this.wz_step, wz_content);
+
             var nav = document.createElement("ASIDE");
             nav.classList.add((this.wz_nav).replace(".", ""));
 
@@ -260,11 +330,15 @@ class Wizard {
                 nav.appendChild(nav_step);
             }
 
-            wz.prepend(nav);
+            $wz.prepend(nav);
         }
-
-        return true;
     }
+
+    /**
+    * Generating, styling and shaping Buttons
+    * 
+    * @return {void}
+    */
 
     setButtons() {
         let wz = $_.getSelector(this.wz_class);
@@ -308,9 +382,17 @@ class Wizard {
 
             wz.appendChild(buttons);
         }
-
-        return true;
     }
+
+    /**
+    * Generating, styling and shaping Buttons
+    * 
+    * @param {object} next    => Next button element
+    * @param {object} prev    => Prev button element
+    * @param {object} finish  => Finish button element
+    * 
+    * @return {void}
+    */
 
     checkButtons(next, prev, finish) {
         let current_step = this.getCurrentStep();
@@ -330,6 +412,19 @@ class Wizard {
             next.removeAttribute("disabled");
         }
     }
+
+    /**
+    * Click event handler for Buttons and Nav.
+    * 
+    * @param {object} e  => Event
+    * 
+    * @event prevWizard               => In case the wizard goes backwards, the prevWizard event will be fired.
+    * @event nextWizard               => In case the wizard advances, the nextWizard event will be fired.
+    * @event lockWizard               => In case it is blocked, it will fire the lockWizard event.
+    * @event errorFormValidatorWizard => If the form is not correctly filled in, the errorFormValidatorWizard event will be fired.
+    * 
+    * @return {void}
+    */
 
     onClick(e) {
         let $this = e
@@ -401,6 +496,18 @@ class Wizard {
         $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
     }
 
+
+    /**
+    * Notifies that the wizard has been completed.
+    * 
+    * @param {object} e  => Event
+    * 
+    * @event submitWizard => If the wizard is a form it will fire submitWizard
+    * @event endWizard    => If the wizard is not a form it will fire endWizard
+    * 
+    * @return {void}
+    */
+
     onClickFinish(e) {
         if (this.form) {
             if (this.checkForm() !== true) {
@@ -411,13 +518,35 @@ class Wizard {
         }
     }
 
+    /**
+    * Set the active step 
+    * 
+    * @param {int} step  => The active step 
+    * 
+    * @return {void}
+    */
+
     setCurrentStep(step) {
         this.current_step = this.setStep(step);
     }
 
+    /**
+    * Return the active step 
+    * 
+    * @return {int} The active step 
+    */
+
     getCurrentStep() {
         return this.current_step;
     }
+
+    /**
+    * Check and match the steps of the wizard.
+    * 
+    * @param {int} step  => Step 
+    * 
+    * @return {int} Step
+    */
 
     setStep(step) {
         let parent = $_.getSelector(this.wz_class);
@@ -428,7 +557,7 @@ class Wizard {
         if ($_.exists(check_content) === false) {
             let content_length = ($_.getSelectorAll(this.wz_step, content).length) - 1;
 
-            let diff = this.closetNubmer(content_length, step)
+            let diff = $_.closetNubmer(content_length, step)
 
             step = diff;
         }
@@ -438,19 +567,11 @@ class Wizard {
         return parseInt(step);
     }
 
-    closetNubmer(length, step) {
-        var counts = [];
-
-        for (let index = 0; index <= length; index++) {
-            counts.push(index)
-        }
-
-        let closet = counts.reduce(function (prev, curr) {
-            return (Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev);
-        });
-
-        return closet;
-    }
+    /**
+    * Set Nav events
+    * 
+    * @return {void}
+    */
 
     setNavEvent() {
         let _self = this;
@@ -461,6 +582,13 @@ class Wizard {
             _self.onClick(this)
         });
     }
+
+
+    /**
+    * Set Button events
+    * 
+    * @return {void}
+    */
 
     setBtnEvent() {
         let _self = this;
@@ -477,6 +605,22 @@ class Wizard {
             }
         });
     }
+
+    /**
+    * Set options of wizard
+    * 
+    * @return {void}
+    */
+
+    set_options(options) {
+        this.options = options;
+    }
+
+    /**
+    * Check and match the options of the wizard with args definieds
+    * 
+    * @return {void}
+    */
 
     prefabOpts(options, args) {
         Object.entries(args).forEach(([key, value]) => {
@@ -626,6 +770,20 @@ var $_ = {
         }
 
         return error;
+    },
+
+    closetNubmer: function (length, step) {
+        var counts = [];
+
+        for (let index = 0; index <= length; index++) {
+            counts.push(index)
+        }
+
+        let closet = counts.reduce(function (prev, curr) {
+            return (Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev);
+        });
+        console.log(closet);
+        return closet;
     },
 
     highlight: function (e, highlight = "error") {
