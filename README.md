@@ -47,6 +47,7 @@ For wizards with form purpose, it manages the required fields and validates them
 To launch the wizard
 ```javascript
 let args = {
+	"wz_class": ".wizard",
 	"wz_nav_style": "dots",
 	"wz_button_style": ".btn .btn-sm .mx-3",
 	"wz_ori": "vertical",
