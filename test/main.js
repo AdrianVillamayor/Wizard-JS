@@ -1,18 +1,18 @@
 
 var wizard, wizard2;
 
-document.getElementById("create_wizzard").onclick = function () {
+document.getElementById("create_wizard").onclick = function () {
     createWz2();
 };
 
-document.getElementById("create_wizzard_form").onclick = function () {
+document.getElementById("create_wizard_form").onclick = function () {
     createWz();
 };
 
 function createWz() {
 
     let args = {
-        "wz_class": "#wizzard",
+        "wz_class": "#wizard",
         "wz_nav_style": "dots",
         "navigation": "all",
         "wz_ori": "horizontal",
@@ -26,7 +26,7 @@ function createWz() {
 
     wizard.init();
 
-    let el = document.querySelector('#wizzard');
+    let el = document.querySelector('#wizard');
 
 
     el.addEventListener("lockWizard", function (e) {
@@ -68,7 +68,7 @@ function createWz() {
 function createWz2() {
 
     let args = {
-        "wz_class": ".wizzard2",
+        "wz_class": ".wizard2",
         "wz_nav_style": "dots",
         "navigation": "all",
         "wz_ori": "horizontal",
@@ -82,7 +82,7 @@ function createWz2() {
 
     wizard2.init();
 
-    let el = document.querySelector('.wizzard2');
+    let el = document.querySelector('.wizard2');
 
     el.addEventListener("lockWizard", function (e) {
         console.log("Wizard is locked 2");
