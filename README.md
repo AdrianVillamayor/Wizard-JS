@@ -92,7 +92,7 @@ If not defined, it is treated as `default`.
 Options allowing to modify the behavior and actions
 | Parameter      | Type   | Default          |  Definition / Value   |
 | -------------  | ------ | ---------------- | --------------------- |
-| `wz_class`     | String | .wizard          | Wizard main container class |
+| `wz_class`     | String | .wizard          | Wizard main container target |
 | `wz_ori`       | String | .horizontal      | Wizard orientation |
 | `wz_nav`       | String | .wizard-nav      | Nav container class |
 | `wz_nav_style` | String | dots             | Style of navigation steps / `dots`, `tabs`, `progress` |
@@ -117,10 +117,14 @@ Options allowing to modify the behavior and actions
 <br>
 
 # Events Management
+```javascript
+let wz_class = ".wizard";
+let $wz_doc = document.querySelector(wz_class)
+```
 
 When the wizard is locked in a step
 ```javascript
-document.addEventListener("lockWizard", function (e) {
+$wz_doc.addEventListener("lockWizard", function (e) {
 	alert("Wizard is locked");
 });
 ```
@@ -128,7 +132,7 @@ document.addEventListener("lockWizard", function (e) {
 
 When the wizard is unlocked in one step
 ```javascript
-document.addEventListener("unlockWizard", function (e) {
+$wz_doc.addEventListener("unlockWizard", function (e) {
 	alert("Wizard is unlocked");
 });
 ```
@@ -136,7 +140,7 @@ document.addEventListener("unlockWizard", function (e) {
 
 Moving on to the prev step
 ```javascript
-document.addEventListener("prevWizard", function (e) {
+$wz_doc.addEventListener("prevWizard", function (e) {
 	alert("Prev Step");
 });
 ```
@@ -144,15 +148,23 @@ document.addEventListener("prevWizard", function (e) {
 
 Moving on to the next step
 ```javascript
-document.addEventListener("nextWizard", function (e) {
+$wz_doc.addEventListener("nextWizard", function (e) {
 	alert("Next Step");
+});
+```
+<br>
+
+Error validating the data of the active form step
+```javascript
+$wz_doc.addEventListener("errorFormValidatorWizard", function (e) {
+	alert("Some required field is empty or incorrectly formatted.");
 });
 ```
 <br>
 
 If it is a form, at the end it will fire the following event
 ```javascript
-document.addEventListener("submitWizard", function (e) {
+$wz_doc.addEventListener("submitWizard", function (e) {
 	alert("Form Submit");
 });
 ```
@@ -160,7 +172,7 @@ document.addEventListener("submitWizard", function (e) {
 
 If it is not a form, at the end it will fire the following event
 ```javascript
-document.addEventListener("endWizard", function (e) {
+$wz_doc.addEventListener("endWizard", function (e) {
 	alert("Wizard is finished");
 });
 ```
@@ -168,7 +180,7 @@ document.addEventListener("endWizard", function (e) {
 
 When it is restarted it generates the following event
 ```javascript
-document.addEventListener("resetWizard", function (e) {
+$wz_doc.addEventListener("resetWizard", function (e) {
 	alert("Wizard has restarted");
 });
 ```

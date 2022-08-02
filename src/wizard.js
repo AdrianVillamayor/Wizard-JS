@@ -70,6 +70,8 @@ class Wizard {
 
     init() {
         try {
+            $_.cleanEvents($_.getSelector(this.wz_class), true);
+
             let wz = ($_.exists($_.getSelector(this.wz_class))) ? $_.getSelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
             wz.classList.add((this.wz_ori).replace(".", ""));
@@ -102,7 +104,7 @@ class Wizard {
 
             this.steps = wz_nav_steps_length;
 
-            this.set(wz_nav_steps, wz_content_steps)
+            this.set(wz_nav, wz_nav_steps, wz_content_steps)
 
             switch (this.navigation) {
                 case "all":
@@ -123,27 +125,27 @@ class Wizard {
         }
     }
 
-    set($wz_nav, $wz_content) {
+    set($wz_nav, $wz_nav_steps, $wz_content_steps) {
         var active = false;
         var active_index = 0;
 
-        for (let i = 0; i < $wz_nav.length; i++) {
-            let $this = $wz_nav[i];
+        for (let i = 0; i < $wz_nav_steps.length; i++) {
+            let $this = $wz_nav_steps[i];
 
             active = (active === false) ? $_.hasClass($this, "active") : active;
             active_index = ($_.hasClass($this, "active")) ? i : active_index;
 
             $this.setAttribute("data-step", i);
-            $wz_content[i].setAttribute("data-step", i);
+            $wz_content_steps[i].setAttribute("data-step", i);
         };
 
-        $_.removeClassList($wz_nav, "active");
-        $wz_nav[active_index].classList.add("active");
+        $_.removeClassList($wz_nav_steps, "active");
+        $wz_nav_steps[active_index].classList.add("active");
 
-        $_.removeClassList($wz_content, "active");
-        $wz_content[active_index].classList.add("active");
+        $_.removeClassList($wz_content_steps, "active");
+        $wz_content_steps[active_index].classList.add("active");
 
-        $_.getSelector(this.wz_nav).classList.add(this.wz_nav_style);
+        $wz_nav.classList.add(this.wz_nav_style);
 
         // if (this.form) {
         //     this.update2Form();
@@ -175,7 +177,7 @@ class Wizard {
         $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, nav).classList.add("active");
         $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, content).classList.add("active");
 
-        document.dispatchEvent(new Event("resetWizard"));
+        $_.getSelector(this.wz_class).dispatchEvent(new Event("resetWizard"));
     }
 
     lock() {
@@ -187,7 +189,7 @@ class Wizard {
         this.locked = false;
         this.locked_step = null;
 
-        document.dispatchEvent(new Event("unlockWizard"));
+        $_.getSelector(this.wz_class).dispatchEvent(new Event("unlockWizard"));
     }
 
     update2Form() {
@@ -333,7 +335,7 @@ class Wizard {
         let $this = e
 
         if (this.locked && this.locked_step === this.getCurrentStep()) {
-            document.dispatchEvent(new Event("lockWizard"));
+            $_.getSelector(this.wz_class).dispatchEvent(new Event("lockWizard"));
             return false;
         }
 
@@ -348,10 +350,10 @@ class Wizard {
         if (is_btn) {
             if ($_.hasClass($this, this.wz_prev)) {
                 step = step - 1;
-                document.dispatchEvent(new Event("prevWizard"));
+                $_.getSelector(this.wz_class).dispatchEvent(new Event("prevWizard"));
             } else if ($_.hasClass($this, this.wz_next)) {
                 step = step + 1;
-                document.dispatchEvent(new Event("nextWizard"));
+                $_.getSelector(this.wz_class).dispatchEvent(new Event("nextWizard"));
             }
         }
 
@@ -369,6 +371,8 @@ class Wizard {
 
         if (this.form) {
             if (this.checkForm() === true) {
+                $_.getSelector(this.wz_class).dispatchEvent(new Event("errorFormValidatorWizard"));
+
                 this.last_step = this.getCurrentStep();
                 if (this.getCurrentStep() < step) {
                     return false;
@@ -400,11 +404,10 @@ class Wizard {
     onClickFinish(e) {
         if (this.form) {
             if (this.checkForm() !== true) {
-                document.dispatchEvent(new Event("submitWizard"));
+                $_.getSelector(this.wz_class).dispatchEvent(new Event("submitWizard"));
             }
         } else {
-
-            document.dispatchEvent(new Event("endWizard"));
+            $_.getSelector(this.wz_class).dispatchEvent(new Event("endWizard"));
         }
     }
 
@@ -451,8 +454,9 @@ class Wizard {
 
     setNavEvent() {
         let _self = this;
+        let el = $_.getSelector(this.wz_class);
 
-        $_.delegate(document, "click", this.wz_nav + " " + this.wz_step, function (event) {
+        $_.delegate(el, "click", `${this.wz_nav} ${this.wz_step}`, function (event) {
             event.preventDefault()
             _self.onClick(this)
         });
@@ -460,8 +464,9 @@ class Wizard {
 
     setBtnEvent() {
         let _self = this;
+        let el = $_.getSelector(this.wz_class);
 
-        $_.delegate(document, "click", this.wz_buttons + " " + this.wz_button, function (event) {
+        $_.delegate(el, "click", `${this.wz_buttons} ${this.wz_button}`, function clickFunction(event) {
             event.preventDefault()
 
             if ($_.hasClass(event.target, _self.wz_finish)) {
@@ -488,8 +493,8 @@ class Wizard {
     }
 };
 
-var $_ = {
 
+var $_ = {
     getID: function (e, n = document) {
         return n.getElementById(e);
     },
@@ -598,6 +603,7 @@ var $_ = {
 
     formValidator: function (formData) {
         var error = false;
+
         for (let e of formData) {
             if ($_.hasClass(e, "required") || $_.exists(e.getAttribute("required"))) {
 
@@ -623,7 +629,7 @@ var $_ = {
     },
 
     highlight: function (e, highlight = "error") {
-        let classHigh = "highlight-" + highlight
+        let classHigh = `highlight-${highlight}`;
 
         e.classList.add(classHigh)
         setTimeout(function () {
@@ -681,5 +687,17 @@ var $_ = {
             '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
 
         return !!pattern.test(str);
+    },
+
+    cleanEvents: function (el, withChildren = false) {
+        if ($_.exists(el)) {
+            if (withChildren) {
+                el.parentNode.replaceChild(el.cloneNode(true), el);
+            } else {
+                var newEl = el.cloneNode(false);
+                while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
+                el.parentNode.replaceChild(newEl, el);
+            }
+        }
     }
 }

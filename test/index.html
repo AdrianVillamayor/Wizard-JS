@@ -11,7 +11,7 @@
 <body class="sb-nav-fixed">
     <main class="container-fluid mt-5 pt-5">
 
-        <form class="wizard" method="POST">
+        <form class="wizard" id="wizzard" method="POST">
             <aside class="wizard-content container">
                 <div class="wizard-step">
                     <div class="form-group">
@@ -76,9 +76,86 @@
 
             </aside>
         </form>
+
+
+        <p>
+            <hr>
+        </p>
+
+        <div class="wizard wizzard2">
+            <aside class="wizard-content container">
+                <div class="wizard-step">
+                    <div class="form-group">
+                        <label for="nameCampaign">Campaign name</label>
+                        <input type="text" name="name" class="form-control required" id="nameCampaign"
+                            placeholder="Enter a short campaign name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descCampaign">Description of the campaign</label>
+                        <textarea name="description" class="form-control" id="descCampaign"></textarea>
+                    </div>
+                </div>
+
+                <div class="wizard-step">
+                    <div class="form-group">
+                        <label for="titleNoti">Title</label>
+                        <input type="text" name="title" class="form-control required banner-info" id="titleNoti"
+                            placeholder="Example: Message title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bodyNoti">Body</label>
+                        <input type="text" name="body" class="form-control required banner-info" id="bodyNoti"
+                            placeholder="Example: Message body">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="imageNoti">Image</label>
+                        <input type="file" name="image" class="form-control banner-info" id="imageNoti">
+                    </div>
+                </div>
+
+                <div class="wizard-step">
+                    <div class="form-group">
+                        <label for="titleNoti">Action</label>
+                        <select class="form-control" name="action">
+                            <option value="">Select one ...</option>
+                            <option value="0">Open bolus configurator</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bodyNoti">Segment</label>
+                        <select class="form-control required fetch-info" name="segment">
+                            <option value="">Select one ...</option>
+                            <option value="0">País</option>
+                            <option value="1">Language</option>
+                            <option value="2">Diabetes Type</option>
+                            <option value="3">Center</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="wizard-step">
+                    <div class="form-group">
+                        <label for="titleNoti">Action</label>
+                        <textarea class="form-control required fetch-info">🍍</textarea>
+                    </div>
+
+                </div>
+
+            </aside>
+        </div>
+
+        <div class="align-content-center justify-content-start m-3" style="display:flex">
+            <button id="create_wizzard" class="btn btn-primary ms-4">Normal Wizzard</button>
+            <button id="create_wizzard_form" class="btn btn-primary ms-4">Form Wizzard</button>
+        </div>
     </main>
 
     <script src="../src/wizard.js"></script>
+
     <script src="main.js"></script>
 
 </body>
