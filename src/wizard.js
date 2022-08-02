@@ -782,7 +782,7 @@ var $_ = {
         let closet = counts.reduce(function (prev, curr) {
             return (Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev);
         });
-        console.log(closet);
+
         return closet;
     },
 
