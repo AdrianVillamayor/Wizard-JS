@@ -1,9 +1,10 @@
-$white: #fff;
-$black: #000;
+$white: #ffffff;
+$black: #000000;
 
 $color-done: #19d184;
 $color-default: $white;
 $color-border: #dee2e6;
+$color-error: tomato;
 
 $color-active: #198fd1;
 
@@ -15,10 +16,6 @@ $color-active: #198fd1;
         display: flex;
         flex-wrap: wrap;
         transition: all 0.3s ease-in;
-
-        .wizard-step {
-            cursor: pointer;
-        }
 
         &.tabs {
             .wizard-step {
@@ -181,6 +178,18 @@ $color-active: #198fd1;
                 }
             }
         }
+
+        .wizard-step {
+            cursor: pointer;
+
+            &.nav-buttons {
+                cursor: default;
+
+                span {
+                    cursor: default;
+                }
+            }
+        }
     }
 
     .wizard-content {
@@ -259,7 +268,6 @@ $color-active: #198fd1;
                 max-width: 250px;
             }
 
-
             @media screen and (max-width: 767px) {
                 .wizard-step {
                     text-align: left;
@@ -316,6 +324,6 @@ $color-active: #198fd1;
 
 .highlight {
     &-error {
-        outline: 1px solid tomato;
+        outline: 1px solid $color-error;
     }
 }

@@ -195,13 +195,15 @@ class Wizard {
         let nav = $_.getSelector(this.wz_nav, wz);
         let content = $_.getSelector(this.wz_content, wz);
 
-        let buttons = $_.getSelector(this.wz_buttons, wz);
-        let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
-        let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
-        let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
+        if ($_.str2bool(this.buttons) !== false) {
+            let buttons = $_.getSelector(this.wz_buttons, wz);
+            let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
+            let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
+            let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
 
-        this.checkButtons(next, prev, finish)
-
+            this.checkButtons(next, prev, finish)
+        }
+        
         let $wz_nav = $_.getSelectorAll(this.wz_step, nav)
         $_.removeClassList($wz_nav, "active");
 
@@ -319,6 +321,8 @@ class Wizard {
                 let title = (steps[i].hasAttribute("data-title")) ? steps[i].getAttribute("data-title") : `${this.options.i18n.title} ${i}`;
                 nav_step.classList.add((this.wz_step).replace(".", ""));
 
+                if(this.navigation === "buttons") nav_step.classList.add("nav-buttons");
+
                 var dot = document.createElement("SPAN");
                 dot.classList.add('dot');
                 nav_step.appendChild(dot);
@@ -344,7 +348,7 @@ class Wizard {
         let wz = $_.getSelector(this.wz_class);
         let wz_btns = $_.getSelector(this.wz_buttons, wz);
 
-        if ($_.exists(wz_btns) === false) {
+        if ($_.exists(wz_btns) === false && $_.str2bool(this.buttons) !== false) {
             var buttons = document.createElement("ASIDE");
             buttons.classList.add((this.wz_buttons).replace(".", ""));
 
@@ -420,6 +424,8 @@ class Wizard {
     * 
     * @event prevWizard               => In case the wizard goes backwards, the prevWizard event will be fired.
     * @event nextWizard               => In case the wizard advances, the nextWizard event will be fired.
+    * @event forwardNavWizard         => In case of moving forward with the navbar, the forwardNavWizard event will be fired.
+    * @event backwardNavWizard        => In case of moving backward with the navbar, the backwardNavWizard event will be fired.
     * @event lockWizard               => In case it is blocked, it will fire the lockWizard event.
     * @event errorFormValidatorWizard => If the form is not correctly filled in, the errorFormValidatorWizard event will be fired.
     * 
@@ -439,6 +445,8 @@ class Wizard {
         let content = $_.getSelector(this.wz_content, parent);
 
         var is_btn = ($_.hasClass($this, this.wz_button));
+        var is_nav = ($_.hasClass($this, this.wz_step));
+
 
         let step = ($_.str2bool($this.getAttribute("data-step")) !== false) ? parseInt($this.getAttribute("data-step")) : this.getCurrentStep();
 
@@ -449,6 +457,14 @@ class Wizard {
             } else if ($_.hasClass($this, this.wz_next)) {
                 step = step + 1;
                 $_.getSelector(this.wz_class).dispatchEvent(new Event("nextWizard"));
+            }
+        }
+
+        if (is_nav) {
+            if (step > this.getCurrentStep()) {
+                $_.getSelector(this.wz_class).dispatchEvent(new Event("forwardNavWizard"));
+            } else if (step < this.getCurrentStep()) {
+                $_.getSelector(this.wz_class).dispatchEvent(new Event("backwardNavWizard"));
             }
         }
 
@@ -479,12 +495,14 @@ class Wizard {
             this.setCurrentStep(step)
         }
 
-        let buttons = $_.getSelector(this.wz_buttons, parent);
-        let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
-        let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
-        let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
+        if ($_.str2bool(this.buttons) !== false) {
+            let buttons = $_.getSelector(this.wz_buttons, parent);
+            let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
+            let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
+            let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
 
-        this.checkButtons(next, prev, finish)
+            this.checkButtons(next, prev, finish)
+        }
 
         let $wz_nav = $_.getSelectorAll(this.wz_step, nav)
         $_.removeClassList($wz_nav, "active");

@@ -14,7 +14,7 @@ function createWz() {
     let args = {
         "wz_class": "#wizard",
         "wz_nav_style": "dots",
-        "navigation": "all",
+        "navigation": "buttons",
         "wz_ori": "horizontal",
 
         "i18n": {
@@ -41,20 +41,25 @@ function createWz() {
         console.log("Prev Step 1");
     });
 
-
     el.addEventListener("nextWizard", function (e) {
         console.log("Next Step 1");
+    });
+
+    el.addEventListener("forwardNavWizard", function (e) {
+        console.log("Forward nav 1");
+    });
+
+    el.addEventListener("backwardNavWizard", function (e) {
+        console.log("Backward nav 1");
     });
 
     el.addEventListener("submitWizard", function (e) {
         console.log("Form Submit 1");
     });
 
-
     el.addEventListener("endWizard", function (e) {
         console.log("Wizard is finished 1");
     });
-
 
     el.addEventListener("resetWizard", function (e) {
         console.log("Wizard has restarted 1");
@@ -69,12 +74,11 @@ function createWz2() {
 
     let args = {
         "wz_class": ".wizard2",
-        "wz_nav_style": "dots",
         "navigation": "all",
-        "wz_ori": "horizontal",
+        "wz_ori": "vertical",
 
         "i18n": {
-            "title": "Progress"
+            "title": "Point"
         }
     };
 
@@ -96,23 +100,28 @@ function createWz2() {
         console.log("Prev Step 2");
     });
 
-
     el.addEventListener("nextWizard", function (e) {
         console.log("Next Step 2");
     });
 
+    el.addEventListener("forwardNavWizard", function (e) {
+        console.log("Forward nav 2");
+    });
+
+    el.addEventListener("backwardNavWizard", function (e) {
+        console.log("Backward nav 2");
+    });
 
     el.addEventListener("submitWizard", function (e) {
         console.log("Form Submit 2");
     });
 
-
     el.addEventListener("endWizard", function (e) {
         console.log("Wizard is finished 2");
     });
 
-
     el.addEventListener("resetWizard", function (e) {
         console.log("Wizard has restarted 2");
     });
+
 }
