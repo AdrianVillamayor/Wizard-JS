@@ -74,7 +74,7 @@ function createWz2() {
 
     let args = {
         "wz_class": ".wizard2",
-        "navigation": "all",
+        "navigation": "nav",
         "wz_ori": "vertical",
 
         "i18n": {

@@ -114,11 +114,11 @@ class Wizard {
                 $_.throwException(this.options.i18n.diff_steps);
             }
 
-            switch (this.navigation) {
-                case "nav":
-                    this.buttons = false;
-                    break;
-            }
+            // switch (this.navigation) {
+            //     case "nav":
+            //         this.buttons = false;
+            //         break;
+            // }
 
             this.steps = wz_nav_steps_length;
 
@@ -361,7 +361,7 @@ class Wizard {
             prev.classList.add(...btn_style);
             prev.classList.add((this.wz_prev).replace(".", ""));
 
-            if ($_.str2bool(this.buttons) === false) prev.style.display = "none";
+            if (this.navigation === "nav") prev.style.display = "none";
 
             buttons.appendChild(prev);
 
@@ -371,7 +371,7 @@ class Wizard {
             next.classList.add(...btn_style);
             next.classList.add((this.wz_next).replace(".", ""));
 
-            if ($_.str2bool(this.buttons) === false) next.style.display = "none";
+            if (this.navigation === "nav") next.style.display = "none";
 
             buttons.appendChild(next);
 
