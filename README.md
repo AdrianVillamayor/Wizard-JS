@@ -10,11 +10,11 @@ A lightweight wizard UI component that supports accessibility and HTML5 in JavaS
 Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9/styles/css/main.css" integrity="sha256-btHibfSEWQ4O0dUO3Jo22dZVkFr4T75RU7+EU5SGS0A=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9/styles/css/main.css" integrity="sha256-ONBvLQcjCFNWPP1Y/rVvFTag/G4E2WA4Xjlep6LH+lI=" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9/src/wizard.min.js" integrity="sha256-vVk0T+7qGD5K2sLJywOcqKmnJerAFRaOI1FWJNH3YYg=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9/src/wizard.min.js" integrity="sha256-vKMru9OVwOIxOFP6h6Ll61h6ELap5oxWb56tIy7dVTE=" crossorigin="anonymous"></script>
 ```
 <br>
 
