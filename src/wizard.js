@@ -41,6 +41,7 @@ class Wizard {
                 "empty_content": "Content does not exist or is empty.",
                 "diff_steps": "Discordance between the steps of nav and content.",
                 "random": "There has been a problem, check the configuration and use of the wizard.",
+                "already_definded": "This item is already defined",
                 "title": "Step"
             }
         };
@@ -77,6 +78,9 @@ class Wizard {
     /**
     * Initializes the wizard
     * 
+    * @customevent readyWizard => Indicates that wizard has loaded and is accessible.
+    * @customevent_params      => target: wz_class | elem: DOM element
+    * 
     * @throws empty_wz      => Not found any element to generate the Wizard with.
     * @throws empty_nav     => Nav does not exist or is empty.
     * @throws empty_content => Content does not exist or is empty.
@@ -92,6 +96,11 @@ class Wizard {
 
             let wz = ($_.exists($_.getSelector(this.wz_class))) ? $_.getSelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
+
+            if ($_.str2bool(wz.getAttribute("data-wizard"))) {
+                $_.throwException(`${this.wz_class} => ${this.options.i18n.already_definded} `);
+            }
+
             wz.classList.add((this.wz_ori).replace(".", ""));
 
             if (wz.tagName === "FORM") {
@@ -104,21 +113,15 @@ class Wizard {
 
             let wz_content = ($_.exists($_.getSelector(this.wz_content, wz))) ? $_.getSelector(this.wz_content, wz) : $_.throwException(this.options.i18n.empty_content);
 
-            var wz_nav_steps = $_.getSelectorAll(this.wz_step, wz_nav);
-            var wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $_.throwException(this.options.i18n.empty_nav);;
+            const wz_nav_steps = $_.getSelectorAll(this.wz_step, wz_nav);
+            const wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $_.throwException(this.options.i18n.empty_nav);;
 
-            var wz_content_steps = $_.getSelectorAll(this.wz_step, wz_content);
-            var wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $_.throwException(this.options.i18n.empty_content);
+            const wz_content_steps = $_.getSelectorAll(this.wz_step, wz_content);
+            const wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $_.throwException(this.options.i18n.empty_content);
 
             if (wz_nav_steps_length != wz_content_steps_length) {
                 $_.throwException(this.options.i18n.diff_steps);
             }
-
-            // switch (this.navigation) {
-            //     case "nav":
-            //         this.buttons = false;
-            //         break;
-            // }
 
             this.steps = wz_nav_steps_length;
 
@@ -138,6 +141,15 @@ class Wizard {
 
             wz.style.display = ($_.hasClass(wz, "vertical")) ? "flex" : "block";
 
+            wz.setAttribute("data-wizard", "active")
+
+            document.dispatchEvent(new CustomEvent("readyWizard", {
+                detail: {
+                    "target": this.wz_class,
+                    "elem": $_.getSelector(this.wz_class)
+                }
+            }));
+
         } catch (error) {
             throw error;
         }
@@ -154,8 +166,8 @@ class Wizard {
     */
 
     prefabSteps($wz_nav, $wz_nav_steps, $wz_content_steps) {
-        var active = false;
-        var active_index = 0;
+        let active = false;
+        let active_index = 0;
 
         for (let i = 0; i < $wz_nav_steps.length; i++) {
             let $this = $wz_nav_steps[i];
@@ -203,7 +215,7 @@ class Wizard {
 
             this.checkButtons(next, prev, finish)
         }
-        
+
         let $wz_nav = $_.getSelectorAll(this.wz_step, nav)
         $_.removeClassList($wz_nav, "active");
 
@@ -257,7 +269,7 @@ class Wizard {
             let wz_content_content = wz_content.innerHTML
 
             wz_content.remove();
-            var $form = document.createElement("form");
+            const $form = document.createElement("form");
 
             $form.setAttribute("method", "POST");
             $form.setAttribute("class", wz_content_class + " " + (this.wz_form).replace(".", ""));
@@ -282,7 +294,7 @@ class Wizard {
 
         let steps = $_.getSelectorAll(this.wz_step, wz_content);
         let target = steps[this.getCurrentStep()];
-        var validation = false;
+        let validation = false;
 
         let inputs = $_.getSelectorAll("input,textarea,select", target);
 
@@ -310,24 +322,24 @@ class Wizard {
             let wz_content = $_.getSelector(this.wz_content, $wz);
             let steps = $_.getSelectorAll(this.wz_step, wz_content);
 
-            var nav = document.createElement("ASIDE");
+            const nav = document.createElement("ASIDE");
             nav.classList.add((this.wz_nav).replace(".", ""));
 
-            var wz_content_steps = $_.getSelectorAll(this.wz_step, wz_content);
-            var steps_length = wz_content_steps.length;
+            const wz_content_steps = $_.getSelectorAll(this.wz_step, wz_content);
+            const steps_length = wz_content_steps.length;
 
-            for (var i = 0; i < steps_length; i++) {
-                var nav_step = document.createElement("DIV");
+            for (let i = 0; i < steps_length; i++) {
+                const nav_step = document.createElement("DIV");
                 let title = (steps[i].hasAttribute("data-title")) ? steps[i].getAttribute("data-title") : `${this.options.i18n.title} ${i}`;
                 nav_step.classList.add((this.wz_step).replace(".", ""));
 
-                if(this.navigation === "buttons") nav_step.classList.add("nav-buttons");
+                if (this.navigation === "buttons") nav_step.classList.add("nav-buttons");
 
-                var dot = document.createElement("SPAN");
+                const dot = document.createElement("SPAN");
                 dot.classList.add('dot');
                 nav_step.appendChild(dot);
 
-                var span = document.createElement("SPAN");
+                const span = document.createElement("SPAN");
                 span.innerHTML = title;
                 nav_step.appendChild(span);
 
@@ -349,13 +361,13 @@ class Wizard {
         let wz_btns = $_.getSelector(this.wz_buttons, wz);
 
         if ($_.exists(wz_btns) === false && $_.str2bool(this.buttons) !== false) {
-            var buttons = document.createElement("ASIDE");
+            const buttons = document.createElement("ASIDE");
             buttons.classList.add((this.wz_buttons).replace(".", ""));
 
-            var btn_style = (this.wz_button_style).replaceAll(".", "");
+            let btn_style = (this.wz_button_style).replaceAll(".", "");
             btn_style = btn_style.split(" ");
 
-            var prev = document.createElement("BUTTON");
+            const prev = document.createElement("BUTTON");
             prev.innerHTML = this.prev;
             prev.classList.add((this.wz_button).replace(".", ""));
             prev.classList.add(...btn_style);
@@ -365,7 +377,7 @@ class Wizard {
 
             buttons.appendChild(prev);
 
-            var next = document.createElement("BUTTON");
+            const next = document.createElement("BUTTON");
             next.innerHTML = this.next;
             next.classList.add((this.wz_button).replace(".", ""));
             next.classList.add(...btn_style);
@@ -375,7 +387,7 @@ class Wizard {
 
             buttons.appendChild(next);
 
-            var finish = document.createElement("BUTTON");
+            const finish = document.createElement("BUTTON");
             finish.innerHTML = this.finish;
             finish.classList.add((this.wz_button).replace(".", ""));
             finish.classList.add(...btn_style);
@@ -433,19 +445,19 @@ class Wizard {
     */
 
     onClick(e) {
-        let $this = e
+        const $this = e
 
         if (this.locked && this.locked_step === this.getCurrentStep()) {
             $_.getSelector(this.wz_class).dispatchEvent(new Event("lockWizard"));
             return false;
         }
 
-        let parent = $_.getParent($this, this.wz_class);
-        let nav = $_.getSelector(this.wz_nav, parent);
-        let content = $_.getSelector(this.wz_content, parent);
+        const parent = $_.getParent($this, this.wz_class);
+        const nav = $_.getSelector(this.wz_nav, parent);
+        const content = $_.getSelector(this.wz_content, parent);
 
-        var is_btn = ($_.hasClass($this, this.wz_button));
-        var is_nav = ($_.hasClass($this, this.wz_step));
+        const is_btn = ($_.hasClass($this, this.wz_button));
+        const is_nav = ($_.hasClass($this, this.wz_step));
 
 
         let step = ($_.str2bool($this.getAttribute("data-step")) !== false) ? parseInt($this.getAttribute("data-step")) : this.getCurrentStep();
@@ -460,8 +472,10 @@ class Wizard {
             }
         }
 
+        let step_action = step > this.getCurrentStep()
+
         if (is_nav) {
-            if (step > this.getCurrentStep()) {
+            if (step_action) {
                 $_.getSelector(this.wz_class).dispatchEvent(new Event("forwardNavWizard"));
             } else if (step < this.getCurrentStep()) {
                 $_.getSelector(this.wz_class).dispatchEvent(new Event("backwardNavWizard"));
@@ -469,7 +483,7 @@ class Wizard {
         }
 
         if (this.form && this.navigation != "buttons") {
-            if (step > this.getCurrentStep()) {
+            if (step_action) {
                 if ((step !== this.getCurrentStep() + 1)) {
                     if (step >= this.last_step) {
                         step = this.last_step;
@@ -482,8 +496,9 @@ class Wizard {
 
         if (this.form) {
             if (this.checkForm() === true) {
-                $_.getSelector(this.wz_class).dispatchEvent(new Event("errorFormValidatorWizard"));
-
+                if (step_action) {
+                    $_.getSelector(this.wz_class).dispatchEvent(new Event("errorFormValidatorWizard"));
+                }
                 this.last_step = this.getCurrentStep();
                 if (this.getCurrentStep() < step) {
                     return false;
@@ -496,18 +511,18 @@ class Wizard {
         }
 
         if ($_.str2bool(this.buttons) !== false) {
-            let buttons = $_.getSelector(this.wz_buttons, parent);
-            let next = $_.getSelector(this.wz_button + this.wz_next, buttons);
-            let prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
-            let finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
+            const buttons = $_.getSelector(this.wz_buttons, parent);
+            const next = $_.getSelector(this.wz_button + this.wz_next, buttons);
+            const prev = $_.getSelector(this.wz_button + this.wz_prev, buttons);
+            const finish = $_.getSelector(this.wz_button + this.wz_finish, buttons);
 
             this.checkButtons(next, prev, finish)
         }
 
-        let $wz_nav = $_.getSelectorAll(this.wz_step, nav)
+        const $wz_nav = $_.getSelectorAll(this.wz_step, nav)
         $_.removeClassList($wz_nav, "active");
 
-        let $wz_content = $_.getSelectorAll(this.wz_step, content)
+        const $wz_content = $_.getSelectorAll(this.wz_step, content)
         $_.removeClassList($wz_content, "active");
 
         $_.getSelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`, nav).classList.add("active");
@@ -656,7 +671,7 @@ class Wizard {
 };
 
 
-var $_ = {
+const $_ = {
     getID: function (e, n = document) {
         return n.getElementById(e);
     },
@@ -683,7 +698,7 @@ var $_ = {
     },
 
     getParent: function (elem, selector) {
-        var parent = undefined;
+        let parent = undefined;
 
         while (elem.parentNode.tagName !== "BODY" && parent === undefined) {
             elem = elem.parentNode;
@@ -698,7 +713,7 @@ var $_ = {
 
     delegate: function (el, evt, sel, handler) {
         el.addEventListener(evt, function (event) {
-            var t = event.target;
+            let t = event.target;
             while (t && t !== this) {
                 if (t.matches(sel)) {
                     handler.call(t, event);
@@ -715,8 +730,8 @@ var $_ = {
     },
 
     objToString: function (obj, delimiter = ";") {
-        var str = '';
-        for (var p in obj) {
+        let str = '';
+        for (const p in obj) {
             if (obj.hasOwnProperty(p)) {
                 str += p + ':' + obj[p] + delimiter;
             }
@@ -725,12 +740,12 @@ var $_ = {
     },
 
     isHidden: function (el) {
-        var style = window.getComputedStyle(el);
+        const style = window.getComputedStyle(el);
         return (style.display === 'none')
     },
 
-    str2bool: function (str) {
-        str = String(str);
+    str2bool: function (value) {
+        const str = String(value);
         switch (str.toLowerCase()) {
             case 'false':
             case 'no':
@@ -749,7 +764,7 @@ var $_ = {
     },
 
     throwException: function (message) {
-        var err;
+        let err;
         try {
             throw new Error('myError');
         } catch (e) {
@@ -757,19 +772,19 @@ var $_ = {
         }
         if (!err) return;
 
-        var aux = err.stack.split("\n");
+        let aux = err.stack.split("\n");
         aux.splice(0, 2); //removing the line that we force to generate the error (var err = new Error();) from the message
         aux = aux.join('\n"');
         throw message + ' \n' + aux;
     },
 
     formValidator: function (formData) {
-        var error = false;
+        let error = false;
 
         for (let e of formData) {
             if ($_.hasClass(e, "required") || $_.exists(e.getAttribute("required"))) {
 
-                var check = false
+                let check = false
                 switch (e.tagName) {
                     case "INPUT":
                         check = $_.dispatchInput(e);
@@ -791,7 +806,7 @@ var $_ = {
     },
 
     closetNubmer: function (length, step) {
-        var counts = [];
+        let counts = [];
 
         for (let index = 0; index <= length; index++) {
             counts.push(index)
@@ -824,7 +839,7 @@ var $_ = {
 
     dispatchInput: function (e) {
         let type = e.getAttribute("type");
-        var check = false;
+        let check = false;
 
         switch (type) {
             case "email":
@@ -850,19 +865,20 @@ var $_ = {
     },
 
     isEmail: function (email) {
-        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return regex.test(email);
     },
 
     isValidURL: function (str) {
-        var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        let url;
 
-        return !!pattern.test(str);
+        try {
+            url = new URL(str);
+        } catch (_) {
+            return false;
+        }
+
+        return url.protocol === "http:" || url.protocol === "https:";
     },
 
     cleanEvents: function (el, withChildren = false) {
@@ -870,7 +886,7 @@ var $_ = {
             if (withChildren) {
                 el.parentNode.replaceChild(el.cloneNode(true), el);
             } else {
-                var newEl = el.cloneNode(false);
+                const newEl = el.cloneNode(false);
                 while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
                 el.parentNode.replaceChild(newEl, el);
             }

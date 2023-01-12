@@ -1,6 +1,3 @@
-
-var wizard, wizard2;
-
 document.getElementById("create_wizard").onclick = function () {
     createWz2();
 };
@@ -9,12 +6,24 @@ document.getElementById("create_wizard_form").onclick = function () {
     createWz();
 };
 
+
+document.addEventListener("readyWizard", function (e) {
+
+    console.log("My body is ready")
+
+    console.log(`↓ Target ↓`)
+    console.log(e.detail.target)
+
+    console.log(`↓ Elem ↓`)
+    console.log(e.detail.elem)
+});
+
 function createWz() {
 
     let args = {
         "wz_class": "#wizard",
         "wz_nav_style": "dots",
-        "navigation": "buttons",
+        "navigation": "all",
         "wz_ori": "horizontal",
 
         "i18n": {
@@ -22,7 +31,7 @@ function createWz() {
         }
     };
 
-    wizard = new Wizard(args);
+    const wizard = new Wizard(args);
 
     wizard.init();
 
@@ -68,6 +77,7 @@ function createWz() {
     el.addEventListener("errorFormValidatorWizard", function (e) {
         console.log("errorFormValidatorWizard 1");
     });
+
 }
 
 function createWz2() {
@@ -82,7 +92,7 @@ function createWz2() {
         }
     };
 
-    wizard2 = new Wizard(args);
+    const wizard2 = new Wizard(args);
 
     wizard2.init();
 

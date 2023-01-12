@@ -15,9 +15,12 @@
             <aside class="wizard-content container">
                 <div class="wizard-step">
                     <div class="form-group">
-                        <label for="nameCampaign">Campaign name</label>
-                        <input type="text" name="name" class="form-control required" id="nameCampaign"
-                            placeholder="Enter a short campaign name">
+                        <label for="titleNoti">Action</label>
+                        <select class="form-control required" name="actions" id="action1" >
+                            <option value="">Select one ...</option>
+                            <option value="0">Open 0</option>
+                            <option value="1">Open 1</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -152,7 +155,7 @@
         </div>
     </main>
 
-    <script src="../src/wizard.js"></script>
+    <script src="../src/wizard.min.js"></script>
 
     <script src="main.js"></script>
 
