@@ -118,6 +118,24 @@ Options allowing to modify the behavior and actions
 <br>
 
 # Events Management
+
+To identify when the wizard is fully generated and loaded.
+
+This event is a [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) and has as custom parameters inside details:
+
+- target: wz_class
+- elem: DOM element
+
+```javascript
+document.addEventListener("readyWizard", function (e) {
+    console.log(`↓ Target ↓`)
+    console.log(e.detail.target) // .wizard
+
+    console.log(`↓ DOM Elem ↓`)
+    console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
+});
+```
+
 ```javascript
 let wz_class = ".wizard";
 let $wz_doc = document.querySelector(wz_class)
