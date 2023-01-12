@@ -135,7 +135,9 @@ document.addEventListener("readyWizard", function (e) {
     console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
 });
 ```
+<br>
 
+Events that are part of the wizard
 ```javascript
 let wz_class = ".wizard";
 let $wz_doc = document.querySelector(wz_class)
