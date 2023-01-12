@@ -49,6 +49,7 @@ class Wizard {
         this.prefabOpts(opts, args);
 
         this.wz_class = this.options.wz_class;
+        this.wz_active = "active";
         this.wz_ori = this.options.wz_ori;
         this.wz_nav = this.options.wz_nav;
         this.wz_nav_style = this.options.wz_nav_style;
@@ -92,14 +93,17 @@ class Wizard {
 
     init() {
         try {
-            $_.cleanEvents($_.getSelector(this.wz_class), true);
 
             let wz = ($_.exists($_.getSelector(this.wz_class))) ? $_.getSelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
-
-            if ($_.str2bool(wz.getAttribute("data-wizard"))) {
-                $_.throwException(`${this.wz_class} => ${this.options.i18n.already_definded} `);
+            if ($_.str2bool(wz.getAttribute("data-wizard")) && wz.getAttribute("data-wizard") === this.wz_active) {
+                console.warn(`${this.wz_class} => ${this.options.i18n.already_definded}`);
+                return false;
             }
+
+            $_.cleanEvents($_.getSelector(this.wz_class), true);
+
+            wz = ($_.exists($_.getSelector(this.wz_class))) ? $_.getSelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
             wz.classList.add((this.wz_ori).replace(".", ""));
 
@@ -141,7 +145,7 @@ class Wizard {
 
             wz.style.display = ($_.hasClass(wz, "vertical")) ? "flex" : "block";
 
-            wz.setAttribute("data-wizard", "active")
+            wz.setAttribute("data-wizard", this.wz_active)
 
             document.dispatchEvent(new CustomEvent("readyWizard", {
                 detail: {
