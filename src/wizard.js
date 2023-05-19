@@ -110,7 +110,7 @@ class Wizard {
 
             const wz = ($_.exists(document.querySelector(this.wz_class))) ? document.querySelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
-            if($_.str2bool(this.buttons) === false && $_.str2bool(this.nav) === false){
+            if ($_.str2bool(this.buttons) === false && $_.str2bool(this.nav) === false) {
                 console.warn(this.options.i18n.no_nav);
             }
 
@@ -470,6 +470,15 @@ class Wizard {
         }
     }
 
+
+    /**
+   * Common function for wizard checks and prefab.
+   * 
+   * @param {object} $wz => Wizard element
+   * 
+   * @return {void}
+   */
+
     check2Prepare(wz) {
 
         this.setNav(wz);
@@ -516,14 +525,14 @@ class Wizard {
     onClick(e) {
         const $this = e
         const wz = document.querySelector(this.wz_class);
-        
+
         if (this.locked && this.locked_step === this.getCurrentStep()) {
             wz.dispatchEvent(new Event("wz.lock"));
             return false;
         }
 
         const parent = $_.getParent($this, this.wz_class);
-        
+
         const nav = parent.querySelector(this.wz_nav);
         const content = parent.querySelector(this.wz_content);
 
@@ -909,10 +918,10 @@ const $_ = {
             case "checkbox":
                 let name = e.getAttribute("name");
 
-                if(name.includes("[]")){
+                if (name.includes("[]")) {
                     checkbox_check = wz_content.querySelectorAll(`input[type="checkbox"][name="${e.getAttribute("name")}"]:checked`);
                     check = (checkbox_check.length > 0);
-                }else{
+                } else {
                     check = e.checked;
                 }
 
