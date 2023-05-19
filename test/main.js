@@ -10,7 +10,6 @@ document.addEventListener("wz.ready", function (e) {
     `)
 });
 
-
 let args = {
 
 };
@@ -67,6 +66,19 @@ el.addEventListener("wz.error", function (e) {
 });
 
 
+el.addEventListener("wz.update", function (e) {
+    console.log(`
+        My body is updated
+
+        - Target -
+        ${e.detail.target}
+
+        - Elem -
+        ${e.detail.elem}
+    `)
+});
+
+
 
 var boton = document.getElementById("setStep");
 
@@ -77,12 +89,12 @@ boton.onclick = function () {
 
 
 function setStep(wizard) {
-    $html = `<div class="card card-body m-4 wizard-step" data-id="patata"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
+    $html = `<div class="card card-body m-4 wizard-step" data-id="patata" data-title="Adrii"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
 
     const wz = document.querySelector(wizard.wz_class);
     const wz_content = wz.querySelector(wizard.wz_content);
 
-    let target = wz_content.querySelector(`${wizard.wz_step}[data-step="2"]`)
+    let target = wz_content.querySelector(`${wizard.wz_step}[data-step="8"]`)
 
     target.insertAdjacentHTML('beforebegin', $html);
 

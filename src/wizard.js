@@ -173,7 +173,7 @@ class Wizard {
 
         this.content_update = false;
 
-        document.dispatchEvent(new CustomEvent("wz.update", {
+        document.querySelector(this.wz_class).dispatchEvent(new CustomEvent("wz.update", {
             detail: {
                 "target": this.wz_class,
                 "elem": document.querySelector(this.wz_class)
@@ -193,9 +193,9 @@ class Wizard {
     reset() {
         this.setCurrentStep(0);
 
-        let wz = document.querySelector(this.wz_class);
-        let nav = wz.querySelector(this.wz_nav);
-        let content = wz.querySelector(this.wz_content);
+        const wz = document.querySelector(this.wz_class);
+        const nav = wz.querySelector(this.wz_nav);
+        const content = wz.querySelector(this.wz_content);
 
         if ($_.str2bool(this.buttons) !== false) {
             let buttons = wz.querySelector(this.wz_buttons);
@@ -216,7 +216,7 @@ class Wizard {
         nav.querySelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).classList.add("active");
         content.querySelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).classList.add("active");
 
-        document.querySelector(this.wz_class).dispatchEvent(new Event("wz.reset"));
+        wz.dispatchEvent(new Event("wz.reset"));
     }
 
     /**
@@ -515,9 +515,10 @@ class Wizard {
 
     onClick(e) {
         const $this = e
-
+        const wz = document.querySelector(this.wz_class);
+        
         if (this.locked && this.locked_step === this.getCurrentStep()) {
-            document.querySelector(this.wz_class).dispatchEvent(new Event("wz.lock"));
+            wz.dispatchEvent(new Event("wz.lock"));
             return false;
         }
 
@@ -535,10 +536,10 @@ class Wizard {
         if (is_btn) {
             if ($_.hasClass($this, this.wz_prev)) {
                 step = step - 1;
-                document.querySelector(this.wz_class).dispatchEvent(new Event("wz.btn.prev"));
+                wz.dispatchEvent(new Event("wz.btn.prev"));
             } else if ($_.hasClass($this, this.wz_next)) {
                 step = step + 1;
-                document.querySelector(this.wz_class).dispatchEvent(new Event("wz.btn.next"));
+                wz.dispatchEvent(new Event("wz.btn.next"));
             }
         }
 
@@ -546,9 +547,9 @@ class Wizard {
 
         if (is_nav) {
             if (step_action) {
-                document.querySelector(this.wz_class).dispatchEvent(new Event("wz.nav.forward"));
+                wz.dispatchEvent(new Event("wz.nav.forward"));
             } else if (step < this.getCurrentStep()) {
-                document.querySelector(this.wz_class).dispatchEvent(new Event("wz.nav.backward"));
+                wz.dispatchEvent(new Event("wz.nav.backward"));
             }
         }
 
@@ -568,7 +569,7 @@ class Wizard {
             if (this.checkForm() === true) {
                 if (step_action) {
 
-                    document.querySelector(this.wz_class).dispatchEvent(new CustomEvent("wz.error", {
+                    wz.dispatchEvent(new CustomEvent("wz.error", {
                         detail: {
                             "id": "form_validaton",
                             "msg": this.options.i18n.form_validation
