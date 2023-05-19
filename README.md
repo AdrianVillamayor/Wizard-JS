@@ -221,7 +221,7 @@ Error validating the data of the active form step (CustomEvent)
 - msg: i18n message
 
 ```javascript
-document.addEventListener("wz.error", function (e) {
+$wz_doc.addEventListener("wz.error", function (e) {
     console.log(`↓ ID ↓`)
     console.log(e.detail.id) // form_validaton
 
