@@ -474,7 +474,7 @@ class Wizard {
     /**
    * Common function for wizard checks and prefab.
    * 
-   * @param {object} $wz => Wizard element
+   * @param {object} wz => Wizard element
    * 
    * @return {void}
    */
