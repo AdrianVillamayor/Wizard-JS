@@ -44,7 +44,7 @@ For wizards with form purpose, it manages the required fields and validates them
 ```
 <br>
 
-To launch the wizard
+To **launch** the wizard
 ```javascript
 let args = {
 	"wz_class": ".wizard",
@@ -62,19 +62,25 @@ wizard.init();
 ```
 <br>
 
-To restart the wizard
+To **restart** the wizard
 ```javascript
 wizard.reset();
 ```
 <br>
 
-To lock the wizard in one step
+Allows to **update** the wizard, deleting or adding steps 
+```javascript
+wizard.update();
+```
+<br>
+
+To **lock** the wizard in one step
 ```javascript
 wizard.lock();
 ```
 <br>
 
-To unlock the wizard
+To **unlock** the wizard
 ```javascript
 wizard.unlock();
 ```
@@ -110,6 +116,7 @@ Options allowing to modify the behavior and actions
 | `steps`        | int    | 0                | Number of wizard steps |
 | `navigation`   | String | all              | Allows you to change the navigation mode / `buttons`, `nav`, `all` |
 | `buttons`      | Bool   | true             | Allows you to show or hide the action buttons |
+| `nav`          | Bool   | true             | Allows you to show or hide the header navigation |
 | `next`         | String | Next             | Next button text |
 | `prev`         | String | Prev             | Prev button text |
 | `finish`       | String | Submit           | Finish button text |
@@ -127,7 +134,24 @@ This event is a [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/C
 - elem: DOM element
 
 ```javascript
-document.addEventListener("readyWizard", function (e) {
+document.addEventListener("wz.ready", function (e) {
+    console.log(`↓ Target ↓`)
+    console.log(e.detail.target) // .wizard
+
+    console.log(`↓ DOM Elem ↓`)
+    console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
+});
+```
+<br>
+
+
+To identify when the wizard is updated. (CustomEvent)
+
+- target: wz_class
+- elem: DOM element
+
+```javascript
+document.addEventListener("wz.update", function (e) {
     console.log(`↓ Target ↓`)
     console.log(e.detail.target) // .wizard
 
@@ -145,7 +169,7 @@ let $wz_doc = document.querySelector(wz_class)
 
 When the wizard is locked in a step
 ```javascript
-$wz_doc.addEventListener("lockWizard", function (e) {
+$wz_doc.addEventListener("wz.lock", function (e) {
 	alert("Wizard is locked");
 });
 ```
@@ -153,7 +177,7 @@ $wz_doc.addEventListener("lockWizard", function (e) {
 
 When the wizard is unlocked in one step
 ```javascript
-$wz_doc.addEventListener("unlockWizard", function (e) {
+$wz_doc.addEventListener("wz.unlock", function (e) {
 	alert("Wizard is unlocked");
 });
 ```
@@ -161,7 +185,7 @@ $wz_doc.addEventListener("unlockWizard", function (e) {
 
 Moving on to the prev step
 ```javascript
-$wz_doc.addEventListener("prevWizard", function (e) {
+$wz_doc.addEventListener("wz.btn.prev", function (e) {
 	alert("Prev Step");
 });
 ```
@@ -169,7 +193,7 @@ $wz_doc.addEventListener("prevWizard", function (e) {
 
 Moving on to the next step
 ```javascript
-$wz_doc.addEventListener("nextWizard", function (e) {
+$wz_doc.addEventListener("wz.btn.next", function (e) {
 	alert("Next Step");
 });
 ```
@@ -177,7 +201,7 @@ $wz_doc.addEventListener("nextWizard", function (e) {
 
 Moving steps forward with the navbar
 ```javascript
-$wz_doc.addEventListener("forwardNavWizard", function (e) {
+$wz_doc.addEventListener("wz.nav.forward", function (e) {
 	alert("Forward Nav");
 });
 ```
@@ -185,23 +209,31 @@ $wz_doc.addEventListener("forwardNavWizard", function (e) {
 
 Moving steps backward with the navbar
 ```javascript
-$wz_doc.addEventListener("backwardNavWizard", function (e) {
+$wz_doc.addEventListener("wz.nav.backward", function (e) {
 	alert("Backward Nav");
 });
 ```
 <br>
 
-Error validating the data of the active form step
+Error validating the data of the active form step (CustomEvent)
+
+- id: Error ID
+- msg: i18n message
+
 ```javascript
-$wz_doc.addEventListener("errorFormValidatorWizard", function (e) {
-	alert("Some required field is empty or incorrectly formatted.");
+document.addEventListener("wz.error", function (e) {
+    console.log(`↓ ID ↓`)
+    console.log(e.detail.id) // form_validaton
+
+    console.log(`↓ Message ↓`)
+    console.log(e.detail.msg) //options.i18n.form_validation
 });
 ```
 <br>
 
 If it is a form, at the end it will fire the following event
 ```javascript
-$wz_doc.addEventListener("submitWizard", function (e) {
+$wz_doc.addEventListener("wz.form.submit", function (e) {
 	alert("Form Submit");
 });
 ```
@@ -209,7 +241,7 @@ $wz_doc.addEventListener("submitWizard", function (e) {
 
 If it is not a form, at the end it will fire the following event
 ```javascript
-$wz_doc.addEventListener("endWizard", function (e) {
+$wz_doc.addEventListener("wz.end", function (e) {
 	alert("Wizard is finished");
 });
 ```
@@ -217,7 +249,7 @@ $wz_doc.addEventListener("endWizard", function (e) {
 
 When it is restarted it generates the following event
 ```javascript
-$wz_doc.addEventListener("resetWizard", function (e) {
+$wz_doc.addEventListener("wz.reset", function (e) {
 	alert("Wizard has restarted");
 });
 ```

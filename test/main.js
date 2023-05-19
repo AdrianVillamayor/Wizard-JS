@@ -1,137 +1,90 @@
-document.getElementById("create_wizard").onclick = function () {
-    createWz2();
-};
+document.addEventListener("wz.ready", function (e) {
+    console.log(`
+        My body is ready
 
-document.getElementById("create_wizard_form").onclick = function () {
-    createWz();
-};
+        - Target -
+        ${e.detail.target}
 
-
-document.addEventListener("readyWizard", function (e) {
-
-    console.log("My body is ready")
-
-    console.log(`↓ Target ↓`)
-    console.log(e.detail.target)
-
-    console.log(`↓ Elem ↓`)
-    console.log(e.detail.elem)
+        - Elem -
+        ${e.detail.elem}
+    `)
 });
 
-function createWz() {
 
-    let args = {
-        "wz_class": "#wizard",
-        "wz_nav_style": "dots",
-        "navigation": "all",
-        "wz_ori": "horizontal",
+let args = {
 
-        "i18n": {
-            "title": "Progress"
-        }
-    };
+};
 
-    const wizard = new Wizard(args);
+const wizard = new Wizard(args);
 
-    wizard.init();
+wizard.init();
 
-    let el = document.querySelector('#wizard');
+let el = document.querySelector('.wizard');
 
 
-    el.addEventListener("lockWizard", function (e) {
-        console.log("Wizard is locked 1");
-    });
+el.addEventListener("wz.lock", function (e) {
+    console.log("Wizard is locked");
+});
 
-    el.addEventListener("unlockWizard", function (e) {
-        console.log("Wizard is unlocked 1");
-    });
+el.addEventListener("wz.unlock", function (e) {
+    console.log("Wizard is unlocked");
+});
 
-    el.addEventListener("prevWizard", function (e) {
-        console.log("Prev Step 1");
-    });
+el.addEventListener("wz.btn.prev", function (e) {
+    console.log("Prev Step");
+});
 
-    el.addEventListener("nextWizard", function (e) {
-        console.log("Next Step 1");
-    });
+el.addEventListener("wz.btn.next", function (e) {
+    console.log("Next Step");
+});
 
-    el.addEventListener("forwardNavWizard", function (e) {
-        console.log("Forward nav 1");
-    });
+el.addEventListener("wz.nav.forward", function (e) {
+    console.log("Forward nav");
+});
 
-    el.addEventListener("backwardNavWizard", function (e) {
-        console.log("Backward nav 1");
-    });
+el.addEventListener("wz.nav.backward", function (e) {
+    console.log("Backward nav");
+});
 
-    el.addEventListener("submitWizard", function (e) {
-        console.log("Form Submit 1");
-    });
+el.addEventListener("wz.form.submit", function (e) {
+    console.log("Form Submit");
+});
 
-    el.addEventListener("endWizard", function (e) {
-        console.log("Wizard is finished 1");
-    });
+el.addEventListener("wz.end", function (e) {
+    console.log("Wizard is finished");
+});
 
-    el.addEventListener("resetWizard", function (e) {
-        console.log("Wizard has restarted 1");
-    });
+el.addEventListener("wz.reset", function (e) {
+    console.log("Wizard has restarted");
+});
 
-    el.addEventListener("errorFormValidatorWizard", function (e) {
-        console.log("errorFormValidatorWizard 1");
-    });
+el.addEventListener("wz.error", function (e) {
+    console.log(`
+        id => ${e.detail.id}
+    
+        msg => ${e.detail.msg}
+    `);
+});
 
-}
 
-function createWz2() {
 
-    let args = {
-        "wz_class": ".wizard2",
-        "navigation": "nav",
-        "wz_ori": "vertical",
+var boton = document.getElementById("setStep");
 
-        "i18n": {
-            "title": "Point"
-        }
-    };
+boton.onclick = function () {
+    setStep(wizard)
+    console.log("Se ha hecho clic en el botón");
+};
 
-    const wizard2 = new Wizard(args);
 
-    wizard2.init();
+function setStep(wizard) {
+    $html = `<div class="card card-body m-4 wizard-step" data-id="patata"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
 
-    let el = document.querySelector('.wizard2');
+    const wz = document.querySelector(wizard.wz_class);
+    const wz_content = wz.querySelector(wizard.wz_content);
 
-    el.addEventListener("lockWizard", function (e) {
-        console.log("Wizard is locked 2");
-    });
+    let target = wz_content.querySelector(`${wizard.wz_step}[data-step="2"]`)
 
-    el.addEventListener("unlockWizard", function (e) {
-        console.log("Wizard is unlocked 2");
-    });
+    target.insertAdjacentHTML('beforebegin', $html);
 
-    el.addEventListener("prevWizard", function (e) {
-        console.log("Prev Step 2");
-    });
-
-    el.addEventListener("nextWizard", function (e) {
-        console.log("Next Step 2");
-    });
-
-    el.addEventListener("forwardNavWizard", function (e) {
-        console.log("Forward nav 2");
-    });
-
-    el.addEventListener("backwardNavWizard", function (e) {
-        console.log("Backward nav 2");
-    });
-
-    el.addEventListener("submitWizard", function (e) {
-        console.log("Form Submit 2");
-    });
-
-    el.addEventListener("endWizard", function (e) {
-        console.log("Wizard is finished 2");
-    });
-
-    el.addEventListener("resetWizard", function (e) {
-        console.log("Wizard has restarted 2");
-    });
-
+    wizard.update();
 }
