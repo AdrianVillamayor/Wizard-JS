@@ -144,23 +144,6 @@ document.addEventListener("wz.ready", function (e) {
 ```
 <br>
 
-
-To identify when the wizard is updated. (CustomEvent)
-
-- target: wz_class
-- elem: DOM element
-
-```javascript
-document.addEventListener("wz.update", function (e) {
-    console.log(`↓ Target ↓`)
-    console.log(e.detail.target) // .wizard
-
-    console.log(`↓ DOM Elem ↓`)
-    console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
-});
-```
-<br>
-
 Events that are part of the wizard
 ```javascript
 let wz_class = ".wizard";
@@ -251,6 +234,22 @@ When it is restarted it generates the following event
 ```javascript
 $wz_doc.addEventListener("wz.reset", function (e) {
 	alert("Wizard has restarted");
+});
+```
+<br>
+
+To identify when the wizard is updated. (CustomEvent)
+
+- target: wz_class
+- elem: DOM element
+
+```javascript
+$wz_doc.addEventListener("wz.update", function (e) {
+    console.log(`↓ Target ↓`)
+    console.log(e.detail.target) // .wizard
+
+    console.log(`↓ DOM Elem ↓`)
+    console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
 });
 ```
 <br>
