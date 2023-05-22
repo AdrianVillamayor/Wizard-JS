@@ -1,4 +1,4 @@
-![Badge-glow](https://img.shields.io/badge/WizardJS-v1.9.6-blue?style=flat-square) [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
+![Badge-glow](https://img.shields.io/badge/WizardJS-v1.9.7-blue?style=flat-square) [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
 # Wizard-JS - Wizard Vanilla JavaScript
 
@@ -10,11 +10,11 @@ A lightweight wizard UI component that supports accessibility and HTML5 in JavaS
 Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.6/styles/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.7/styles/css/main.css">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.6/src/wizard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.7/src/wizard.min.js"></script>
 ```
 <br>
 
