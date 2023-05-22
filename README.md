@@ -7,7 +7,7 @@ A lightweight wizard UI component that supports accessibility and HTML5 in JavaS
 <br>
 
 # Installation 
-Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
+Add this code. <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" target="_blank">cdn</a>
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.9/styles/css/main.css">
