@@ -330,8 +330,6 @@ class Wizard {
 
         if (inputs.length > 0) {
             validation = $_.formValidator(wz_content, inputs);
-        } else {
-            validation = true;
         }
 
         return validation;
