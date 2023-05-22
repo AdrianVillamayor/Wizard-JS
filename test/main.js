@@ -1,3 +1,4 @@
+
 document.addEventListener("wz.ready", function (e) {
     console.log(`
         My body is ready
@@ -11,7 +12,10 @@ document.addEventListener("wz.ready", function (e) {
 });
 
 let args = {
-
+    highlight: true,
+    highlight_time: 1000,
+    // wz_highlight: ".alert",
+    // highlight_type: { "error": "danger" }
 };
 
 const wizard = new Wizard(args);
@@ -63,6 +67,8 @@ el.addEventListener("wz.error", function (e) {
     
         msg => ${e.detail.msg}
     `);
+
+    console.log(e.detail.target)
 });
 
 

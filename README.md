@@ -1,4 +1,4 @@
-![Badge-glow](https://img.shields.io/badge/WizardJS-v1.9.8-blue?style=flat-square) [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
+![Badge-glow](https://img.shields.io/badge/WizardJS-v1.9.9-blue?style=flat-square) [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS) ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
 # Wizard-JS - Wizard Vanilla JavaScript
 
@@ -10,11 +10,11 @@ A lightweight wizard UI component that supports accessibility and HTML5 in JavaS
 Add this code. [cdn](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.8/styles/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.9/styles/css/main.css">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.8/src/wizard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@1.9.9/src/wizard.min.js"></script>
 ```
 <br>
 
@@ -112,14 +112,19 @@ Options allowing to modify the behavior and actions
 | `wz_next`      | String | .next            | Class of Next action button |
 | `wz_prev`      | String | .prev            | Class of Prev action button |
 | `wz_finish`    | String | .finish          | Class of Finish action button |
+| `wz_highlight` | String | .highlight          | Class for highlights |
 | `current_step` | int    | 0                | Active wizard step |
 | `steps`        | int    | 0                | Number of wizard steps |
+| `highlight_time`        | int    | 1000    | display time for highlight |
 | `navigation`   | String | all              | Allows you to change the navigation mode / `buttons`, `nav`, `all` |
 | `buttons`      | Bool   | true             | Allows you to show or hide the action buttons |
 | `nav`          | Bool   | true             | Allows you to show or hide the header navigation |
+| `highlight`          | Bool   | true        | Allows you to show or hide the highlight |
 | `next`         | String | Next             | Next button text |
 | `prev`         | String | Prev             | Prev button text |
 | `finish`       | String | Submit           | Finish button text |
+| `highlight_type`       | Object | { error: "error", warning: "warning", success: "success", info: "info" } | Allows to identify the different highlight effects and to define a class for them |
+
 
 
 <br>
@@ -202,6 +207,7 @@ Error validating the data of the active form step (CustomEvent)
 
 - id: Error ID
 - msg: i18n message
+- target: Contains all the elements that have given error
 
 ```javascript
 $wz_doc.addEventListener("wz.error", function (e) {
@@ -210,6 +216,9 @@ $wz_doc.addEventListener("wz.error", function (e) {
 
     console.log(`↓ Message ↓`)
     console.log(e.detail.msg) //options.i18n.form_validation
+
+    console.log(`↓ Target ↓`)
+    console.log(e.detail.target) // [input.form-control.required.highlight-error]
 });
 ```
 <br>

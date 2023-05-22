@@ -26,15 +26,21 @@ class Wizard {
             "wz_next": ".next",
             "wz_prev": ".prev",
             "wz_finish": ".finish",
+            "wz_highlight": ".highlight",
+
+            "nav": true,
+            "buttons": true,
+            "highlight": true,
 
             "current_step": 0,
             "steps": 0,
+            "highlight_time": 1000,
             "navigation": "all",
-            "nav": true,
-            "buttons": true,
             "next": "Next",
             "prev": "Prev",
             "finish": "Submit",
+
+            "highlight_type": { "error": "error", "warning": "warning", "success": "success", "info": "info" },
 
             "i18n": {
                 "empty_wz": "No item has been found with which to generate the Wizard.",
@@ -67,13 +73,19 @@ class Wizard {
         this.wz_next = this.options.wz_next;
         this.wz_prev = this.options.wz_prev;
         this.wz_finish = this.options.wz_finish;
+        this.wz_highlight = this.options.wz_highlight;
+
+        this.buttons = this.options.buttons;
+        this.nav = this.options.nav;
+        this.highlight = this.options.highlight;
+
+        this.highlight_time = this.options.highlight_time;
+        this.highlight_type = this.options.highlight_type;
 
         this.steps = this.options.steps;
         this.current_step = this.options.current_step;
         this.last_step = this.current_step;
         this.navigation = this.options.navigation;
-        this.buttons = this.options.buttons;
-        this.nav = this.options.nav;
         this.prev = this.options.prev;
         this.next = this.options.next;
         this.finish = this.options.finish;
@@ -85,14 +97,15 @@ class Wizard {
     /**
     * Initializes the wizard
     * 
-    * @customevent wz.ready => Indicates that wizard has loaded and is accessible.
-    * @customevent_params      => target: wz_class | elem: DOM element
+    * @customevent wz.ready     - Indicates that wizard has loaded and is accessible.
+    * @property {object} target - wz_class
+    * @property {object} elem   - DOM element
     * 
-    * @throws empty_wz      => Not found any element to generate the Wizard with.
-    * @throws empty_nav     => Nav does not exist or is empty.
-    * @throws empty_content => Content does not exist or is empty.
-    * @throws diff_steps    => Discordance between the steps of nav and content.
-    * @throws random        => There has been a problem check the configuration and use of the wizard.
+    * @throws empty_wz          - Not found any element to generate the Wizard with.
+    * @throws empty_nav         - Nav does not exist or is empty.
+    * @throws empty_content     - Content does not exist or is empty.
+    * @throws diff_steps        - Discordance between the steps of nav and content.
+    * @throws random            - There has been a problem check the configuration and use of the wizard.
     * 
     * @return {void}
     */
@@ -102,7 +115,7 @@ class Wizard {
             const wz_check = ($_.exists(document.querySelector(this.wz_class))) ? document.querySelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
             if ($_.str2bool(wz_check.getAttribute("data-wizard")) && wz_check.getAttribute("data-wizard") === this.wz_active) {
-                console.warn(`${this.wz_class} => ${this.options.i18n.already_definded}`);
+                console.warn(`${this.wz_class} : ${this.options.i18n.already_definded}`);
                 return false;
             }
 
@@ -154,10 +167,11 @@ class Wizard {
     /**
     * Check and update each section of the wizard.
     * 
-    * @customevent wz.update   => Indicates that wizard has updaded and is accessible.
-    * @customevent_params      => target: wz_class | elem: DOM element
+    * @customevent wz.update    - Indicates that wizard has updaded and is accessible.
+    * @property {object} target - wz_class
+    * @property {object} elem   - DOM element
     * 
-    * @throws empty_wz        => Not found any element to generate the Wizard with.
+    * @throws empty_wz          - Not found any element to generate the Wizard with.
     * 
     * @return {void}
     */
@@ -249,9 +263,9 @@ class Wizard {
     /**
     * Generate the steps and define a standard for each step.
     * 
-    * @param {object}  $wz_nav           => Nav element
-    * @param {object}  $wz_nav_steps     => Steps elements inside Nav
-    * @param {object}  $wz_content_steps => Steps elements inside Content
+    * @param {object}  $wz_nav           - Nav element
+    * @param {object}  $wz_nav_steps     - Steps elements inside Nav
+    * @param {object}  $wz_content_steps - Steps elements inside Content
     * 
     * @return {void}
     */
@@ -313,9 +327,9 @@ class Wizard {
     * Checks and validates each input/select/textarea of the active step.
     * If the step has no inputs, the checks will be ignored.
     * 
-    * @throws random => There has been a problem check the configuration and use of the wizard.
+    * @throws random    - There has been a problem check the configuration and use of the wizard.
     * 
-    * @return {boolean} If everything is OK, it returns false
+    * @return {boolean} - If everything is OK, it returns false
     */
 
     checkForm() {
@@ -329,7 +343,7 @@ class Wizard {
         let inputs = target.querySelectorAll("input,textarea,select");
 
         if (inputs.length > 0) {
-            validation = $_.formValidator(wz_content, inputs);
+            validation = this.formValidator(wz_content, inputs);
         }
 
         return validation;
@@ -338,7 +352,7 @@ class Wizard {
     /**
     * Generating, styling and shaping the Nav
     * 
-    * @param {object} $wz => Wizard element
+    * @param {object} $wz - Wizard element
     * 
     * @return {void}
     */
@@ -443,9 +457,9 @@ class Wizard {
     /**
     * Generating, styling and shaping Buttons
     * 
-    * @param {object} next    => Next button element
-    * @param {object} prev    => Prev button element
-    * @param {object} finish  => Finish button element
+    * @param {object} next   - Next button element
+    * @param {object} prev   - Prev button element
+    * @param {object} finish - Finish button element
     * 
     * @return {void}
     */
@@ -473,7 +487,7 @@ class Wizard {
     /**
    * Common function for wizard checks and prefab.
    * 
-   * @param {object} wz => Wizard element
+   * @param {object} wz - Wizard element
    * 
    * @return {void}
    */
@@ -507,16 +521,18 @@ class Wizard {
     /**
     * Click event handler for Buttons and Nav.
     * 
-    * @param {object} e  => Event
+    * @param {object} e         - Event
     * 
-    * @event wz.btn.prev             => In case the wizard goes backwards, the wz.btn.prev event will be fired.
-    * @event wz.btn.next             => In case the wizard advances, the nextWizard event will be fired.
-    * @event wz.nav.forward          => In case of moving forward with the navbar, the forwardNavWizard event will be fired.
-    * @event wz.nav.backward         => In case of moving backward with the navbar, the backwardNavWizard event will be fired.
-    * @event wz.lock                 => In case it is blocked, it will fire the wz.lock event.
+    * @event wz.btn.prev        - In case the wizard goes backwards, the wz.btn.prev event will be fired.
+    * @event wz.btn.next        - In case the wizard advances, the nextWizard event will be fired.
+    * @event wz.nav.forward     - In case of moving forward with the navbar, the forwardNavWizard event will be fired.
+    * @event wz.nav.backward    - In case of moving backward with the navbar, the backwardNavWizard event will be fired.
+    * @event wz.lock            - In case it is blocked, it will fire the wz.lock event.
     * 
-    * @customevent wz.error          => If the form is not correctly filled in, the wz.error event will be fired.
-    * @customevent_params            => id: eror id | msg: error message
+    * @customevent wz.error     - If the form is not correctly filled in, the wz.error event will be fired.
+    * @property {string} id     - Eror id
+    * @property {string} msg    - Error message
+    * @property {object} target - Contains all the elements that have given error
     * 
     * @return {void}
     */
@@ -574,16 +590,19 @@ class Wizard {
         }
 
         if (this.form) {
-            if (this.checkForm() === true) {
-                if (step_action) {
+            const check_form = this.checkForm()
+            if (check_form.error === true) {
 
+                if (step_action) {
                     wz.dispatchEvent(new CustomEvent("wz.error", {
                         detail: {
                             "id": "form_validaton",
-                            "msg": this.options.i18n.form_validation
+                            "msg": this.options.i18n.form_validation,
+                            "target": check_form.target
                         }
                     }));
                 }
+
                 this.last_step = this.getCurrentStep();
                 if (this.getCurrentStep() < step) {
                     return false;
@@ -619,17 +638,18 @@ class Wizard {
     /**
     * Notifies that the wizard has been completed.
     * 
-    * @param {object} e  => Event
+    * @param {object} e     - Event
     * 
-    * @event wz.form.submit => If the wizard is a form it will fire submitWizard
-    * @event wz.end         => If the wizard is not a form it will fire endWizard
+    * @event wz.form.submit - If the wizard is a form it will fire submitWizard
+    * @event wz.end         - If the wizard is not a form it will fire endWizard
     * 
     * @return {void}
     */
 
     onClickFinish(e) {
         if (this.form) {
-            if (this.checkForm() !== true) {
+            const check_form = this.checkForm()
+            if (check_form.error !== true) {
                 document.querySelector(this.wz_class).dispatchEvent(new Event("wz.form.submit"));
             }
         } else {
@@ -640,7 +660,7 @@ class Wizard {
     /**
     * Set the active step 
     * 
-    * @param {int} step  => The active step 
+    * @param {int} step - The active step 
     * 
     * @return {void}
     */
@@ -662,7 +682,7 @@ class Wizard {
     /**
     * Check and match the steps of the wizard.
     * 
-    * @param {int} step  => Step 
+    * @param {int} step - Step 
     * 
     * @return {int} Step
     */
@@ -728,6 +748,8 @@ class Wizard {
     /**
     * Set options of wizard
     * 
+    * @param {object} options - List of options to build the wizard 
+    * 
     * @return {void}
     */
 
@@ -738,6 +760,9 @@ class Wizard {
     /**
     * Check and match the options of the wizard with args definieds
     * 
+    * @param {object} options - List of options to build the wizard 
+    * @param {object} args    - List of arguments modifying the base options
+    *
     * @return {void}
     */
 
@@ -753,6 +778,54 @@ class Wizard {
         });
 
         this.set_options(options);
+    }
+
+    /**
+   * Checks the fields of the active step, in case there is an error it generates a highlight. 
+   * Returns an array with all the fields that have given error.
+   * 
+   * @param {object} wz_content  - Active wizard content 
+   * @param {object} formData    - All inputs, textarea and select of the active content 
+   * 
+   * @return {object} 
+   * @property {bool} error      - There is an error or not
+   * @property {array} target    - Contains all the elements that have given error
+   */
+
+    formValidator(wz_content, formData) {
+
+        let error = false;
+        let target = [];
+
+        for (let e of formData) {
+            if ($_.hasClass(e, "required") || $_.exists(e.getAttribute("required"))) {
+
+                let check = false
+                switch (e.tagName) {
+                    case "INPUT":
+                        check = $_.dispatchInput(wz_content, e);
+                        break;
+                    case "SELECT":
+                    case "TEXTAREA":
+                        check = $_.isEmpty(e.value);
+                        break;
+                }
+
+                if (check === false) {
+                    error = true;
+                    target.push(e);
+
+                    if ($_.str2bool(this.highlight) === true) {
+                        $_.highlight(e, this.wz_highlight, this.highlight_type['error'], this.highlight_time);
+                    }
+                }
+            }
+        }
+
+        return {
+            "error": error,
+            "target": target
+        };
     }
 };
 
@@ -832,7 +905,7 @@ const $_ = {
     throwException: function (message) {
         let err;
         try {
-            throw new Error('myError');
+            throw new Error('wz.error');
         } catch (e) {
             err = e;
         }
@@ -842,33 +915,6 @@ const $_ = {
         aux.splice(0, 2); //removing the line that we force to generate the error (var err = new Error();) from the message
         aux = aux.join('\n"');
         throw message + ' \n' + aux;
-    },
-
-    formValidator: function (wz_content, formData) {
-        let error = false;
-
-        for (let e of formData) {
-            if ($_.hasClass(e, "required") || $_.exists(e.getAttribute("required"))) {
-
-                let check = false
-                switch (e.tagName) {
-                    case "INPUT":
-                        check = $_.dispatchInput(wz_content, e);
-                        break;
-                    case "SELECT":
-                    case "TEXTAREA":
-                        check = $_.isEmpty(e.value);
-                        break;
-                }
-
-                if (check === false) {
-                    error = true;
-                    $_.highlight(e, "error");
-                }
-            }
-        }
-
-        return error;
     },
 
     closetNubmer: function (length, step) {
@@ -885,22 +931,23 @@ const $_ = {
         return closet;
     },
 
-    highlight: function (e, highlight = "error") {
-        let classHigh = `highlight-${highlight}`;
+    highlight: function (e, highlight_class, highlight_type, highlight_time) {
+        let target = highlight_class.replace(".", "");
+        let classHigh = `${target}-${highlight_type}`;
 
         e.classList.add(classHigh)
+
         setTimeout(function () {
-            document.querySelectorAll('[class*="highlight"]')
+            document.querySelectorAll(`[class*="${target}"]`)
                 .forEach((el) => {
                     for (let i = el.classList.length - 1; i >= 0; i--) {
                         let className = el.classList[i];
-                        if (className.startsWith('highlight')) {
+                        if (className.startsWith(`${target}`)) {
                             el.classList.remove(className);
                         }
                     }
                 });
-        }, 1000);
-
+        }, highlight_time);
     },
 
     dispatchInput: function (wz_content, e) {
