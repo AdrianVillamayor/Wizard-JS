@@ -310,7 +310,8 @@ class Wizard {
     }
 
     /**
-    * Checks and validates each input/select/textarea of the active step
+    * Checks and validates each input/select/textarea of the active step.
+    * If the step has no inputs, the checks will be ignored.
     * 
     * @throws random => There has been a problem check the configuration and use of the wizard.
     * 
@@ -330,7 +331,7 @@ class Wizard {
         if (inputs.length > 0) {
             validation = $_.formValidator(wz_content, inputs);
         } else {
-            this.throwException(this.options.i18n.random);
+            validation = true;
         }
 
         return validation;
