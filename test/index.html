@@ -12,283 +12,86 @@
 <body class="sb-nav-fixed">
     <main class="container-fluid pt-5">
 
-        <form class="wizard horizontal" method="POST">
+        <main class="container-fluid">
+            <div class="ps-3 pt-4 pb-5">
+                <h2>Wizard-JS | Wizard Vanilla JavaScript <small>by <a
+                            href="https://github.com/AdrianVillamayor/Wizard-JS" target="_blank">Adrii</a></small></h2>
+                <small>A lightweight wizard UI component that supports accessibility and HTML5 in JavaScript Vanilla.
+                </small>
+                <p>
+                    <img src="https://img.shields.io/badge/WizardJS-v1.9.9-blue?style=flat-square" class="img-fluid">
+                    <img src="https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square"
+                        class="img-fluid">
+                </p>
+            </div>
 
-            <aside class="wizard-content container">
-                <div class="card card-body m-4 wizard-step active" data-id="2e8WqSV3slGIpTbnjcJzmDwBQaHrfh0Z">
-                    <label class="question">1. Quieres añadir algo más que no estaba en la pregunta anterior ?</label>
-                    <input type="text" maxlength="100" name="2e8WqSV3slGIpTbnjcJzmDwBQaHrfh0Z"
-                        class="form-control required" placeholder="Your answer">
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="H53WJiv9blN17MYTztq4g8U6eSVkaZDx">
-                    <label class="question">2. ¿Ha sucedido algo en los últimos 3 meses que te haya hecho feliz o
-                        triste? (esto puede tener que
-                        ver con tu familia, amigos, escuela o, por ejemplo, deportes)</label>
-                    <textarea name="textarea" rows="5" placeholder="Your answer"
-                        class="form-control required"></textarea>
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe">
-                    <label class="question">3. Es difícil prestar atención en clase.</label>
-                    <div>
-                        <div class="flex-align-center">
-                            <input type="radio" class="required" id="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_siempre"
-                                name="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe" value="siempre">
-                            <label class="choice" for="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_siempre">siempre</label>
+            <form class="wizard" id="formWizard">
+
+                <aside class="wizard-content container">
+                    <div class="wizard-step" data-title="Adrii">
+                        <div class="form-group">
+                            <label for="nameCampaign">Campaign name <span class="required">*</span></label>
+                            <input type="text" name="name" class="form-control required" id="nameCampaign"
+                                placeholder="Enter a short campaign name">
                         </div>
-                        <div class="flex-align-center">
-                            <input type="radio" class="required" id="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_a menudo"
-                                name="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe" value="a menudo">
-                            <label class="choice" for="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_a menudo">a menudo</label>
-                        </div>
-                        <div class="flex-align-center">
-                            <input type="radio" class="required" id="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_algunas veces"
-                                name="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe" value="algunas veces">
-                            <label class="choice" for="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_algunas veces">algunas
-                                veces</label>
-                        </div>
-                        <div class="flex-align-center">
-                            <input type="radio" class="required" id="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_rara vez"
-                                name="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe" value="rara vez">
-                            <label class="choice" for="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_rara vez">rara vez</label>
-                        </div>
-                        <div class="flex-align-center">
-                            <input type="radio" class="required" id="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_nunca"
-                                name="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe" value="nunca">
-                            <label class="choice" for="a1sUgqrWRBojV3J5ZMh6IxKfHzv8ndPe_nunca">nunca</label>
+
+                        <div class="form-group">
+                            <label for="descCampaign">Description of the campaign</label>
+                            <textarea name="description" class="form-control" id="descCampaign"></textarea>
                         </div>
                     </div>
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu" data-limit="3">
-                    <label class="question">4. ¿Cuáles son las 3 partes de su tratamiento para la diabetes que le
-                        resultan más difíciles de
-                        integrar en su vida?</label>
-                    <div>
 
-                        <div>
-                            <input type="checkbox" class="required"
-                                id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_pincharme el dedo"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]" value="pincharme el dedo">
-                            <label class="choice" for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_pincharme el dedo">pincharme el
-                                dedo</label>
+                    <div class="wizard-step">
+                        <div class="form-group">
+                            <label for="titleNoti">Title <span class="required">*</span></label>
+                            <input type="text" name="title" class="form-control required banner-info" id="titleNoti"
+                                placeholder="Example: Message title">
                         </div>
-                        <div>
-                            <input type="checkbox" class="required"
-                                id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_administrar insulina"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]" value="administrar insulina">
-                            <label class="choice"
-                                for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_administrar insulina">administrar insulina</label>
+
+                        <div class="form-group">
+                            <label for="bodyNoti">Body <span class="required">*</span></label>
+                            <input type="text" name="body" class="form-control required banner-info" id="bodyNoti"
+                                placeholder="Example: Message body">
                         </div>
-                        <div>
-                            <input type="checkbox" class="required"
-                                id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_calcular de carbohidratos"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]" value="calcular de carbohidratos">
-                            <label class="choice"
-                                for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_calcular de carbohidratos">calcular de
-                                carbohidratos</label>
+
+                        <div class="form-group">
+                            <label for="imageNoti">Image</label>
+                            <input type="file" name="image" class="form-control banner-info" id="imageNoti">
                         </div>
-                        <div>
-                            <input type="checkbox" class="required"
-                                id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_decidir qué comer o beber"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]" value="decidir qué comer o beber">
-                            <label class="choice"
-                                for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_decidir qué comer o beber">decidir qué comer o
-                                beber</label>
+
+                    </div>
+
+                    <div class="wizard-step">
+                        <div class="form-group">
+                            <label for="titleNoti">Action <span class="required">*</span></label>
+                            <select class="form-control required" name="action">
+                                <option>Select one ...</option>
+                                <option value="0">Open bolus configurator</option>
+                            </select>
                         </div>
-                        <div>
-                            <input type="checkbox" class="required"
-                                id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_responder a niveles bajos de azúcar en sangre"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]"
-                                value="responder a niveles bajos de azúcar en sangre">
-                            <label class="choice"
-                                for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_responder a niveles bajos de azúcar en sangre">responder
-                                a niveles bajos de azúcar en sangre</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="required"
-                                id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_cambio del sistema de la bomba"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]" value="cambio del sistema de la bomba">
-                            <label class="choice"
-                                for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_cambio del sistema de la bomba">cambio del sistema
-                                de la bomba</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="required"
-                                id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_control de los niveles altos de azúcar en sangre"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]"
-                                value="control de los niveles altos de azúcar en sangre">
-                            <label class="choice"
-                                for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_control de los niveles altos de azúcar en sangre">control
-                                de los niveles altos de azúcar en sangre</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="required" id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_nada"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu[]" value="nada">
-                            <label class="choice" for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_nada">nada</label>
+
+                        <div class="form-group">
+                            <label for="bodyNoti">Segment</label>
+                            <select class="form-control" name="segment">
+                                <option>Select one ...</option>
+                                <option value="0">País</option>
+                                <option value="1">Language</option>
+                                <option value="2">Diabetes Type</option>
+                                <option value="3">Center</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu" data-limit="3">
-                    <label class="question">4. ¿Cuáles son las 3 partes de su tratamiento para la diabetes que le
-                        resultan más difíciles de
-                        integrar en su vida?</label>
-                    <div>
 
-                        <div>
-                            <input type="checkbox" class="required" id="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_pincha el dedo"
-                                name="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6GuA" value="pincharme el dedo">
-                            <label class="choice" for="dOM0iRAyJXsLTr9b3KZfQ2jNv4pgn6Gu_pincha el dedo">pincharme el
-                                dedo</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="S2fkuDzK3pJi5r7lEMx1gFZXQoWvPt9c">
-                    <label class="question" for="S2fkuDzK3pJi5r7lEMx1gFZXQoWvPt9c">5. Cual de las siguientes palabras te
-                        define mejor?</label>
-                    <select id="S2fkuDzK3pJi5r7lEMx1gFZXQoWvPt9c" name="S2fkuDzK3pJi5r7lEMx1gFZXQoWvPt9c"
-                        class="form-control required">
-                        <option value=""> Selecciona una ...</option>
-                        <option value="Piña"> Piña </option>
-                        <option value="Listo"> Listo </option>
-                        <option value="Amable"> Amable </option>
-                        <option value="Amigable"> Amigable </option>
-                        <option value="Pez"> Pez </option>
-                        <option value="Tractor"> Tractor </option>
-                        <option value="Ninguna"> Ninguna </option>
-                    </select>
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK">
-                    <label class="question">6. A continuación verás que hay una escalera.
-                        El 10 en la parte superior de la escalera significa la mejor vida que puedas imaginar. El 1 en
-                        la
-                        parte inferior de la escalera significa la peor vida que puedas imaginar.
-                        ¿Qué lugar en la escalera ocupa generalmente tu vida? Selecciona el número que más le
-                        convenga.</label>
+                </aside>
+            </form>
 
-                    <div class="flex-align-center flex-justify-space-between">
-                        <div class="flex-column flex-align-center ranges_label">
-                            <div class="range_step"> </div>
-                            <div class="range_step">
-                                <span>la peor vida que pueda imaginar</span>
-                            </div>
-                        </div>
+            <div class="align-content-center justify-content-start m-3" style="display:flex">
+                <button id="btn_lock" class="btn btn-danger">Lock</button>
+                <button id="btn_unlock" class="btn btn-primary ms-4">Unlock</button>
+                <button id="btn_reset" class="btn btn-warning ms-4">Reset</button>
+                <button id="btn_append" class="btn btn-secondary ms-4">Add new step</button>
+            </div>
 
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_1">1</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_1"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="1">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_2">2</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_2"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="2">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_3">3</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_3"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="3">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_4">4</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_4"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="4">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_5">5</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_5"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="5">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_6">6</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_6"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="6">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_7">7</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_7"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="7">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_8">8</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_8"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="8">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_9">9</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_9"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="9">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center">
-                            <div class="range_step">
-                                <label for="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_10">10</label>
-                            </div>
-                            <div class="range_step">
-                                <input type="radio" class="required" id="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK_10"
-                                    name="F8jyd5R0On3X7HZuBc2hTLvwtMzEeIqK" value="10">
-                            </div>
-                        </div>
-                        <div class="flex-column flex-align-center ranges_label">
-                            <div class="range_step"> </div>
-                            <div class="range_step">
-                                <span>la mejor vida que pueda imaginar</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="5KPYVlDEQ3TW4bR8ILf1jxpG9Mm7JcsN">
-                    <label class="question" for="5KPYVlDEQ3TW4bR8ILf1jxpG9Mm7JcsN">7. Cuando es tu siguiente cita
-                        médica?</label>
-                    <input id="5KPYVlDEQ3TW4bR8ILf1jxpG9Mm7JcsN" type="time" name="5KPYVlDEQ3TW4bR8ILf1jxpG9Mm7JcsN"
-                        class="timepicker form-control" value="">
-                </div>
-                <div class="card card-body m-4 wizard-step" data-id="V7F5h3vPujDQKzgNlwYcOZpGASot1rbW">
-                    <label class="question" for="V7F5h3vPujDQKzgNlwYcOZpGASot1rbW">8. A que hora sueles irte a dormir
-                        ?</label>
-                    <input id="V7F5h3vPujDQKzgNlwYcOZpGASot1rbW" type="date" name="V7F5h3vPujDQKzgNlwYcOZpGASot1rbW"
-                        class="datepicker form-control" value="">
-                </div>
-            </aside>
-
-        </form>
-
-        <div class="align-content-center justify-content-start m-3" style="display:flex">
-            <button id="setStep" class="btn btn-primary ms-4">Add step</button>
-        </div>
     </main>
 
     <script src="../src/wizard.js"></script>

@@ -10,7 +10,7 @@
 
 class Wizard {
 
-    constructor(args) {
+    constructor(args = {}) {
 
         let opts = {
             "wz_class": ".wizard",
@@ -114,7 +114,7 @@ class Wizard {
         try {
             const wz_check = ($_.exists(document.querySelector(this.wz_class))) ? document.querySelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
-            if ($_.str2bool(wz_check.getAttribute("data-wizard")) && wz_check.getAttribute("data-wizard") === this.wz_active) {
+            if ($_.str2bool(wz_check.getAttribute("data-wz-load")) && wz_check.getAttribute("data-wz-load") == true) {
                 console.warn(`${this.wz_class} : ${this.options.i18n.already_definded}`);
                 return false;
             }
@@ -149,7 +149,7 @@ class Wizard {
 
             wz.style.display = ($_.hasClass(wz, "vertical")) ? "flex" : "block";
 
-            wz.setAttribute("data-wizard", this.wz_active)
+            wz.setAttribute("data-wz-load", true)
 
             document.dispatchEvent(new CustomEvent("wz.ready", {
                 detail: {
@@ -179,7 +179,7 @@ class Wizard {
     update() {
         const wz = ($_.exists(document.querySelector(this.wz_class))) ? document.querySelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
 
-        if (($_.str2bool(wz.getAttribute("data-wizard")) === false) && wz.getAttribute("data-wizard") != this.wz_active) {
+        if (($_.str2bool(wz.getAttribute("data-wz-load")) === false) && wz.getAttribute("data-wz-load") != true) {
             $_.throwException(this.options.i18n.empty_wz);
         }
 
@@ -227,8 +227,8 @@ class Wizard {
         let $wz_content = content.querySelectorAll(this.wz_step);
         $_.removeClassList($wz_content, "active");
 
-        nav.querySelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).classList.add("active");
-        content.querySelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).classList.add("active");
+        nav.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
+        content.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
 
         wz.dispatchEvent(new Event("wz.reset"));
     }
@@ -276,10 +276,10 @@ class Wizard {
         for (let i = 0; i < $wz_content_steps.length; i++) {
             let $this = $wz_content_steps[i];
 
-            $this.setAttribute("data-step", i);
+            $this.setAttribute("data-wz-step", i);
 
             if ($_.str2bool(this.nav) !== false) {
-                $wz_nav_steps[i].setAttribute("data-step", i);
+                $wz_nav_steps[i].setAttribute("data-wz-step", i);
             }
         };
 
@@ -378,7 +378,7 @@ class Wizard {
 
             for (let i = 0; i < steps_length; i++) {
                 const nav_step = document.createElement("DIV");
-                let title = (steps[i].hasAttribute("data-title")) ? steps[i].getAttribute("data-title") : `${this.options.i18n.title} ${i}`;
+                let title = (steps[i].hasAttribute("data-wz-title")) ? steps[i].getAttribute("data-wz-title") : `${this.options.i18n.title} ${i}`;
                 nav_step.classList.add((this.wz_step).replace(".", ""));
 
                 if (this.navigation === "buttons") nav_step.classList.add("nav-buttons");
@@ -541,6 +541,9 @@ class Wizard {
         const $this = e
         const wz = document.querySelector(this.wz_class);
 
+        // const stepEl = content.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`);
+        // const isAsync = stepEl.getAttribute("data-wz-async-step");
+
         if (this.locked && this.locked_step === this.getCurrentStep()) {
             wz.dispatchEvent(new Event("wz.lock"));
             return false;
@@ -555,7 +558,7 @@ class Wizard {
         const is_nav = ($_.hasClass($this, this.wz_step));
 
 
-        let step = ($_.str2bool($this.getAttribute("data-step")) !== false) ? parseInt($this.getAttribute("data-step")) : this.getCurrentStep();
+        let step = ($_.str2bool($this.getAttribute("data-wz-step")) !== false) ? parseInt($this.getAttribute("data-wz-step")) : this.getCurrentStep();
 
         if (is_btn) {
             if ($_.hasClass($this, this.wz_prev)) {
@@ -626,12 +629,12 @@ class Wizard {
         if ($_.str2bool(this.nav) !== false) {
             const $wz_nav = nav.querySelectorAll(this.wz_step);
             $_.removeClassList($wz_nav, "active");
-            nav.querySelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).classList.add("active");
+            nav.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
         }
 
         const $wz_content = content.querySelectorAll(this.wz_step);
         $_.removeClassList($wz_content, "active");
-        content.querySelector(`${this.wz_step}[data-step="${this.getCurrentStep()}"]`).classList.add("active");
+        content.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
     }
 
 
@@ -691,7 +694,7 @@ class Wizard {
         let parent = document.querySelector(this.wz_class);
         let content = parent.querySelector(this.wz_content);
 
-        let check_content = content.querySelector(`${this.wz_step}[data-step="${step}"]`);
+        let check_content = content.querySelector(`${this.wz_step}[data-wz-step="${step}"]`);
 
         if ($_.exists(check_content) === false) {
             let content_length = (content.querySelectorAll(this.wz_step).length) - 1;
@@ -767,15 +770,17 @@ class Wizard {
     */
 
     prefabOpts(options, args) {
-        Object.entries(args).forEach(([key, value]) => {
-            if (typeof value === 'object') {
-                Object.entries(value).forEach(([key_1, value_1]) => {
-                    options[key][key_1] = value_1;
-                });
-            } else {
-                options[key] = value;
-            }
-        });
+        if ($_.isEmptyObj(args) !== false) {
+            Object.entries(args).forEach(([key, value]) => {
+                if (typeof value === 'object') {
+                    Object.entries(value).forEach(([key_1, value_1]) => {
+                        options[key][key_1] = value_1;
+                    });
+                } else {
+                    options[key] = value;
+                }
+            });
+        }
 
         this.set_options(options);
     }
@@ -806,6 +811,8 @@ class Wizard {
                         check = $_.dispatchInput(wz_content, e);
                         break;
                     case "SELECT":
+                        check = $_.checkSelect(e);
+                        break;
                     case "TEXTAREA":
                         check = $_.isEmpty(e.value);
                         break;
@@ -829,194 +836,4 @@ class Wizard {
     }
 };
 
-
-const $_ = {
-    hasClass: function (e, className) {
-        className = className.replace(".", "");
-        return new RegExp('(\\s|^)' + className + '(\\s|$)').test(e.className);
-    },
-
-    getParent: function (elem, selector) {
-        let parent = undefined;
-
-        while (elem.parentNode.tagName !== "BODY" && parent === undefined) {
-            elem = elem.parentNode;
-
-            if (elem.matches(selector)) {
-                parent = elem;
-            }
-        }
-
-        return parent;
-    },
-
-    delegate: function (el, evt, sel, handler) {
-        el.addEventListener(evt, function (event) {
-            let t = event.target;
-            while (t && t !== this) {
-                if (t.matches(sel)) {
-                    handler.call(t, event);
-                }
-                t = t.parentNode;
-            }
-        });
-    },
-
-    removeClassList: function (e, className) {
-        for (let element of e) {
-            element.classList.remove(className);
-        };
-    },
-
-    objToString: function (obj, delimiter = ";") {
-        let str = '';
-        for (const p in obj) {
-            if (obj.hasOwnProperty(p)) {
-                str += p + ':' + obj[p] + delimiter;
-            }
-        }
-        return str;
-    },
-
-    isHidden: function (el) {
-        const style = window.getComputedStyle(el);
-        return (style.display === 'none')
-    },
-
-    str2bool: function (value) {
-        const str = String(value);
-        switch (str.toLowerCase()) {
-            case 'false':
-            case 'no':
-            case 'n':
-            case '':
-            case 'null':
-            case 'undefined':
-                return false;
-            default:
-                return true;
-        }
-    },
-
-    exists: function (element) {
-        return (typeof (element) != 'undefined' && element != null);
-    },
-
-    throwException: function (message) {
-        let err;
-        try {
-            throw new Error('wz.error');
-        } catch (e) {
-            err = e;
-        }
-        if (!err) return;
-
-        let aux = err.stack.split("\n");
-        aux.splice(0, 2); //removing the line that we force to generate the error (var err = new Error();) from the message
-        aux = aux.join('\n"');
-        throw message + ' \n' + aux;
-    },
-
-    closetNubmer: function (length, step) {
-        let counts = [];
-
-        for (let index = 0; index <= length; index++) {
-            counts.push(index)
-        }
-
-        let closet = counts.reduce(function (prev, curr) {
-            return (Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev);
-        });
-
-        return closet;
-    },
-
-    highlight: function (e, highlight_class, highlight_type, highlight_time) {
-        let target = highlight_class.replace(".", "");
-        let classHigh = `${target}-${highlight_type}`;
-
-        e.classList.add(classHigh)
-
-        setTimeout(function () {
-            document.querySelectorAll(`[class*="${target}"]`)
-                .forEach((el) => {
-                    for (let i = el.classList.length - 1; i >= 0; i--) {
-                        let className = el.classList[i];
-                        if (className.startsWith(`${target}`)) {
-                            el.classList.remove(className);
-                        }
-                    }
-                });
-        }, highlight_time);
-    },
-
-    dispatchInput: function (wz_content, e) {
-        let type = e.getAttribute("type");
-        let check = false;
-
-        switch (type) {
-            case "email":
-                check = $_.isEmail(e.value);
-                break;
-            case "url":
-                check = $_.isValidURL(e.value);
-                break;
-            case "checkbox":
-                let name = e.getAttribute("name");
-
-                if (name.includes("[]")) {
-                    checkbox_check = wz_content.querySelectorAll(`input[type="checkbox"][name="${e.getAttribute("name")}"]:checked`);
-                    check = (checkbox_check.length > 0);
-                } else {
-                    check = e.checked;
-                }
-
-                break;
-
-            case "radio":
-                let radio_check = wz_content.querySelectorAll(`input[type="radio"][name="${e.getAttribute("name")}"]:checked`);
-                check = (radio_check.length > 0);
-                break;
-
-            default:
-                check = $_.isEmpty(e.value);
-                break;
-        }
-
-        return check
-    },
-
-    isEmpty: function (val) {
-        val = val.trim();
-        return (val != undefined && val != null && val.length > 0);
-    },
-
-    isEmail: function (email) {
-        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return regex.test(email);
-    },
-
-    isValidURL: function (str) {
-        let url;
-
-        try {
-            url = new URL(str);
-        } catch (_) {
-            return false;
-        }
-
-        return url.protocol === "http:" || url.protocol === "https:";
-    },
-
-    cleanEvents: function (el, withChildren = false) {
-        if ($_.exists(el)) {
-            if (withChildren) {
-                el.parentNode.replaceChild(el.cloneNode(true), el);
-            } else {
-                const newEl = el.cloneNode(false);
-                while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
-                el.parentNode.replaceChild(newEl, el);
-            }
-        }
-    }
-}
+export default Wizard;

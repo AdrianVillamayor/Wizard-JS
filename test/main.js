@@ -1,108 +1,101 @@
+let wz_class = ".wizard";
 
 document.addEventListener("wz.ready", function (e) {
-    console.log(`
-        My body is ready
+  console.log("My body is ready");
 
-        - Target -
-        ${e.detail.target}
+  console.log(`↓ Target ↓`);
+  console.log(e.detail.target);
 
-        - Elem -
-        ${e.detail.elem}
-    `)
+  console.log(`↓ Elem ↓`);
+  console.log(e.detail.elem);
 });
 
-let args = {
-    highlight: true,
-    highlight_time: 1000,
-    // wz_highlight: ".alert",
-    // highlight_type: { "error": "danger" }
-};
-
-const wizard = new Wizard(args);
+const wizard = new Wizard();
 
 wizard.init();
 
-let el = document.querySelector('.wizard');
-
-
-el.addEventListener("wz.lock", function (e) {
-    console.log("Wizard is locked");
-});
-
-el.addEventListener("wz.unlock", function (e) {
-    console.log("Wizard is unlocked");
-});
-
-el.addEventListener("wz.btn.prev", function (e) {
-    console.log("Prev Step");
-});
-
-el.addEventListener("wz.btn.next", function (e) {
-    console.log("Next Step");
-});
-
-el.addEventListener("wz.nav.forward", function (e) {
-    console.log("Forward nav");
-});
-
-el.addEventListener("wz.nav.backward", function (e) {
-    console.log("Backward nav");
-});
-
-el.addEventListener("wz.form.submit", function (e) {
-    console.log("Form Submit");
-});
-
-el.addEventListener("wz.end", function (e) {
-    console.log("Wizard is finished");
-});
-
-el.addEventListener("wz.reset", function (e) {
-    console.log("Wizard has restarted");
-});
-
-el.addEventListener("wz.error", function (e) {
-    console.log(`
-        id => ${e.detail.id}
-    
-        msg => ${e.detail.msg}
-    `);
-
-    console.log(e.detail.target)
-});
-
-
-el.addEventListener("wz.update", function (e) {
-    console.log(`
-        My body is updated
-
-        - Target -
-        ${e.detail.target}
-
-        - Elem -
-        ${e.detail.elem}
-    `)
-});
-
-
-
-var boton = document.getElementById("setStep");
-
-boton.onclick = function () {
-    setStep(wizard)
-    console.log("Se ha hecho clic en el botón");
+document.getElementById("btn_reset").onclick = function () {
+  wizard.reset();
 };
 
+document.getElementById("btn_lock").onclick = function () {
+  wizard.lock();
+};
+
+document.getElementById("btn_unlock").onclick = function () {
+  wizard.unlock();
+};
+
+let $wz_doc = document.querySelector(wz_class);
+
+$wz_doc.addEventListener("wz.btn.prev", function (e) {
+  console.log("Prev Step");
+});
+
+$wz_doc.addEventListener("wz.btn.next", function (e) {
+  console.log("Next Step");
+});
+
+$wz_doc.addEventListener("wz.nav.forward", function (e) {
+  console.log("Forward Nav");
+});
+
+$wz_doc.addEventListener("wz.nav.backward", function (e) {
+  console.log("Backward Nav");
+});
+
+$wz_doc.addEventListener("wz.form.submit", function (e) {
+  alert("Form Submit");
+});
+
+$wz_doc.addEventListener("wz.end", function (e) {
+  alert("Wizard End");
+});
+
+$wz_doc.addEventListener("wz.error", function (e) {
+    console.log(`↓ ID ↓`)
+    console.log(e.detail.id) // form_validaton
+
+    console.log(`↓ Message ↓`)
+    console.log(e.detail.msg) //options.i18n.form_validation
+});
+
+$wz_doc.addEventListener("wz.lock", function (e) {
+  alert("Wizard locked");
+});
+
+$wz_doc.addEventListener("wz.unlock", function (e) {
+  alert("Wizard unlocked");
+});
+
+$wz_doc.addEventListener("wz.reset", function (e) {
+  document.getElementById("formWizard").reset();
+  alert("Wizard has restarted");
+});
+
+$wz_doc.addEventListener("wz.update", function (e) {
+    alert("The Wizard has been updated !");
+    console.log(`↓ Target ↓`)
+    console.log(e.detail.target) // .wizard
+
+    console.log(`↓ DOM Elem ↓`)
+    console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
+});
+
+
+document.getElementById("btn_append").onclick = function () {
+  setStep(wizard);
+};
 
 function setStep(wizard) {
-    $html = `<div class="card card-body m-4 wizard-step" data-id="patata" data-title="Adrii"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
+  $html = `<div class="card card-body m-4 wizard-step" data-id="patata" data-title="Adrii"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
 
-    const wz = document.querySelector(wizard.wz_class);
-    const wz_content = wz.querySelector(wizard.wz_content);
+  const wz = document.querySelector(wizard.wz_class);
+  const wz_content = wz.querySelector(wizard.wz_content);
 
-    let target = wz_content.querySelector(`${wizard.wz_step}[data-step="8"]`)
+  let target = wz_content.querySelector(`${wizard.wz_step}[data-step="2"]`);
 
-    target.insertAdjacentHTML('beforebegin', $html);
+  target.insertAdjacentHTML("beforebegin", $html);
 
-    wizard.update();
+  wizard.update();
 }
