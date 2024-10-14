@@ -673,31 +673,32 @@ class Wizard {
         const target = [];
 
         formData.forEach((e) => {
-            if (e.required || e.classList.contains("required")) {
-                let valid = true;
+            let isRequired = e.required || e.classList.contains("required");
+            const isOnActiveRequired = e.classList.contains("on-active-required");
 
-                switch (e.tagName) {
-                    case "INPUT":
-                        if (e.type === "checkbox" || e.type === "radio") {
-                            valid = e.checked;
-                        } else {
-                            valid = e.value.trim() !== "";
-                        }
-                        break;
-                    case "SELECT":
-                        valid = e.value.trim() !== "";
-                        break;
-                    case "TEXTAREA":
-                        valid = e.value.trim() !== "";
-                        break;
-                    default:
-                        valid = true;
+            // Check for data-require-if attribute
+            const requireIf = e.getAttribute("data-require-if");
+            if (requireIf) {
+                const [dependencyId, requiredValue] = requireIf.split(":");
+                const dependencyField = wz_content.querySelector(`#${dependencyId}`);
+                if (dependencyField) {
+                    const dependencyValue =
+                        dependencyField.type === "checkbox" || dependencyField.type === "radio"
+                            ? dependencyField.checked
+                            : dependencyField.value;
+                    if (dependencyValue === requiredValue) {
+                        isRequired = true;
+                    }
                 }
+            }
 
+            let valid = true;
+
+            if (isRequired || isOnActiveRequired) {
+                valid = this.validateField(e);
                 if (!valid) {
                     error = true;
                     target.push(e);
-
                     if (this.highlight) {
                         this.highlightElement(e, this.highlight_type.error);
                     }
@@ -709,6 +710,24 @@ class Wizard {
             error,
             target,
         };
+    }
+
+
+    validateField(e) {
+        switch (e.tagName) {
+            case "INPUT":
+                if (e.type === "checkbox" || e.type === "radio") {
+                    return e.checked;
+                } else {
+                    return e.value.trim() !== "";
+                }
+            case "SELECT":
+                return e.value.trim() !== "";
+            case "TEXTAREA":
+                return e.value.trim() !== "";
+            default:
+                return true;
+        }
     }
 
     /**
