@@ -1,208 +1,142 @@
 class Utils {
-    hasClass(e, className) {
-        className = className.replace(".", "");
-        return new RegExp('(\\s|^)' + className + '(\\s|$)').test(e.className);
+    hasClass(element, className) {
+        return element.classList.contains(className.replace('.', ''));
     }
 
-    getParent(elem, selector) {
-        let parent = undefined;
-
-        while (elem.parentNode.tagName !== "BODY" && parent === undefined) {
-            elem = elem.parentNode;
-
-            if (elem.matches(selector)) {
-                parent = elem;
+    getParent(element, selector) {
+        while (element && element.tagName !== 'BODY') {
+            if (element.matches(selector)) {
+                return element;
             }
+            element = element.parentElement;
         }
-
-        return parent;
+        return null;
     }
 
-    delegate(el, evt, sel, handler) {
-        el.addEventListener(evt, function (event) {
-            let t = event.target;
-            while (t && t !== this) {
-                if (t.matches(sel)) {
-                    handler.call(t, event);
+    delegate(element, eventType, selector, handler) {
+        element.addEventListener(eventType, function (event) {
+            let target = event.target;
+            while (target && target !== this) {
+                if (target.matches(selector)) {
+                    handler.call(target, event);
+                    return;
                 }
-                t = t.parentNode;
+                target = target.parentElement;
             }
         });
     }
 
-    removeClassList(e, className) {
-        for (let element of e) {
-            element.classList.remove(className);
-        };
+    removeClassList(elements, className) {
+        elements.forEach(el => el.classList.remove(className));
     }
 
-    objToString(obj, delimiter = ";") {
-        let str = '';
-        for (const p in obj) {
-            if (obj.hasOwnProperty(p)) {
-                str += p + ':' + obj[p] + delimiter;
-            }
-        }
-        return str;
+    objToString(obj, delimiter = ';') {
+        return Object.entries(obj)
+            .map(([key, value]) => `${key}:${value}`)
+            .join(delimiter);
     }
 
-    isHidden(el) {
-        const style = window.getComputedStyle(el);
-        return (style.display === 'none')
+    isHidden(element) {
+        return window.getComputedStyle(element).display === 'none';
     }
 
     str2bool(value) {
-        const str = String(value);
-        switch (str.toLowerCase()) {
-            case 'false':
-            case 'no':
-            case 'n':
-            case '':
-            case 'null':
-            case 'undefined':
-                return false;
-            default:
-                return true;
-        }
+        return !['false', 'no', 'n', '', 'null', 'undefined'].includes(String(value).toLowerCase());
     }
 
     exists(element) {
-        return (typeof (element) != 'undefined' && element != null);
+        return element !== undefined && element !== null;
     }
 
     throwException(message) {
-        let err;
-        try {
-            throw new Error('wz.error');
-        } catch (e) {
-            err = e;
-        }
-        if (!err) return;
-
-        let aux = err.stack.split("\n");
-        aux.splice(0, 2); //removing the line that we force to generate the error (var err = new Error();) from the message
-        aux = aux.join('\n"');
-        throw message + ' \n' + aux;
+        throw new Error(`wz.error: ${message}`);
     }
 
-    closetNubmer(length, step) {
-        let counts = [];
-
-        for (let index = 0; index <= length; index++) {
-            counts.push(index)
-        }
-
-        let closet = counts.reduce(function (prev, curr) {
-            return (Math.abs(curr - step) < Math.abs(prev - step) ? curr : prev);
-        });
-
-        return closet;
+    closestNumber(length, step) {
+        return Math.max(0, Math.min(length, step));
     }
 
-    highlight(e, highlight_class, highlight_type, highlight_time) {
-        let target = highlight_class.replace(".", "");
-        let classHigh = `${target}-${highlight_type}`;
+    highlight(element, highlightClass, highlightType, highlightTime) {
+        const className = `${highlightClass.replace('.', '')}-${highlightType}`;
+        element.classList.add(className);
 
-        e.classList.add(classHigh)
-
-        setTimeout(function () {
-            document.querySelectorAll(`[class*="${target}"]`)
-                .forEach((el) => {
-                    for (let i = el.classList.length - 1; i >= 0; i--) {
-                        let className = el.classList[i];
-                        if (className.startsWith(`${target}`)) {
-                            el.classList.remove(className);
-                        }
-                    }
-                });
-        }, highlight_time);
+        setTimeout(() => {
+            element.classList.forEach(cls => {
+                if (cls.startsWith(highlightClass.replace('.', ''))) {
+                    element.classList.remove(cls);
+                }
+            });
+        }, highlightTime);
     }
 
-    dispatchInput(wz_content, e) {
-        let type = e.getAttribute("type");
-        let check = false;
+    dispatchInput(wz_content, element) {
+        const type = element.getAttribute('type');
+        let isValid = false;
 
         switch (type) {
-            case "email":
-                check = $_.isEmail(e.value);
+            case 'email':
+                isValid = this.isEmail(element.value);
                 break;
-            case "url":
-                check = $_.isValidURL(e.value);
+            case 'url':
+                isValid = this.isValidURL(element.value);
                 break;
-            case "checkbox":
-                let name = e.getAttribute("name");
-
-                if (name.includes("[]")) {
-                    checkbox_check = wz_content.querySelectorAll(`input[type="checkbox"][name="${e.getAttribute("name")}"]:checked`);
-                    check = (checkbox_check.length > 0);
+            case 'checkbox':
+                if (element.name.endsWith('[]')) {
+                    const checkboxes = wz_content.querySelectorAll(`input[name="${element.name}"]:checked`);
+                    isValid = checkboxes.length > 0;
                 } else {
-                    check = e.checked;
+                    isValid = element.checked;
                 }
-
                 break;
-
-            case "radio":
-                let radio_check = wz_content.querySelectorAll(`input[type="radio"][name="${e.getAttribute("name")}"]:checked`);
-                check = (radio_check.length > 0);
+            case 'radio':
+                const radios = wz_content.querySelectorAll(`input[name="${element.name}"]:checked`);
+                isValid = radios.length > 0;
                 break;
-
             default:
-                check = $_.isEmpty(e.value);
+                isValid = this.isNotEmpty(element.value);
                 break;
         }
 
-        return check
+        return isValid;
     }
 
-    checkSelect(e) {
-        let check = $_.isEmpty(e.value);
-
-        if (check) {
-            let option_value = e.querySelector("option:checked").getAttribute("value");
-
-            if (e.value !== option_value) {
-                check = false;
-            }
-        }
-
-        return check;
+    checkSelect(element) {
+        return this.isNotEmpty(element.value);
     }
 
-    isEmpty(val) {
-        val = val.trim();
-        return (val != undefined && val != null && val.length > 0);
+    isNotEmpty(value) {
+        return value !== undefined && value !== null && value.trim().length > 0;
     }
 
     isEmptyObj(obj) {
-        return (obj != undefined && obj != null && Object.keys(obj).length === 0);
+        return Object.keys(obj).length === 0;
     }
 
     isEmail(email) {
-        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     }
 
     isValidURL(str) {
-        let url;
-
         try {
-            url = new URL(str);
-        } catch (_) {
+            const url = new URL(str);
+            return ['http:', 'https:'].includes(url.protocol);
+        } catch {
             return false;
         }
-
-        return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    cleanEvents(el, withChildren = false) {
-        if ($_.exists(el)) {
+    cleanEvents(element, withChildren = false) {
+        if (this.exists(element)) {
+            const newEl = element.cloneNode(!withChildren);
             if (withChildren) {
-                el.parentNode.replaceChild(el.cloneNode(true), el);
+                element.parentNode.replaceChild(newEl, element);
             } else {
-                const newEl = el.cloneNode(false);
-                while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
-                el.parentNode.replaceChild(newEl, el);
+                while (element.firstChild) newEl.appendChild(element.firstChild);
+                element.parentNode.replaceChild(newEl, element);
             }
         }
     }
 }
+
+export default new Utils();

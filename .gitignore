@@ -1,3 +1,4 @@
 package-lock.json
-js_dev
-js
+.vscode
+node_modules
+.DS_Store

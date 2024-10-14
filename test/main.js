@@ -11,7 +11,6 @@ document.addEventListener("wz.ready", function (e) {
 });
 
 const wizard = new Wizard();
-
 wizard.init();
 
 document.getElementById("btn_reset").onclick = function () {
@@ -92,8 +91,8 @@ function setStep(wizard) {
 
   const wz = document.querySelector(wizard.wz_class);
   const wz_content = wz.querySelector(wizard.wz_content);
-
-  let target = wz_content.querySelector(`${wizard.wz_step}[data-step="2"]`);
+  
+  let target = wz_content.querySelector(`${wizard.wz_step}[data-step="2"]`);  
 
   target.insertAdjacentHTML("beforebegin", $html);
 
