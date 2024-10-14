@@ -92,7 +92,7 @@ function setStep(wizard) {
   const wz = document.querySelector(wizard.wz_class);
   const wz_content = wz.querySelector(wizard.wz_content);
   
-  let target = wz_content.querySelector(`${wizard.wz_step}[data-step="2"]`);  
+  let target = wz_content.querySelector(`${wizard.wz_step}[data-wz-step="2"]`);  
 
   target.insertAdjacentHTML("beforebegin", $html);
 

@@ -1,211 +1,211 @@
-import $_ from './components/utils.js';
 import "./scss/main.scss";
 /**
-* 
-* A lightweight wizard UI component that supports accessibility and HTML5 in JavaScript Vanilla.
-*
-* @link   https://github.com/AdrianVillamayor/Wizard-JS
-* @author Adrii[https://github.com/AdrianVillamayor]
-* 
-* @class  Wizard
-*/
-
+ * A lightweight wizard UI component that supports accessibility and HTML5 in Vanilla JavaScript.
+ *
+ * @link   https://github.com/AdrianVillamayor/Wizard-JS
+ * @author Adrian
+ *
+ * @class  Wizard
+ */
 class Wizard {
-
     constructor(args = {}) {
+        const defaults = {
+            wz_class: ".wizard",
+            wz_nav: ".wizard-nav",
+            wz_ori: ".horizontal",
+            wz_nav_style: "dots",
+            wz_content: ".wizard-content",
+            wz_buttons: ".wizard-buttons",
+            wz_button: ".wizard-btn",
+            wz_button_style: ".btn",
+            wz_step: ".wizard-step",
+            wz_form: ".wizard-form",
+            wz_next: ".next",
+            wz_prev: ".prev",
+            wz_finish: ".finish",
+            wz_highlight: ".highlight-error",
+            bubbles: false,
 
-        let opts = {
-            "wz_class": ".wizard",
-            "wz_nav": ".wizard-nav",
-            "wz_ori": ".horizontal",
-            "wz_nav_style": "dots",
-            "wz_content": ".wizard-content",
-            "wz_buttons": ".wizard-buttons",
-            "wz_button": ".wizard-btn",
-            "wz_button_style": ".btn",
-            "wz_step": ".wizard-step",
-            "wz_form": ".wizard-form",
-            "wz_next": ".next",
-            "wz_prev": ".prev",
-            "wz_finish": ".finish",
-            "wz_highlight": ".highlight",
+            nav: true,
+            buttons: true,
+            highlight: true,
 
-            "nav": true,
-            "buttons": true,
-            "highlight": true,
+            current_step: 0,
+            steps: 0,
+            highlight_time: 1000,
+            navigation: "all",
+            next: "Next",
+            prev: "Prev",
+            finish: "Submit",
 
-            "current_step": 0,
-            "steps": 0,
-            "highlight_time": 1000,
-            "navigation": "all",
-            "next": "Next",
-            "prev": "Prev",
-            "finish": "Submit",
+            highlight_type: { error: "error", warning: "warning", success: "success", info: "info" },
 
-            "highlight_type": { "error": "error", "warning": "warning", "success": "success", "info": "info" },
-
-            "i18n": {
-                "empty_wz": "No item has been found with which to generate the Wizard.",
-                "empty_nav": "Nav does not exist or is empty.",
-                "empty_content": "Content does not exist or is empty.",
-                "empty_html": "Undefined or null content cannot be added.",
-                "empty_update": "Nothing to update.",
-                "no_nav": "Both the nav and the buttons are disabled, there is no navigation system.",
-                "form_validation": "One or more of the form fields are invalid.",
-                "diff_steps": "Discordance between the steps of nav and content.",
-                "random": "There has been a problem, check the configuration and use of the wizard.",
-                "already_definded": "This item is already defined",
-                "title": "Step"
-            }
+            i18n: {
+                empty_wz: "No item has been found with which to generate the Wizard.",
+                empty_nav: "Nav does not exist or is empty.",
+                empty_content: "Content does not exist or is empty.",
+                empty_html: "Undefined or null content cannot be added.",
+                empty_update: "Nothing to update.",
+                no_nav: "Both the nav and the buttons are disabled, there is no navigation system.",
+                form_validation: "One or more of the form fields are invalid.",
+                diff_steps: "Discordance between the steps of nav and content.",
+                random: "There has been a problem, check the configuration and use of the wizard.",
+                already_defined: "This item is already defined",
+                title: "Step",
+            },
         };
 
-        this.prefabOpts(opts, args);
+        this.options = { ...defaults, ...args };
 
-        this.wz_class = this.options.wz_class;
-        this.wz_active = "active";
-        this.wz_ori = this.options.wz_ori;
-        this.wz_nav = this.options.wz_nav;
-        this.wz_nav_style = this.options.wz_nav_style;
-        this.wz_content = this.options.wz_content;
-        this.wz_buttons = this.options.wz_buttons;
-        this.wz_button = this.options.wz_button;
-        this.wz_button_style = this.options.wz_button_style;
-        this.wz_step = this.options.wz_step;
-        this.wz_form = this.options.wz_form;
-        this.wz_next = this.options.wz_next;
-        this.wz_prev = this.options.wz_prev;
-        this.wz_finish = this.options.wz_finish;
-        this.wz_highlight = this.options.wz_highlight;
+        const {
+            wz_class,
+            wz_nav,
+            wz_ori,
+            wz_nav_style,
+            wz_content,
+            wz_buttons,
+            wz_button,
+            wz_button_style,
+            wz_step,
+            wz_form,
+            wz_next,
+            wz_prev,
+            wz_finish,
+            wz_highlight,
+            nav,
+            buttons,
+            highlight,
+            highlight_time,
+            highlight_type,
+            current_step,
+            steps,
+            navigation,
+            prev,
+            next,
+            finish,
+            i18n,
+            bubbles,
+        } = this.options;
 
-        this.buttons = this.options.buttons;
-        this.nav = this.options.nav;
-        this.highlight = this.options.highlight;
-
-        this.highlight_time = this.options.highlight_time;
-        this.highlight_type = this.options.highlight_type;
-
-        this.steps = this.options.steps;
-        this.current_step = this.options.current_step;
-        this.last_step = this.current_step;
-        this.navigation = this.options.navigation;
-        this.prev = this.options.prev;
-        this.next = this.options.next;
-        this.finish = this.options.finish;
-        this.form = false;
-        this.locked = false;
-        this.locked_step = null;
+        Object.assign(this, {
+            wz_class,
+            wz_nav,
+            wz_ori,
+            wz_nav_style,
+            wz_content,
+            wz_buttons,
+            wz_button,
+            wz_button_style,
+            wz_step,
+            wz_form,
+            wz_next,
+            wz_prev,
+            wz_finish,
+            wz_highlight,
+            nav,
+            buttons,
+            highlight,
+            highlight_time,
+            highlight_type,
+            current_step,
+            steps,
+            navigation,
+            prev,
+            next,
+            finish,
+            i18n,
+            last_step: current_step,
+            form: false,
+            locked: false,
+            locked_step: null,
+        });
     }
 
     /**
-    * Initializes the wizard
-    * 
-    * @customevent wz.ready     - Indicates that wizard has loaded and is accessible.
-    * @property {object} target - wz_class
-    * @property {object} elem   - DOM element
-    * 
-    * @throws empty_wz          - Not found any element to generate the Wizard with.
-    * @throws empty_nav         - Nav does not exist or is empty.
-    * @throws empty_content     - Content does not exist or is empty.
-    * @throws diff_steps        - Discordance between the steps of nav and content.
-    * @throws random            - There has been a problem check the configuration and use of the wizard.
-    * 
-    * @return {void}
-    */
-
+     * Initializes the wizard
+     */
     init() {
         try {
-            const wz_check = ($_.exists(document.querySelector(this.wz_class))) ? document.querySelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
+            const wz_check = document.querySelector(this.wz_class);
+            if (!wz_check) throw new Error(this.i18n.empty_wz);
 
-            if ($_.str2bool(wz_check.getAttribute("data-wz-load")) && wz_check.getAttribute("data-wz-load") == true) {
-                console.warn(`${this.wz_class} : ${this.options.i18n.already_definded}`);
-                return false;
+            if (wz_check.getAttribute("data-wz-load") === "true") {
+                console.warn(`${this.wz_class} : ${this.i18n.already_defined}`);
+                return;
             }
 
-            $_.cleanEvents(document.querySelector(this.wz_class), true);
-
-            const wz = ($_.exists(document.querySelector(this.wz_class))) ? document.querySelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
-
-            if ($_.str2bool(this.buttons) === false && $_.str2bool(this.nav) === false) {
-                console.warn(this.options.i18n.no_nav);
+            const wz = wz_check;
+            if (!this.buttons && !this.nav) {
+                console.warn(this.i18n.no_nav);
             }
 
-            wz.classList.add((this.wz_ori).replace(".", ""));
+            wz.classList.add(this.wz_ori.replace(".", ""));
 
             if (wz.tagName === "FORM") {
                 this.form = true;
             }
 
-            this.check2Prepare(wz)
+            this.checkAndPrepare(wz);
 
             switch (this.navigation) {
                 case "all":
                 case "nav":
-                    this.setNavEvent()
-                    this.setBtnEvent()
-
+                    this.setNavEvent();
+                    this.setBtnEvent();
                     break;
                 case "buttons":
                     this.setBtnEvent();
                     break;
             }
 
-            wz.style.display = ($_.hasClass(wz, "vertical")) ? "flex" : "block";
+            wz.style.display = wz.classList.contains("vertical") ? "flex" : "block";
 
-            wz.setAttribute("data-wz-load", true)
+            wz.setAttribute("data-wz-load", "true");
 
-            document.dispatchEvent(new CustomEvent("wz.ready", {
-                detail: {
-                    "target": this.wz_class,
-                    "elem": document.querySelector(this.wz_class)
-                }
-            }));
+            document.dispatchEvent(
+                new CustomEvent("wz.ready", {
+                    bubbles: this.bubbles,
+                    detail: {
+                        target: this.wz_class,
+                        elem: wz,
 
+                    },
+                })
+            );
         } catch (error) {
-            throw error;
+            console.error(error);
         }
     }
 
-
     /**
-    * Check and update each section of the wizard.
-    * 
-    * @customevent wz.update    - Indicates that wizard has updaded and is accessible.
-    * @property {object} target - wz_class
-    * @property {object} elem   - DOM element
-    * 
-    * @throws empty_wz          - Not found any element to generate the Wizard with.
-    * 
-    * @return {void}
-    */
-
+     * Check and update each section of the wizard.
+     */
     update() {
-        const wz = ($_.exists(document.querySelector(this.wz_class))) ? document.querySelector(this.wz_class) : $_.throwException(this.options.i18n.empty_wz);
+        const wz = document.querySelector(this.wz_class);
+        if (!wz) throw new Error(this.i18n.empty_wz);
 
-        if (($_.str2bool(wz.getAttribute("data-wz-load")) === false) && wz.getAttribute("data-wz-load") != true) {
-            $_.throwException(this.options.i18n.empty_wz);
+        if (wz.getAttribute("data-wz-load") !== "true") {
+            throw new Error(this.i18n.empty_wz);
         }
 
-        this.check2Prepare(wz)
+        this.checkAndPrepare(wz);
 
         this.content_update = false;
 
-        document.querySelector(this.wz_class).dispatchEvent(new CustomEvent("wz.update", {
-            detail: {
-                "target": this.wz_class,
-                "elem": document.querySelector(this.wz_class)
-            }
-        }));
-
+        wz.dispatchEvent(
+            new CustomEvent("wz.update", {
+                bubbles: this.bubbles,
+                detail: {
+                    target: this.wz_class,
+                    elem: wz,
+                },
+            })
+        );
     }
 
     /**
-    * Restart the wizard
-    * 
-    * @event wz.reset 
-    * 
-    * @return {void}
-    */
-
+     * Restart the wizard
+     */
     reset() {
         this.setCurrentStep(0);
 
@@ -213,271 +213,216 @@ class Wizard {
         const nav = wz.querySelector(this.wz_nav);
         const content = wz.querySelector(this.wz_content);
 
-        if ($_.str2bool(this.buttons) !== false) {
-            let buttons = wz.querySelector(this.wz_buttons);
+        if (this.buttons) {
+            const buttons = wz.querySelector(this.wz_buttons);
 
-            let next = buttons.querySelector(this.wz_button + this.wz_next);
-            let prev = buttons.querySelector(this.wz_button + this.wz_prev);
-            let finish = buttons.querySelector(this.wz_button + this.wz_finish);
+            const next = buttons.querySelector(`${this.wz_button}${this.wz_next}`);
+            const prev = buttons.querySelector(`${this.wz_button}${this.wz_prev}`);
+            const finish = buttons.querySelector(`${this.wz_button}${this.wz_finish}`);
 
-            this.checkButtons(next, prev, finish)
+            this.checkButtons(next, prev, finish);
         }
 
-        let $wz_nav = nav.querySelectorAll(this.wz_step);
-        $_.removeClassList($wz_nav, "active");
+        if (this.nav) {
+            const wz_nav_steps = nav.querySelectorAll(this.wz_step);
+            wz_nav_steps.forEach((el) => el.classList.remove("active"));
 
-        let $wz_content = content.querySelectorAll(this.wz_step);
-        $_.removeClassList($wz_content, "active");
+            nav.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
+        }
 
-        nav.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
+        const wz_content_steps = content.querySelectorAll(this.wz_step);
+        wz_content_steps.forEach((el) => el.classList.remove("active"));
+
         content.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
 
-        wz.dispatchEvent(new Event("wz.reset"));
+        wz.dispatchEvent(
+            new Event("wz.reset", {
+                bubbles: this.bubbles,
+            })
+        );
     }
 
     /**
-    * Locks the wizard in the active step
-    * 
-    * @return {void}
-    */
-
+     * Locks the wizard in the active step
+     */
     lock() {
         this.locked = true;
         this.locked_step = this.getCurrentStep();
     }
 
     /**
-    * Unlock wizard
-    * 
-    * @event wz.unlock 
-    * 
-    * @return {void}
-    */
-
+     * Unlock wizard
+     */
     unlock() {
         this.locked = false;
         this.locked_step = null;
 
-        document.querySelector(this.wz_class).dispatchEvent(new Event("wz.unlock"));
+        document.querySelector(this.wz_class).dispatchEvent(
+            new Event("wz.unlock", {
+                bubbles: this.bubbles,
+            })
+        );
     }
 
-
     /**
-    * Generate the steps and define a standard for each step.
-    * 
-    * @param {object}  $wz_nav           - Nav element
-    * @param {object}  $wz_nav_steps     - Steps elements inside Nav
-    * @param {object}  $wz_content_steps - Steps elements inside Content
-    * 
-    * @return {void}
-    */
+     * Generate the steps and define a standard for each step.
+     */
+    prefabSteps(wz_content_steps, wz_nav, wz_nav_steps) {
+        const active_index = this.getCurrentStep();
 
-    prefabSteps($wz_content_steps, $wz_nav, $wz_nav_steps) {
-        let active_index = this.getCurrentStep();
+        wz_content_steps.forEach((step, i) => {
+            step.setAttribute("data-wz-step", i);
+            if (this.nav) wz_nav_steps[i].setAttribute("data-wz-step", i);
+        });
 
-        for (let i = 0; i < $wz_content_steps.length; i++) {
-            let $this = $wz_content_steps[i];
-
-            $this.setAttribute("data-wz-step", i);
-
-            if ($_.str2bool(this.nav) !== false) {
-                $wz_nav_steps[i].setAttribute("data-wz-step", i);
-            }
-        };
-
-        if ($_.str2bool(this.nav) !== false) {
-            $_.removeClassList($wz_nav_steps, "active");
-            $wz_nav_steps[active_index].classList.add("active");
-            $wz_nav.classList.add(this.wz_nav_style);
+        if (this.nav) {
+            wz_nav_steps.forEach((el) => el.classList.remove("active"));
+            wz_nav_steps[active_index].classList.add("active");
+            wz_nav.classList.add(this.wz_nav_style);
         }
 
-        $_.removeClassList($wz_content_steps, "active");
-        $wz_content_steps[active_index].classList.add("active");
-
-        // if (this.form) this.update2Form();
+        wz_content_steps.forEach((el) => el.classList.remove("active"));
+        wz_content_steps[active_index].classList.add("active");
 
         this.setButtons();
     }
 
     /**
-    * Adds the form tag and converts the wizard into a <form>
-    * 
-    * @return {void}
-    */
-
-    update2Form() {
-        let wz = document.querySelector(this.wz_class);
-        let wz_content = wz.querySelector(this.wz_content);
+     * Adds the form tag and converts the wizard into a <form>
+     */
+    updateToForm() {
+        const wz = document.querySelector(this.wz_class);
+        const wz_content = wz.querySelector(this.wz_content);
 
         if (wz_content.tagName !== "FORM") {
-            let wz_content_class = wz_content.getAttribute("class");
-            let wz_content_content = wz_content.innerHTML
+            const wz_content_class = wz_content.getAttribute("class");
+            const wz_content_content = wz_content.innerHTML;
 
             wz_content.remove();
-            const $form = document.createElement("form");
 
-            $form.setAttribute("method", "POST");
-            $form.setAttribute("class", wz_content_class + " " + (this.wz_form).replace(".", ""));
+            const form = document.createElement("form");
+            form.setAttribute("method", "POST");
+            form.setAttribute("class", `${wz_content_class} ${this.wz_form.replace(".", "")}`);
+            form.innerHTML = wz_content_content;
 
-            $form.innerHTML = wz_content_content;
-
-            wz.appendChild($form)
+            wz.appendChild(form);
         }
     }
 
     /**
-    * Checks and validates each input/select/textarea of the active step.
-    * If the step has no inputs, the checks will be ignored.
-    * 
-    * @throws random    - There has been a problem check the configuration and use of the wizard.
-    * 
-    * @return {boolean} - If everything is OK, it returns false
-    */
-
+     * Checks and validates each input/select/textarea of the active step.
+     */
     checkForm() {
-        let wz = document.querySelector(this.wz_class);
-        let wz_content = wz.querySelector(this.wz_content);
+        const wz = document.querySelector(this.wz_class);
+        const wz_content = wz.querySelector(this.wz_content);
 
-        let steps = wz_content.querySelectorAll(this.wz_step);
-        let target = steps[this.getCurrentStep()];
-        let validation = false;
+        const steps = wz_content.querySelectorAll(this.wz_step);
+        const target = steps[this.getCurrentStep()];
 
-        let inputs = target.querySelectorAll("input,textarea,select");
+        const inputs = target.querySelectorAll("input, textarea, select");
 
         if (inputs.length > 0) {
-            validation = this.formValidator(wz_content, inputs);
+            return this.formValidator(wz_content, inputs);
         }
 
-        return validation;
+        return { error: false };
     }
 
     /**
-    * Generating, styling and shaping the Nav
-    * 
-    * @param {object} $wz - Wizard element
-    * 
-    * @return {void}
-    */
+     * Generating, styling and shaping the Nav
+     */
+    setNav(wz) {
+        let wz_nav = wz.querySelector(this.wz_nav);
 
-    setNav($wz) {
-        let wz_nav = $wz.querySelector(this.wz_nav);
-
-        if ($_.exists(wz_nav) !== false && $_.str2bool(this.nav) !== false) {
-            wz_nav.remove()
-            wz_nav = $wz.querySelector(this.wz_nav);
+        if (wz_nav && this.nav) {
+            wz_nav.remove();
+            wz_nav = null;
         }
 
-        if ($_.exists(wz_nav) === false && $_.str2bool(this.nav) !== false) {
+        if (!wz_nav && this.nav) {
+            const wz_content = wz.querySelector(this.wz_content);
+            const steps = wz_content.querySelectorAll(this.wz_step);
 
-            let wz_content = $wz.querySelector(this.wz_content);
-            let steps = wz_content.querySelectorAll(this.wz_step);
+            const nav = document.createElement("aside");
+            nav.classList.add(this.wz_nav.replace(".", ""));
 
-            const nav = document.createElement("ASIDE");
-            nav.classList.add((this.wz_nav).replace(".", ""));
-
-            const wz_content_steps = wz_content.querySelectorAll(this.wz_step);
-            const steps_length = wz_content_steps.length;
-
-            for (let i = 0; i < steps_length; i++) {
-                const nav_step = document.createElement("DIV");
-                let title = (steps[i].hasAttribute("data-wz-title")) ? steps[i].getAttribute("data-wz-title") : `${this.options.i18n.title} ${i}`;
-                nav_step.classList.add((this.wz_step).replace(".", ""));
-
+            steps.forEach((step, i) => {
+                const nav_step = document.createElement("div");
+                const title = step.getAttribute("data-wz-title") || `${this.i18n.title} ${i}`;
+                nav_step.classList.add(this.wz_step.replace(".", ""));
                 if (this.navigation === "buttons") nav_step.classList.add("nav-buttons");
 
-                const dot = document.createElement("SPAN");
-                dot.classList.add('dot');
+                const dot = document.createElement("span");
+                dot.classList.add("dot");
                 nav_step.appendChild(dot);
 
-                const span = document.createElement("SPAN");
+                const span = document.createElement("span");
                 span.innerHTML = title;
                 nav_step.appendChild(span);
 
                 nav.appendChild(nav_step);
-            }
+            });
 
-            $wz.prepend(nav);
+            wz.prepend(nav);
         }
     }
 
     /**
-    * Generating, styling and shaping Buttons
-    * 
-    * @return {void}
-    */
-
+     * Generating, styling and shaping Buttons
+     */
     setButtons() {
-        let wz = document.querySelector(this.wz_class);
-        let wz_btns = wz.querySelector(this.wz_buttons);;
+        const wz = document.querySelector(this.wz_class);
+        let wz_btns = wz.querySelector(this.wz_buttons);
 
-
-        if ($_.exists(wz_btns) !== false && $_.str2bool(this.buttons) !== false) {
-            wz_btns.remove()
-            wz_btns = wz.querySelector(this.wz_buttons);;
+        if (wz_btns && this.buttons) {
+            wz_btns.remove();
+            wz_btns = null;
         }
 
-        if ($_.exists(wz_btns) === false && $_.str2bool(this.buttons) !== false) {
-            const buttons = document.createElement("ASIDE");
-            buttons.classList.add((this.wz_buttons).replace(".", ""));
+        if (!wz_btns && this.buttons) {
+            const buttons = document.createElement("aside");
+            buttons.classList.add(this.wz_buttons.replace(".", ""));
 
-            let btn_style = (this.wz_button_style).replaceAll(".", "");
-            btn_style = btn_style.split(" ");
+            const btn_style = this.wz_button_style.replace(/\./g, "").split(" ");
 
-            const prev = document.createElement("BUTTON");
+            const prev = document.createElement("button");
             prev.innerHTML = this.prev;
-            prev.classList.add((this.wz_button).replace(".", ""));
-            prev.classList.add(...btn_style);
-            prev.classList.add((this.wz_prev).replace(".", ""));
-
+            prev.classList.add(this.wz_button.replace(".", ""), ...btn_style, this.wz_prev.replace(".", ""));
             if (this.navigation === "nav") prev.style.display = "none";
-
             buttons.appendChild(prev);
 
-            const next = document.createElement("BUTTON");
+            const next = document.createElement("button");
             next.innerHTML = this.next;
-            next.classList.add((this.wz_button).replace(".", ""));
-            next.classList.add(...btn_style);
-            next.classList.add((this.wz_next).replace(".", ""));
-
+            next.classList.add(this.wz_button.replace(".", ""), ...btn_style, this.wz_next.replace(".", ""));
             if (this.navigation === "nav") next.style.display = "none";
-
             buttons.appendChild(next);
 
-            const finish = document.createElement("BUTTON");
+            const finish = document.createElement("button");
             finish.innerHTML = this.finish;
-            finish.classList.add((this.wz_button).replace(".", ""));
-            finish.classList.add(...btn_style);
-            finish.classList.add((this.wz_finish).replace(".", ""));
+            finish.classList.add(this.wz_button.replace(".", ""), ...btn_style, this.wz_finish.replace(".", ""));
             buttons.appendChild(finish);
 
-            this.checkButtons(next, prev, finish)
+            this.checkButtons(next, prev, finish);
 
             wz.appendChild(buttons);
         }
     }
 
     /**
-    * Generating, styling and shaping Buttons
-    * 
-    * @param {object} next   - Next button element
-    * @param {object} prev   - Prev button element
-    * @param {object} finish - Finish button element
-    * 
-    * @return {void}
-    */
-
+     * Generating, styling and shaping Buttons
+     */
     checkButtons(next, prev, finish) {
-        let current_step = this.getCurrentStep();
-        let n_steps = this.steps - 1;
+        const current_step = this.getCurrentStep();
+        const n_steps = this.steps - 1;
 
-        if (current_step == 0) {
-            prev.setAttribute("disabled", true);
+        if (current_step === 0) {
+            prev.setAttribute("disabled", "true");
         } else {
             prev.removeAttribute("disabled");
         }
 
-        if (current_step == n_steps) {
-            next.setAttribute("disabled", true);
+        if (current_step === n_steps) {
+            next.setAttribute("disabled", "true");
             finish.style.display = "block";
         } else {
             finish.style.display = "none";
@@ -485,357 +430,296 @@ class Wizard {
         }
     }
 
-
     /**
-   * Common function for wizard checks and prefab.
-   * 
-   * @param {object} wz - Wizard element
-   * 
-   * @return {void}
-   */
-
-    check2Prepare(wz) {
-
+     * Common function for wizard checks and prefab.
+     */
+    checkAndPrepare(wz) {
         this.setNav(wz);
 
-        const wz_content = ($_.exists(wz.querySelector(this.wz_content))) ? wz.querySelector(this.wz_content) : $_.throwException(this.options.i18n.empty_content);
+        const wz_content = wz.querySelector(this.wz_content);
+        if (!wz_content) throw new Error(this.i18n.empty_content);
+
         const wz_content_steps = wz_content.querySelectorAll(this.wz_step);
-        const wz_content_steps_length = (wz_content_steps.length > 0) ? wz_content_steps.length : $_.throwException(this.options.i18n.empty_content);
+        if (!wz_content_steps.length) throw new Error(this.i18n.empty_content);
 
-        let wz_nav = undefined;
-        let wz_nav_steps = undefined;
+        let wz_nav, wz_nav_steps;
 
-        if ($_.str2bool(this.nav) !== false) {
-            wz_nav = ($_.exists(wz.querySelector(this.wz_nav))) ? wz.querySelector(this.wz_nav) : $_.throwException(this.options.i18n.empty_nav);
+        if (this.nav) {
+            wz_nav = wz.querySelector(this.wz_nav);
+            if (!wz_nav) throw new Error(this.i18n.empty_nav);
+
             wz_nav_steps = wz_nav.querySelectorAll(this.wz_step);
-            const wz_nav_steps_length = (wz_nav_steps.length > 0) ? wz_nav_steps.length : $_.throwException(this.options.i18n.empty_nav);
+            if (!wz_nav_steps.length) throw new Error(this.i18n.empty_nav);
 
-            if (wz_nav_steps_length != wz_content_steps_length) {
-                $_.throwException(this.options.i18n.diff_steps);
+            if (wz_nav_steps.length !== wz_content_steps.length) {
+                throw new Error(this.i18n.diff_steps);
             }
         }
 
-        this.steps = wz_content_steps_length;
+        this.steps = wz_content_steps.length;
 
         this.prefabSteps(wz_content_steps, wz_nav, wz_nav_steps);
     }
 
     /**
-    * Click event handler for Buttons and Nav.
-    * 
-    * @param {object} e         - Event
-    * 
-    * @event wz.btn.prev        - In case the wizard goes backwards, the wz.btn.prev event will be fired.
-    * @event wz.btn.next        - In case the wizard advances, the nextWizard event will be fired.
-    * @event wz.nav.forward     - In case of moving forward with the navbar, the forwardNavWizard event will be fired.
-    * @event wz.nav.backward    - In case of moving backward with the navbar, the backwardNavWizard event will be fired.
-    * @event wz.lock            - In case it is blocked, it will fire the wz.lock event.
-    * 
-    * @customevent wz.error     - If the form is not correctly filled in, the wz.error event will be fired.
-    * @property {string} id     - Eror id
-    * @property {string} msg    - Error message
-    * @property {object} target - Contains all the elements that have given error
-    * 
-    * @return {void}
-    */
-
-    onClick(e) {
-        const $this = e
+     * Click event handler for Buttons and Nav.
+     */
+    onClick(element) {
         const wz = document.querySelector(this.wz_class);
 
-        // const stepEl = content.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`);
-        // const isAsync = stepEl.getAttribute("data-wz-async-step");
-
         if (this.locked && this.locked_step === this.getCurrentStep()) {
-            wz.dispatchEvent(new Event("wz.lock"));
-            return false;
+            wz.dispatchEvent(
+                new Event("wz.lock", {
+                    bubbles: this.bubbles,
+                })
+            );
+            return;
         }
 
-        const parent = $_.getParent($this, this.wz_class);
-
+        const parent = element.closest(this.wz_class);
         const nav = parent.querySelector(this.wz_nav);
         const content = parent.querySelector(this.wz_content);
 
-        const is_btn = ($_.hasClass($this, this.wz_button));
-        const is_nav = ($_.hasClass($this, this.wz_step));
+        const is_btn = element.classList.contains(this.wz_button.replace(".", ""));
+        const is_nav = element.classList.contains(this.wz_step.replace(".", ""));
 
-
-        let step = ($_.str2bool($this.getAttribute("data-wz-step")) !== false) ? parseInt($this.getAttribute("data-wz-step")) : this.getCurrentStep();
+        let step = element.getAttribute("data-wz-step");
+        step = step !== null ? parseInt(step) : this.getCurrentStep();
 
         if (is_btn) {
-            if ($_.hasClass($this, this.wz_prev)) {
-                step = step - 1;
-                wz.dispatchEvent(new Event("wz.btn.prev"));
-            } else if ($_.hasClass($this, this.wz_next)) {
-                step = step + 1;
-                wz.dispatchEvent(new Event("wz.btn.next"));
+            if (element.classList.contains(this.wz_prev.replace(".", ""))) {
+                step -= 1;
+                wz.dispatchEvent(
+                    new Event("wz.btn.prev", {
+                        bubbles: this.bubbles,
+                    })
+                );
+            } else if (element.classList.contains(this.wz_next.replace(".", ""))) {
+                step += 1;
+                wz.dispatchEvent(
+                    new Event("wz.btn.next", {
+                        bubbles: this.bubbles,
+                    })
+                );
             }
         }
 
-        let step_action = step > this.getCurrentStep()
+        const step_action = step > this.getCurrentStep();
 
         if (is_nav) {
             if (step_action) {
-                wz.dispatchEvent(new Event("wz.nav.forward"));
+                wz.dispatchEvent(
+                    new Event("wz.nav.forward", {
+                        bubbles: this.bubbles,
+                    })
+                );
             } else if (step < this.getCurrentStep()) {
-                wz.dispatchEvent(new Event("wz.nav.backward"));
+                wz.dispatchEvent(
+                    new Event("wz.nav.backward", {
+                        bubbles: this.bubbles,
+                    })
+                );
             }
         }
 
-        if (this.form && this.navigation != "buttons") {
+        if (this.form && this.navigation !== "buttons") {
             if (step_action) {
-                if ((step !== this.getCurrentStep() + 1)) {
-                    if (step >= this.last_step) {
-                        step = this.last_step;
-                    } else {
-                        step = this.getCurrentStep() + 1;
-                    }
+                if (step !== this.getCurrentStep() + 1) {
+                    step = step >= this.last_step ? this.last_step : this.getCurrentStep() + 1;
                 }
             }
         }
 
         if (this.form) {
-            const check_form = this.checkForm()
-            if (check_form.error === true) {
-
+            const check_form = this.checkForm();
+            if (check_form.error) {
                 if (step_action) {
-                    wz.dispatchEvent(new CustomEvent("wz.error", {
-                        detail: {
-                            "id": "form_validaton",
-                            "msg": this.options.i18n.form_validation,
-                            "target": check_form.target
-                        }
-                    }));
+                    wz.dispatchEvent(
+                        new CustomEvent("wz.error", {
+                            bubbles: this.bubbles,
+                            detail: {
+                                id: "form_validation",
+                                msg: this.i18n.form_validation,
+                                target: check_form.target,
+                            },
+                        })
+                    );
                 }
 
                 this.last_step = this.getCurrentStep();
                 if (this.getCurrentStep() < step) {
-                    return false;
+                    return;
                 }
             }
         }
 
-        if ($_.str2bool(step)) {
-            this.setCurrentStep(step)
+        if (step !== null && step !== undefined) {
+            this.setCurrentStep(step);
         }
 
-        if ($_.str2bool(this.buttons) !== false) {
+        if (this.buttons) {
             const buttons = parent.querySelector(this.wz_buttons);
-            const next = buttons.querySelector(this.wz_button + this.wz_next);;
-            const prev = buttons.querySelector(this.wz_button + this.wz_prev);
-            const finish = buttons.querySelector(this.wz_button + this.wz_finish);
+            const next = buttons.querySelector(`${this.wz_button}${this.wz_next}`);
+            const prev = buttons.querySelector(`${this.wz_button}${this.wz_prev}`);
+            const finish = buttons.querySelector(`${this.wz_button}${this.wz_finish}`);
 
-            this.checkButtons(next, prev, finish)
+            this.checkButtons(next, prev, finish);
         }
 
-        if ($_.str2bool(this.nav) !== false) {
-            const $wz_nav = nav.querySelectorAll(this.wz_step);
-            $_.removeClassList($wz_nav, "active");
+        if (this.nav) {
+            const wz_nav_steps = nav.querySelectorAll(this.wz_step);
+            wz_nav_steps.forEach((el) => el.classList.remove("active"));
             nav.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
         }
 
-        const $wz_content = content.querySelectorAll(this.wz_step);
-        $_.removeClassList($wz_content, "active");
+        const wz_content_steps = content.querySelectorAll(this.wz_step);
+        wz_content_steps.forEach((el) => el.classList.remove("active"));
         content.querySelector(`${this.wz_step}[data-wz-step="${this.getCurrentStep()}"]`).classList.add("active");
     }
 
-
     /**
-    * Notifies that the wizard has been completed.
-    * 
-    * @param {object} e     - Event
-    * 
-    * @event wz.form.submit - If the wizard is a form it will fire submitWizard
-    * @event wz.end         - If the wizard is not a form it will fire endWizard
-    * 
-    * @return {void}
-    */
-
-    onClickFinish(e) {
+     * Notifies that the wizard has been completed.
+     */
+    onClickFinish() {
         if (this.form) {
-            const check_form = this.checkForm()
-            if (check_form.error !== true) {
-                document.querySelector(this.wz_class).dispatchEvent(new Event("wz.form.submit"));
+            const check_form = this.checkForm();
+            if (!check_form.error) {
+                document.querySelector(this.wz_class).dispatchEvent(
+                    new Event("wz.form.submit", {
+                        bubbles: this.bubbles,
+                    })
+                );
             }
         } else {
-            document.querySelector(this.wz_class).dispatchEvent(new Event("wz.end"));
+            document.querySelector(this.wz_class).dispatchEvent(
+                new Event("wz.end", {
+                    bubbles: this.bubbles,
+                })
+            );
         }
     }
 
     /**
-    * Set the active step 
-    * 
-    * @param {int} step - The active step 
-    * 
-    * @return {void}
-    */
-
+     * Set the active step
+     */
     setCurrentStep(step) {
         this.current_step = this.setStep(step);
     }
 
     /**
-    * Return the active step 
-    * 
-    * @return {int} The active step 
-    */
-
+     * Return the active step
+     */
     getCurrentStep() {
         return this.current_step;
     }
 
     /**
-    * Check and match the steps of the wizard.
-    * 
-    * @param {int} step - Step 
-    * 
-    * @return {int} Step
-    */
-
+     * Check and match the steps of the wizard.
+     */
     setStep(step) {
-        let parent = document.querySelector(this.wz_class);
-        let content = parent.querySelector(this.wz_content);
+        const parent = document.querySelector(this.wz_class);
+        const content = parent.querySelector(this.wz_content);
 
-        let check_content = content.querySelector(`${this.wz_step}[data-wz-step="${step}"]`);
+        const check_content = content.querySelector(`${this.wz_step}[data-wz-step="${step}"]`);
 
-        if ($_.exists(check_content) === false) {
-            let content_length = (content.querySelectorAll(this.wz_step).length) - 1;
-
-            let diff = $_.closetNubmer(content_length, step)
-
-            step = diff;
+        if (!check_content) {
+            const content_length = content.querySelectorAll(this.wz_step).length - 1;
+            step = Math.min(content_length, step);
         }
 
-        this.last_step = (step > this.last_step) ? step : this.last_step;
+        this.last_step = Math.max(step, this.last_step);
 
-        return parseInt(step);
+        return parseInt(step, 10);
     }
 
     /**
-    * Set Nav events
-    * 
-    * @return {void}
-    */
-
+     * Set Nav events
+     */
     setNavEvent() {
-        let _self = this;
-        let el = document.querySelector(this.wz_class);
-
-        $_.delegate(el, "click", `${this.wz_nav} ${this.wz_step}`, function (event) {
-            event.preventDefault()
-            _self.onClick(this)
-        });
-    }
-
-
-    /**
-    * Set Button events
-    * 
-    * @return {void}
-    */
-
-    setBtnEvent() {
-        let _self = this;
-        let el = document.querySelector(this.wz_class);
-
-        $_.delegate(el, "click", `${this.wz_buttons} ${this.wz_button}`, function clickFunction(event) {
-            event.preventDefault()
-
-            if ($_.hasClass(event.target, _self.wz_finish)) {
-                _self.onClickFinish(this)
-            } else {
-                _self.onClick(this)
-
+        const wz = document.querySelector(this.wz_class);
+        wz.addEventListener("click", (event) => {
+            const target = event.target.closest(`${this.wz_nav} ${this.wz_step}`);
+            if (target) {
+                event.preventDefault();
+                this.onClick(target);
             }
         });
     }
 
     /**
-    * Set options of wizard
-    * 
-    * @param {object} options - List of options to build the wizard 
-    * 
-    * @return {void}
-    */
+     * Set Button events
+     */
+    setBtnEvent() {
+        const wz = document.querySelector(this.wz_class);
+        wz.addEventListener("click", (event) => {
+            const target = event.target.closest(`${this.wz_buttons} ${this.wz_button}`);
+            if (target) {
+                event.preventDefault();
 
-    set_options(options) {
-        this.options = options;
-    }
-
-    /**
-    * Check and match the options of the wizard with args definieds
-    * 
-    * @param {object} options - List of options to build the wizard 
-    * @param {object} args    - List of arguments modifying the base options
-    *
-    * @return {void}
-    */
-
-    prefabOpts(options, args) {
-        if ($_.isEmptyObj(args) !== false) {
-            Object.entries(args).forEach(([key, value]) => {
-                if (typeof value === 'object') {
-                    Object.entries(value).forEach(([key_1, value_1]) => {
-                        options[key][key_1] = value_1;
-                    });
+                if (target.classList.contains(this.wz_finish.replace(".", ""))) {
+                    this.onClickFinish();
                 } else {
-                    options[key] = value;
+                    this.onClick(target);
                 }
-            });
-        }
-
-        this.set_options(options);
+            }
+        });
     }
 
     /**
-   * Checks the fields of the active step, in case there is an error it generates a highlight. 
-   * Returns an array with all the fields that have given error.
-   * 
-   * @param {object} wz_content  - Active wizard content 
-   * @param {object} formData    - All inputs, textarea and select of the active content 
-   * 
-   * @return {object} 
-   * @property {bool} error      - There is an error or not
-   * @property {array} target    - Contains all the elements that have given error
-   */
-
+     * Checks the fields of the active step, in case there is an error it generates a highlight.
+     */
     formValidator(wz_content, formData) {
-
         let error = false;
-        let target = [];
+        const target = [];
 
-        for (let e of formData) {
-            if ($_.hasClass(e, "required") || $_.exists(e.getAttribute("required"))) {
+        formData.forEach((e) => {
+            if (e.required || e.classList.contains("required")) {
+                let valid = true;
 
-                let check = false
                 switch (e.tagName) {
                     case "INPUT":
-                        check = $_.dispatchInput(wz_content, e);
+                        if (e.type === "checkbox" || e.type === "radio") {
+                            valid = e.checked;
+                        } else {
+                            valid = e.value.trim() !== "";
+                        }
                         break;
                     case "SELECT":
-                        check = $_.checkSelect(e);
+                        valid = e.value.trim() !== "";
                         break;
                     case "TEXTAREA":
-                        check = $_.isEmpty(e.value);
+                        valid = e.value.trim() !== "";
                         break;
+                    default:
+                        valid = true;
                 }
 
-                if (check === false) {
+                if (!valid) {
                     error = true;
                     target.push(e);
 
-                    if ($_.str2bool(this.highlight) === true) {
-                        $_.highlight(e, this.wz_highlight, this.highlight_type['error'], this.highlight_time);
+                    if (this.highlight) {
+                        this.highlightElement(e, this.highlight_type.error);
                     }
                 }
             }
-        }
+        });
 
         return {
-            "error": error,
-            "target": target
+            error,
+            target,
         };
     }
-};
+
+    /**
+     * Highlights an element to indicate validation errors.
+     */
+    highlightElement(element, type) {
+        element.classList.add(this.wz_highlight.replace(".", ""), type);
+        setTimeout(() => {
+            element.classList.remove(this.wz_highlight.replace(".", ""), type);
+        }, this.highlight_time);
+    }
+}
 
 export default Wizard;

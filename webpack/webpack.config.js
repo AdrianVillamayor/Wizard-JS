@@ -49,7 +49,6 @@ module.exports = [
                 type: 'umd',
             },
             libraryExport: 'default', // Add this line
-            clean: true,
         },
         target: 'web',
     },
@@ -63,7 +62,6 @@ module.exports = [
                 type: 'module',
             },
             environment: { module: true },
-            clean: true,
         },
         experiments: {
             outputModule: true,
