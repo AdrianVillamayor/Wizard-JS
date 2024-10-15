@@ -1,3 +1,6 @@
+// import Wizard from "@adrii_/wizard-js"
+const Wizard = require('@adrii_/wizard-js');
+
 let wz_class = ".wizard";
 
 document.addEventListener("wz.ready", function (e) {
@@ -52,11 +55,11 @@ $wz_doc.addEventListener("wz.end", function (e) {
 });
 
 $wz_doc.addEventListener("wz.error", function (e) {
-    console.log(`↓ ID ↓`)
-    console.log(e.detail.id) // form_validaton
+  console.log(`↓ ID ↓`)
+  console.log(e.detail.id) // form_validaton
 
-    console.log(`↓ Message ↓`)
-    console.log(e.detail.msg) //options.i18n.form_validation
+  console.log(`↓ Message ↓`)
+  console.log(e.detail.msg) //options.i18n.form_validation
 });
 
 $wz_doc.addEventListener("wz.lock", function (e) {
@@ -73,12 +76,12 @@ $wz_doc.addEventListener("wz.reset", function (e) {
 });
 
 $wz_doc.addEventListener("wz.update", function (e) {
-    alert("The Wizard has been updated !");
-    console.log(`↓ Target ↓`)
-    console.log(e.detail.target) // .wizard
+  alert("The Wizard has been updated !");
+  console.log(`↓ Target ↓`)
+  console.log(e.detail.target) // .wizard
 
-    console.log(`↓ DOM Elem ↓`)
-    console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
+  console.log(`↓ DOM Elem ↓`)
+  console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
 });
 
 
@@ -91,8 +94,8 @@ function setStep(wizard) {
 
   const wz = document.querySelector(wizard.wz_class);
   const wz_content = wz.querySelector(wizard.wz_content);
-  
-  let target = wz_content.querySelector(`${wizard.wz_step}[data-wz-step="2"]`);  
+
+  let target = wz_content.querySelector(`${wizard.wz_step}[data-wz-step="2"]`);
 
   target.insertAdjacentHTML("beforebegin", $html);
 

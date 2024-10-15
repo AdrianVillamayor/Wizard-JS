@@ -1,5 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const commonConfig = {
     entry: './src/index.js',
@@ -8,7 +10,6 @@ const commonConfig = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                // Removed 'include' as it might be unnecessary or too restrictive
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -31,10 +32,16 @@ const commonConfig = {
         extensions: ['.js'],
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].min.css',
         }),
     ],
+    optimization: {
+        minimizer: [new TerserPlugin({
+            extractComments: false,
+        })],
+    },
 };
 
 module.exports = [
@@ -47,17 +54,18 @@ module.exports = [
             library: {
                 name: 'Wizard',
                 type: 'umd',
+                umdNamedDefine: true,
             },
-            libraryExport: 'default', // Add this line
+            globalObject: 'this',
         },
-        target: 'web',
+        target: ['web', 'es5'],
     },
     // ES Module Configuration
     {
         ...commonConfig,
         output: {
             filename: 'index.esm.js',
-            path: path.resolve(__dirname, '../dist'),
+            path: path.resolve(__dirname, 'dist'),
             library: {
                 type: 'module',
             },
