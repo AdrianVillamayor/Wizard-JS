@@ -1,14 +1,18 @@
-import Wizard from "@adrii_/wizard-js"
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
+
+import Wizard from "@adrii_/wizard-js";
 
 let wz_class = ".wizard";
 
 document.addEventListener("wz.ready", function (e) {
+
   console.log("My body is ready");
 
-  console.log(`↓ Target ↓`);
+  console.log("↓ Target ↓");
   console.log(e.detail.target);
 
-  console.log(`↓ Elem ↓`);
+  console.log("↓ Elem ↓");
   console.log(e.detail.elem);
 });
 
@@ -18,7 +22,7 @@ const args = {
   "wz_button_style": ".btn .btn-sm .mx-3",
   "wz_ori": "vertical",
   "buttons": true,
-  "navigation": 'all',
+  "navigation": "all",
   "finish": "Save iie!",
   "bubble": true,
 };
@@ -65,11 +69,11 @@ $wz_doc.addEventListener("wz.end", function (e) {
 });
 
 $wz_doc.addEventListener("wz.error", function (e) {
-  console.log(`↓ ID ↓`)
-  console.log(e.detail.id) // form_validaton
+  console.log("↓ ID ↓");
+  console.log(e.detail.id); // form_validaton
 
-  console.log(`↓ Message ↓`)
-  console.log(e.detail.msg) //options.i18n.form_validation
+  console.log("↓ Message ↓");
+  console.log(e.detail.msg); //options.i18n.form_validation
 });
 
 $wz_doc.addEventListener("wz.lock", function (e) {
@@ -87,11 +91,11 @@ $wz_doc.addEventListener("wz.reset", function (e) {
 
 $wz_doc.addEventListener("wz.update", function (e) {
   alert("The Wizard has been updated !");
-  console.log(`↓ Target ↓`)
-  console.log(e.detail.target) // .wizard
+  console.log("↓ Target ↓");
+  console.log(e.detail.target); // .wizard
 
-  console.log(`↓ DOM Elem ↓`)
-  console.log(e.detail.elem) // DOM form#wizard.wizard.horizontal
+  console.log("↓ DOM Elem ↓");
+  console.log(e.detail.elem); // DOM form#wizard.wizard.horizontal
 });
 
 
@@ -100,7 +104,7 @@ document.getElementById("btn_append").onclick = function () {
 };
 
 function setStep(wizard) {
-  const html = `<div class="card card-body m-4 wizard-step" data-id="patata" data-title="Adrii"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
+  const html = "<div class=\"card card-body m-4 wizard-step\" data-id=\"patata\" data-title=\"Adrii\"> <label class=\"question\"> Embedded step </label> <input type=\"text\" maxlength=\"100\" name=\"patata\" class=\"form-control required\" placeholder=\"Embedded step\"> </div>";
 
   const wz = document.querySelector(wizard.wz_class);
   const wz_content = wz.querySelector(wizard.wz_content);

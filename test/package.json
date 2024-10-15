@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "gulp",
-        "bundle": "gulp bundle"
+        "bundle": "npm update && gulp bundle"
     },
     "author": "",
     "license": "ISC",
@@ -14,13 +14,10 @@
         "@types/node": "^22.5.0",
         "babelify": "^10.0.0",
         "browserify": "^17.0.0",
-        "dotenv": "^16.4.5",
         "envify": "^4.1.0",
         "gulp": "^5.0.0",
         "gulp-sourcemaps": "^2.6.5",
         "gulp-uglify": "^3.0.2",
-        "minimist": "^1.2.8",
-        "typescript": "^5.5.4",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"
     },

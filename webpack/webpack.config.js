@@ -1,19 +1,19 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const commonConfig = {
-    entry: './src/index.js',
+    entry: "./src/index.js",
     module: {
         rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: "babel-loader",
                     options: {
-                        presets: [['@babel/preset-env', { targets: 'defaults' }]]
+                        presets: [["@babel/preset-env", { targets: "defaults" }]]
                     },
                 },
             },
@@ -21,19 +21,19 @@ const commonConfig = {
                 test: /\.(scss|css)$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'postcss-loader',
-                    'sass-loader',
+                    "css-loader",
+                    "postcss-loader",
+                    "sass-loader",
                 ],
             },
         ],
     },
     resolve: {
-        extensions: ['.js'],
+        extensions: [".js"],
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '[name].min.css',
+            filename: "[name].min.css",
         }),
     ],
     optimization: {
@@ -51,25 +51,25 @@ module.exports = [
     {
         ...commonConfig,
         output: {
-            filename: 'index.js',
-            path: path.resolve(__dirname, '../dist'),
+            filename: "index.js",
+            path: path.resolve(__dirname, "../dist"),
             library: {
-                name: 'Wizard',
-                type: 'umd',
+                name: "Wizard",
+                type: "umd",
                 umdNamedDefine: true,
             },
-            globalObject: 'this',
-            libraryExport: 'default',
+            globalObject: "this",
+            libraryExport: "default",
         },
-        target: ['web', 'es5'],
+        target: ["web", "es5"],
     },
     {
         ...commonConfig,
         output: {
-            filename: 'index.esm.js',
-            path: path.resolve(__dirname, '../dist'),
+            filename: "index.esm.js",
+            path: path.resolve(__dirname, "../dist"),
             library: {
-                type: 'module',
+                type: "module",
             },
             environment: { module: true },
         },

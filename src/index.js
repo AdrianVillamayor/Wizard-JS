@@ -130,14 +130,17 @@ class Wizard {
         try {
             const wz_check = document.querySelector(this.wz_class);
             if (!wz_check) throw new Error(this.i18n.empty_wz);
+           
             if (wz_check.getAttribute("data-wz-load") === "true") {
-                console.warn(`${this.wz_class} : ${this.i18n.already_defined}`);
-                return;
+                throw new Error(this.i18n.already_defined);
             }
+            
             const wz = wz_check;
+
             if (!this.buttons && !this.nav) {
-                console.warn(this.i18n.no_nav);
+                throw new Error(this.i18n.no_nav);
             }
+
             wz.classList.add(this.wz_ori.replace(".", ""));
             if (wz.tagName === "FORM") {
                 this.form = true;
@@ -163,7 +166,7 @@ class Wizard {
                 }
             }));
         } catch (error) {
-            console.error(error);
+            throw new Error(error);
         }
     }
 
