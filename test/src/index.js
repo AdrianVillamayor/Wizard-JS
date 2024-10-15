@@ -1,5 +1,4 @@
 import Wizard from "@adrii_/wizard-js"
-// const Wizard = require('@adrii_/wizard-js');
 
 let wz_class = ".wizard";
 
@@ -13,7 +12,18 @@ document.addEventListener("wz.ready", function (e) {
   console.log(e.detail.elem);
 });
 
-const wizard = new Wizard();
+const args = {
+  "wz_class": ".wizard",
+  "wz_nav_style": "dots",
+  "wz_button_style": ".btn .btn-sm .mx-3",
+  "wz_ori": "vertical",
+  "buttons": true,
+  "navigation": 'all',
+  "finish": "Save iie!",
+  "bubble": true,
+};
+
+const wizard = new Wizard(args);
 wizard.init();
 
 document.getElementById("btn_reset").onclick = function () {
@@ -90,14 +100,14 @@ document.getElementById("btn_append").onclick = function () {
 };
 
 function setStep(wizard) {
-  $html = `<div class="card card-body m-4 wizard-step" data-id="patata" data-title="Adrii"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
+  const html = `<div class="card card-body m-4 wizard-step" data-id="patata" data-title="Adrii"> <label class="question"> Embedded step </label> <input type="text" maxlength="100" name="patata" class="form-control required" placeholder="Embedded step"> </div>`;
 
   const wz = document.querySelector(wizard.wz_class);
   const wz_content = wz.querySelector(wizard.wz_content);
 
   let target = wz_content.querySelector(`${wizard.wz_step}[data-wz-step="2"]`);
 
-  target.insertAdjacentHTML("beforebegin", $html);
+  target.insertAdjacentHTML("beforebegin", html);
 
   wizard.update();
 }

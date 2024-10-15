@@ -13,8 +13,7 @@ const commonConfig = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: [['@babel/preset-env', { targets: 'defaults' }]],
-                        sourceType: 'module',
+                        presets: [['@babel/preset-env', { targets: 'defaults' }]]
                     },
                 },
             },

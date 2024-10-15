@@ -10,7 +10,9 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@babel/preset-env": "^7.25.8",
         "@types/node": "^22.5.0",
+        "babelify": "^10.0.0",
         "browserify": "^17.0.0",
         "dotenv": "^16.4.5",
         "envify": "^4.1.0",

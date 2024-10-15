@@ -24,7 +24,7 @@ class Wizard {
             wz_prev: ".prev",
             wz_finish: ".finish",
             wz_highlight: ".highlight-error",
-            bubbles: false,
+            bubbles: true,
             nav: true,
             buttons: true,
             highlight: true,
@@ -118,7 +118,8 @@ class Wizard {
             last_step: current_step,
             form: false,
             locked: false,
-            locked_step: null
+            locked_step: null,
+            bubbles
         });
     }
 
