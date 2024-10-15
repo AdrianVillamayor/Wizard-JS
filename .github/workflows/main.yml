@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      fetch-depth: 0
+      fetch-tags: true
+      ref: ${{ github.head_ref }}
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: ${{ env.fetch-depth }}
+          fetch-tags: ${{ env.fetch-tags }}
+          ref: ${{ env.ref }}
+          token: ${{ env.token }}
+
+      - name: Cache Node Modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}-v2
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      - name: Install Dependencies
+        run: npm install
+        
+      - name: Build Project
+        run: npm run build
+
+      - name: Minify JS
+        run: npx terser dist/index.js -o dist/index.min.js
