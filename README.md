@@ -1,4 +1,4 @@
-![Badge-glow](https://img.shields.io/badge/WizardJS-v2.0.0-blue?style=flat-square)
+![Badge-glow](https://img.shields.io/badge/WizardJS-v2.0.3-blue?style=flat-square)
 [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
@@ -66,8 +66,8 @@ npm install @adrii_/wizard-js
 For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" target="_blank">CDN</a> usage:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.0/dist/wizard.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.0/styles/css/main.css">
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/wizard.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/styles/css/main.css">
 ```
 
 ## Usage
