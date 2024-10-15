@@ -36,7 +36,10 @@
         "accessibility",
         "html5",
         "vanilla-js",
-        "wizard-component"
+        "wizard-component",
+        "step-wizard",
+        "form-wizard",
+        "multi-step-form"
     ],
     "author": "Adrián Villamayor Sánchez",
     "license": "MIT",
@@ -48,9 +51,21 @@
         "url": "https://github.com/AdrianVillamayor/Wizard-JS/issues"
     },
     "homepage": "https://github.com/AdrianVillamayor/Wizard-JS#readme",
-    "engines": {
-        "node": ">=12"
+    "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/AdrianVillamayor"
     },
+    "engines": {
+        "node": ">=12",
+        "npm": ">=6.14.4"
+    },
+    "contributors": [
+        {
+            "name": "Adrián Villamayor Sánchez",
+            "email": "adrian.villamayor@gmail.com",
+            "url": "https://github.com/AdrianVillamayor"
+        }
+    ],
     "devDependencies": {
         "@babel/cli": "^7.25.7",
         "@babel/core": "^7.22.9",
