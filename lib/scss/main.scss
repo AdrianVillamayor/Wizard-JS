@@ -1,0 +1,329 @@
+$white: #ffffff;
+$black: #000000;
+
+$color-done: #19d184;
+$color-default: $white;
+$color-border: #dee2e6;
+$color-error: tomato;
+
+$color-active: #198fd1;
+
+.wizard {
+    transition: all 0.3s ease-in;
+    display: none;
+
+    .wizard-nav {
+        display: flex;
+        flex-wrap: wrap;
+        transition: all 0.3s ease-in;
+
+        &.tabs {
+            .wizard-step {
+                position: relative;
+                font-size: 14px;
+                flex-basis: 0;
+                flex-grow: 1;
+                max-width: 100%;
+                text-align: center;
+                border-bottom: 1px solid $color-border;
+                padding: 0.5rem 1rem;
+
+                // transition: all .3s ease-in;
+
+                &.active {
+                    border: 1px solid $color-border;
+                    border-top-left-radius: 0.25rem;
+                    border-top-right-radius: 0.25rem;
+                    border-bottom: 0px;
+                }
+            }
+        }
+
+        &.progress {
+            height: auto;
+            overflow: auto;
+            line-height: 1.5;
+            font-size: 1rem;
+            border-radius: 0.25rem;
+
+            .wizard-step {
+                position: relative;
+                font-size: 14px;
+                flex-basis: 0;
+                flex-grow: 1;
+                max-width: 100%;
+                text-align: center;
+                border: 1px solid $color-border;
+                background-color: $color-done;
+                color: white;
+                padding: 0.5rem 1rem;
+
+                transition: all 0.3s ease-in;
+
+                &.active {
+                    ~ .wizard-step {
+                        background-color: $white;
+                        color: $black;
+                    }
+                }
+            }
+        }
+
+        &.dots {
+            .wizard-step {
+                position: relative;
+                font-size: 14px;
+                flex-basis: 0;
+                flex-grow: 1;
+                max-width: 100%;
+                text-align: center;
+                transition: all 0.3s ease-in;
+
+                &:last-child {
+                    &:before {
+                        display: none;
+                    }
+
+                    &:after {
+                        display: none;
+                    }
+                }
+
+                span {
+                    cursor: pointer;
+                }
+
+                @for $i from 1 to 10 {
+                    &:nth-of-type(#{$i}).dot {
+                        transition-property: all;
+                        transition-duration: 0.2s;
+                        transition-timing-function: ease-in;
+                        transition-delay: $i * 0.1s;
+                    }
+                }
+
+                .dot {
+                    content: "";
+                    position: absolute;
+                    top: -20px;
+                    left: 50%;
+                    z-index: 3;
+                    height: 8px;
+                    width: 8px;
+                    background: $color-active;
+                    border-radius: 50%;
+                    box-shadow: 0 0 0 2px rgb(255, 255, 255);
+                    transition: all 0.5s ease-in-out;
+                }
+
+                @for $i from 1 to 10 {
+                    &:nth-of-type(#{$i}):before {
+                        transition-property: all;
+                        transition-duration: 0.2s;
+                        transition-timing-function: ease-in;
+                        transition-delay: $i * 0.1s;
+                    }
+                }
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    top: -17px;
+                    left: 50%;
+                    width: 100%;
+                    height: 2px;
+                    z-index: 2;
+                    background: $color-done;
+                }
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    top: -17px;
+                    left: 50%;
+                    width: 100%;
+                    height: 2px;
+                    background: $color-border;
+                    z-index: 1;
+                }
+
+                &.active {
+                    ~ .wizard-step {
+                        .dot {
+                            background: $color-border;
+                        }
+
+                        &:before {
+                            background: $color-border;
+                            width: 0%;
+                        }
+
+                        &:after {
+                            background: $color-border;
+                        }
+                    }
+
+                    .dot {
+                        background-color: $color-active;
+                        box-shadow: 0 0 0 3px rgba(25, 143, 209, 0.2);
+                    }
+
+                    &:before {
+                        background: $color-border;
+                    }
+
+                    &:after {
+                        background: $color-border;
+                    }
+                }
+            }
+        }
+
+        .wizard-step {
+            cursor: pointer;
+
+            &.nav-buttons {
+                cursor: default;
+
+                span {
+                    cursor: default;
+                }
+            }
+        }
+    }
+
+    .wizard-content {
+        transition: all 0.3s ease-in;
+        padding: 3rem 0;
+
+        .wizard-step {
+            transition: all 0.3s ease-in;
+            display: none;
+
+            &.active {
+                display: block;
+            }
+        }
+    }
+
+    .wizard-buttons {
+        transition: all 0.3s ease-in;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .wizard-btn {
+            display: inline-block;
+            font-weight: 400;
+            line-height: 1.5;
+
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+
+            border: 1px solid transparent;
+            padding: 0.375rem 0.75rem;
+
+            border-radius: 0.15rem;
+
+            transition: all 0.3s ease-in;
+            margin: 0 10px;
+            background-color: $color-active;
+            color: $white;
+
+            &:hover {
+                background-color: rgba($color-active, 0.8);
+            }
+
+            &:disabled {
+                cursor: not-allowed !important;
+                pointer-events: none;
+                opacity: 0.65;
+            }
+        }
+    }
+
+    &.vertical {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+
+        transition: all 0.3s ease-in;
+
+        .wizard-nav {
+            flex-direction: column;
+            flex: 1;
+            padding: 0 3rem;
+
+            transition: all 0.3s linear;
+
+            @media screen and (min-width: 1024px) {
+                max-width: 250px;
+            }
+
+            @media screen and (max-width: 767px) {
+                .wizard-step {
+                    text-align: left;
+                    padding-left: 1rem;
+                }
+            }
+
+            .wizard-step {
+                &:before {
+                    top: 7px;
+                    left: -12px;
+                    width: 2px;
+                    height: 100%;
+                }
+
+                &:after {
+                    top: 7px;
+                    left: -12px;
+                    width: 2px;
+                    height: 100%;
+                }
+
+                .dot {
+                    top: 7px;
+                    left: -15px;
+                }
+
+                &.active {
+                    ~ .wizard-step {
+                        &:before {
+                            height: 0%;
+                        }
+                    }
+                }
+            }
+        }
+
+        .wizard-content {
+            width: 75%;
+            transition: all 0.3s ease-in;
+            padding: 0 0 3rem 0;
+
+            @media screen and (max-width: 767px) {
+                padding: 2rem 0;
+            }
+        }
+
+        .wizard-buttons {
+            flex-basis: 100%;
+            transition: all 0.3s ease-in;
+        }
+    }
+}
+
+.highlight {
+    &-error {
+        outline: 1px solid $color-error;
+    }
+}
