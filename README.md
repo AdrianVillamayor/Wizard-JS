@@ -1,3 +1,4 @@
+[![Build and Lint](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml/badge.svg)](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml)
 ![Badge-glow](https://img.shields.io/badge/WizardJS-v2.0.3-blue?style=flat-square)
 [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
