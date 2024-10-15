@@ -1,7 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin'); // Optional for minifying CSS
 
 const commonConfig = {
     entry: './src/index.js',
@@ -20,10 +20,10 @@ const commonConfig = {
             {
                 test: /\.(scss|css)$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'postcss-loader',
-                    'sass-loader',
+                    MiniCssExtractPlugin.loader,  // Extract CSS/SCSS into a separate file
+                    'css-loader',                // Resolves CSS imports
+                    'postcss-loader',            // Processes CSS (optional)
+                    'sass-loader',               // Compiles SCSS to CSS
                 ],
             },
         ],
@@ -32,20 +32,23 @@ const commonConfig = {
         extensions: ['.js'],
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
-            filename: '[name].min.css',
+            filename: '[name].min.css',  // Outputs CSS file with hashed name
         }),
     ],
     optimization: {
-        minimizer: [new TerserPlugin({
-            extractComments: false,
-        })],
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                extractComments: false,
+            }),
+            new CssMinimizerPlugin(),  // Minify CSS
+        ],
     },
 };
 
 module.exports = [
-    // CommonJS Configuration
+    // CommonJS/UMD Configuration
     {
         ...commonConfig,
         output: {
@@ -57,6 +60,7 @@ module.exports = [
                 umdNamedDefine: true,
             },
             globalObject: 'this',
+            libraryExport: 'default',
         },
         target: ['web', 'es5'],
     },
@@ -65,7 +69,7 @@ module.exports = [
         ...commonConfig,
         output: {
             filename: 'index.esm.js',
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, '../dist'),
             library: {
                 type: 'module',
             },
