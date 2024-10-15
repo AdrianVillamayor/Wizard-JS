@@ -1,5 +1,5 @@
-// import Wizard from "@adrii_/wizard-js"
-const Wizard = require('@adrii_/wizard-js');
+import Wizard from "@adrii_/wizard-js"
+// const Wizard = require('@adrii_/wizard-js');
 
 let wz_class = ".wizard";
 

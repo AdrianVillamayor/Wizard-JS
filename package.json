@@ -1,6 +1,6 @@
 {
     "name": "@adrii_/wizard-js",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "A lightweight wizard UI component that supports accessibility and HTML5 in vanilla JavaScript.",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",

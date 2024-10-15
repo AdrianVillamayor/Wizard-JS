@@ -23,6 +23,6 @@
         "vinyl-source-stream": "^2.0.0"
     },
     "dependencies": {
-        "@adrii_/wizard-js": "^2.0.0"
+        "@adrii_/wizard-js": "^2.0.1"
     }
 }

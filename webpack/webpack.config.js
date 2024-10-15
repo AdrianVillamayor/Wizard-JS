@@ -1,7 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin'); // Optional for minifying CSS
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const commonConfig = {
     entry: './src/index.js',
@@ -14,16 +14,17 @@ const commonConfig = {
                     loader: 'babel-loader',
                     options: {
                         presets: [['@babel/preset-env', { targets: 'defaults' }]],
+                        sourceType: 'module',
                     },
                 },
             },
             {
                 test: /\.(scss|css)$/,
                 use: [
-                    MiniCssExtractPlugin.loader,  // Extract CSS/SCSS into a separate file
-                    'css-loader',                // Resolves CSS imports
-                    'postcss-loader',            // Processes CSS (optional)
-                    'sass-loader',               // Compiles SCSS to CSS
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                    'sass-loader',
                 ],
             },
         ],
@@ -33,7 +34,7 @@ const commonConfig = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '[name].min.css',  // Outputs CSS file with hashed name
+            filename: '[name].min.css',
         }),
     ],
     optimization: {
@@ -42,13 +43,12 @@ const commonConfig = {
             new TerserPlugin({
                 extractComments: false,
             }),
-            new CssMinimizerPlugin(),  // Minify CSS
+            new CssMinimizerPlugin(),
         ],
     },
 };
 
 module.exports = [
-    // CommonJS/UMD Configuration
     {
         ...commonConfig,
         output: {
@@ -64,7 +64,6 @@ module.exports = [
         },
         target: ['web', 'es5'],
     },
-    // ES Module Configuration
     {
         ...commonConfig,
         output: {
