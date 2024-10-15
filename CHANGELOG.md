@@ -1,0 +1,129 @@
+# Changelog
+
+## [v2.0.3](https://github.com/AdrianVillamayor/Wizard-JS/tree/v2.0.3) (2024-10-15)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.9.9...v2.0.3)
+
+**Fixed bugs:**
+
+- Validation not working on select elements [\#9](https://github.com/AdrianVillamayor/Wizard-JS/issues/9)
+
+**Closed issues:**
+
+- It don't show current\_step correctly  [\#13](https://github.com/AdrianVillamayor/Wizard-JS/issues/13)
+
+## [v1.9.9](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.9.9) (2023-05-22)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.9.8...v1.9.9)
+
+## [v1.9.8](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.9.8) (2023-05-22)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.9.6...v1.9.8)
+
+## [v1.9.6](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.9.6) (2023-05-19)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.9.3...v1.9.6)
+
+**Implemented enhancements:**
+
+- Dynamic Steps [\#8](https://github.com/AdrianVillamayor/Wizard-JS/issues/8)
+
+**Fixed bugs:**
+
+- select box with choices-js plugin not working [\#6](https://github.com/AdrianVillamayor/Wizard-JS/issues/6)
+
+**Closed issues:**
+
+- Dynamic URL and Image preview not working with Wizard JS [\#7](https://github.com/AdrianVillamayor/Wizard-JS/issues/7)
+
+## [v1.9.3](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.9.3) (2023-01-12)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.9.1...v1.9.3)
+
+## [v1.9.1](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.9.1) (2022-12-15)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.9...v1.9.1)
+
+**Implemented enhancements:**
+
+- How to listen the navigation change? [\#5](https://github.com/AdrianVillamayor/Wizard-JS/issues/5)
+
+**Fixed bugs:**
+
+- Button configuration not hide the finish button [\#4](https://github.com/AdrianVillamayor/Wizard-JS/issues/4)
+
+## [v1.9](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.9) (2022-12-15)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.8...v1.9)
+
+**Fixed bugs:**
+
+- setNavEvent and setBtnEvent register multiple times event listeners if wizard.init\(\) is called multiple times [\#3](https://github.com/AdrianVillamayor/Wizard-JS/issues/3)
+
+## [v1.8](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.8) (2022-08-02)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.7.6...v1.8)
+
+**Implemented enhancements:**
+
+- Bugs and improvement [\#1](https://github.com/AdrianVillamayor/Wizard-JS/issues/1)
+
+**Closed issues:**
+
+- Minor typo in readme [\#2](https://github.com/AdrianVillamayor/Wizard-JS/issues/2)
+
+## [v1.7.6](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.7.6) (2022-03-10)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.7.5...v1.7.6)
+
+## [v1.7.5](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.7.5) (2022-03-10)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.7.4...v1.7.5)
+
+## [v1.7.4](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.7.4) (2022-03-09)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.7.1...v1.7.4)
+
+## [v1.7.1](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.7.1) (2022-03-08)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.7...v1.7.1)
+
+## [v1.7](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.7) (2022-03-08)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.6...v1.7)
+
+## [v1.6](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.6) (2022-01-12)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.5...v1.6)
+
+## [v1.5](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.5) (2022-01-12)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.4...v1.5)
+
+## [v1.4](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.4) (2022-01-12)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/1.4...v1.4)
+
+## [1.4](https://github.com/AdrianVillamayor/Wizard-JS/tree/1.4) (2022-01-12)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.3...1.4)
+
+## [v1.3](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.3) (2021-09-10)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.2...v1.3)
+
+## [v1.2](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.2) (2021-09-09)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1.1...v1.2)
+
+## [v1.1](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1.1) (2021-09-08)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/v1...v1.1)
+
+## [v1](https://github.com/AdrianVillamayor/Wizard-JS/tree/v1) (2021-09-08)
+
+[Full Changelog](https://github.com/AdrianVillamayor/Wizard-JS/compare/ffda5f4bb83c1867527ca024f454979ee251f324...v1)
+
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
