@@ -67,8 +67,9 @@ npm install @adrii_/wizard-js
 For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" target="_blank">CDN</a> usage:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/wizard.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/styles/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/main.min.css">
+
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/index.js"></script>
 ```
 
 ## Usage

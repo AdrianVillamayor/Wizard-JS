@@ -37,3 +37,7 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
+
+      - name: Generate changelog
+        uses: janheinrichmerker/action-github-changelog-generator@v2.4
+    
