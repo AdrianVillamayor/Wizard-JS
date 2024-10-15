@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../dist/main.min.css">
+</head>
+
+<body class="sb-nav-fixed">
+    <main class="container-fluid pt-5">
+
+        <main class="container-fluid">
+            <div class="ps-3 pt-4 pb-5">
+                <h2>Wizard-JS | Wizard Vanilla JavaScript <small>by <a
+                            href="https://github.com/AdrianVillamayor/Wizard-JS" target="_blank">Adrii</a></small></h2>
+                <small>A lightweight wizard UI component that supports accessibility and HTML5 in JavaScript Vanilla.
+                </small>
+                <p>
+                    <img src="https://img.shields.io/badge/WizardJS-v1.9.9-blue?style=flat-square" class="img-fluid">
+                    <img src="https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square"
+                        class="img-fluid">
+                </p>
+            </div>
+
+            <form class="wizard" id="formWizard">
+
+                <aside class="wizard-content container">
+                    
+                    <div class="wizard-step" data-title="Adrii">
+                        <div class="form-group">
+                            <label for="nameCampaign">Campaign name <span class="required">*</span></label>
+                            <select class="form-control" id="dropdown" name="dropdown">
+                                <option value="">Select an option</option>
+                                <option value="other">Other</option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="descCampaign">Description of the campaign</label>
+                            <input class="form-control" type="text" id="otherField" name="otherField"
+                                data-require-if="dropdown:other" placeholder="Please specify" />
+                        </div>
+                    </div>
+
+                    <div class="wizard-step" data-async-step="true">
+                        <div class="form-group">
+                            <label for="titleNoti">Title <span class="required">*</span></label>
+                            <input type="text" name="title" class="form-control required banner-info" id="titleNoti"
+                                placeholder="Example: Message title">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bodyNoti">Body <span class="required">*</span></label>
+                            <input type="text" name="body" class="form-control required banner-info" id="bodyNoti"
+                                placeholder="Example: Message body">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imageNoti">Image</label>
+                            <input type="file" name="image" class="form-control banner-info" id="imageNoti">
+                        </div>
+
+                    </div>
+
+                    <div class="wizard-step">
+                        <div class="form-group">
+                            <label for="titleNoti">Action <span class="required">*</span></label>
+                            <select class="form-control required" name="action">
+                                <option value="">Select one ...</option>
+                                <option value="0">Open bolus configurator</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bodyNoti">Segment</label>
+                            <select class="form-control" name="segment">
+                                <option value="">Select one ...</option>
+                                <option value="0">País</option>
+                                <option value="1">Language</option>
+                                <option value="2">Diabetes Type</option>
+                                <option value="3">Center</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </aside>
+            </form>
+
+            <div class="align-content-center justify-content-start m-3" style="display:flex">
+                <button id="btn_lock" class="btn btn-danger">Lock</button>
+                <button id="btn_unlock" class="btn btn-primary ms-4">Unlock</button>
+                <button id="btn_reset" class="btn btn-warning ms-4">Reset</button>
+                <button id="btn_append" class="btn btn-secondary ms-4">Add new step</button>
+            </div>
+
+        </main>
+
+        <script src="../dist/index.js"></script>
+        <script src="main.js"></script>
+
+</body>
+
+</html>

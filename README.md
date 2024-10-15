@@ -6,11 +6,23 @@
 
 A lightweight wizard UI component that supports accessibility and HTML5 in Vanilla JavaScript.
 
+## Features
+
+- Supports accessibility (ARIA-compliant).
+- Fully customizable wizard steps and navigation.
+- Works with both ES modules and CommonJS.
+- Built-in form validation and control.
+- **New Features:**
+  - Conditional required fields using `data-require-if` attribute.
+  - Dynamic required fields with `on-active-required` class.
+  - Customizable validation highlighting.
+
+
 ## Table of Contents
 
 - [Wizard-JS](#wizard-js)
-  - [Table of Contents](#table-of-contents)
   - [Features](#features)
+  - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
     - [CommonJS](#commonjs)
@@ -42,17 +54,6 @@ A lightweight wizard UI component that supports accessibility and HTML5 in Vanil
   - [Contributing](#contributing)
   - [License](#license)
     - [Thanks for your help! 🎉](#thanks-for-your-help-)
-
-## Features
-
-- Supports accessibility (ARIA-compliant).
-- Fully customizable wizard steps and navigation.
-- Works with both ES modules and CommonJS.
-- Built-in form validation and control.
-- **New Features:**
-  - Conditional required fields using `data-require-if` attribute.
-  - Dynamic required fields with `on-active-required` class.
-  - Customizable validation highlighting.
 
 ## Installation
 
@@ -250,35 +251,35 @@ Define conditional required fields based on another field's value.
 
 Options allowing you to modify the behavior and actions:
 
-| Parameter        | Type    | Default                                    | Definition / Value                                                    |
-|------------------|---------|--------------------------------------------|-----------------------------------------------------------------------|
-| `wz_class`       | String  | `.wizard`                                  | Wizard main container target                                          |
-| `wz_ori`         | String  | `.horizontal`                              | Wizard orientation (`.horizontal`, `.vertical`)                       |
-| `wz_nav`         | String  | `.wizard-nav`                              | Navigation container class                                            |
-| `wz_nav_style`   | String  | `dots`                                     | Style of navigation steps (`dots`, `tabs`, `progress`)                |
-| `wz_content`     | String  | `.wizard-content`                          | Body container class                                                  |
-| `wz_buttons`     | String  | `.wizard-buttons`                          | Action button container class                                         |
-| `wz_button`      | String  | `.wizard-btn`                              | Class of Previous, Next, and Finish action buttons                    |
-| `wz_button_style`| String  | `.btn`                                     | Basic button style                                                    |
-| `wz_step`        | String  | `.wizard-step`                             | Class for both nav and body steps                                     |
-| `wz_form`        | String  | `.wizard-form`                             | Class of the form that contains the wizard                            |
-| `wz_next`        | String  | `.next`                                    | Class of Next action button                                           |
-| `wz_prev`        | String  | `.prev`                                    | Class of Prev action button                                           |
-| `wz_finish`      | String  | `.finish`                                  | Class of Finish action button                                         |
-| `wz_highlight`   | String  | `.highlight-error`                         | Class for highlights when validation errors occur                     |
-| `current_step`   | Number  | `0`                                        | Active wizard step                                                    |
-| `steps`          | Number  | `0`                                        | Number of wizard steps                                                |
-| `highlight_time` | Number  | `1000`                                     | Display time for validation highlight (in milliseconds)               |
-| `navigation`     | String  | `all`                                      | Navigation mode (`buttons`, `nav`, `all`)                             |
-| `buttons`        | Boolean | `true`                                     | Show or hide the action buttons                                       |
-| `nav`            | Boolean | `true`                                     | Show or hide the header navigation                                    |
-| `highlight`      | Boolean | `true`                                     | Enable or disable field highlighting on validation errors             |
-| `next`           | String  | `Next`                                     | Text for the Next button                                              |
-| `prev`           | String  | `Prev`                                     | Text for the Prev button                                              |
-| `finish`         | String  | `Submit`                                   | Text for the Finish button                                            |
-| `bubbles`        | Boolean | `false`                                    | Enable or disable event bubbling for custom events                    |
-| `highlight_type` | Object  | `{ error: "error", warning: "warning", success: "success", info: "info" }` | Classes for different validation highlight effects                    |
-| `i18n`           | Object  | Various                                    | Internationalization messages for errors, titles, and warnings        |
+| Parameter         | Type    | Default                                                                    | Definition / Value                                             |
+| ----------------- | ------- | -------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `wz_class`        | String  | `.wizard`                                                                  | Wizard main container target                                   |
+| `wz_ori`          | String  | `.horizontal`                                                              | Wizard orientation (`.horizontal`, `.vertical`)                |
+| `wz_nav`          | String  | `.wizard-nav`                                                              | Navigation container class                                     |
+| `wz_nav_style`    | String  | `dots`                                                                     | Style of navigation steps (`dots`, `tabs`, `progress`)         |
+| `wz_content`      | String  | `.wizard-content`                                                          | Body container class                                           |
+| `wz_buttons`      | String  | `.wizard-buttons`                                                          | Action button container class                                  |
+| `wz_button`       | String  | `.wizard-btn`                                                              | Class of Previous, Next, and Finish action buttons             |
+| `wz_button_style` | String  | `.btn`                                                                     | Basic button style                                             |
+| `wz_step`         | String  | `.wizard-step`                                                             | Class for both nav and body steps                              |
+| `wz_form`         | String  | `.wizard-form`                                                             | Class of the form that contains the wizard                     |
+| `wz_next`         | String  | `.next`                                                                    | Class of Next action button                                    |
+| `wz_prev`         | String  | `.prev`                                                                    | Class of Prev action button                                    |
+| `wz_finish`       | String  | `.finish`                                                                  | Class of Finish action button                                  |
+| `wz_highlight`    | String  | `.highlight-error`                                                         | Class for highlights when validation errors occur              |
+| `current_step`    | Number  | `0`                                                                        | Active wizard step                                             |
+| `steps`           | Number  | `0`                                                                        | Number of wizard steps                                         |
+| `highlight_time`  | Number  | `1000`                                                                     | Display time for validation highlight (in milliseconds)        |
+| `navigation`      | String  | `all`                                                                      | Navigation mode (`buttons`, `nav`, `all`)                      |
+| `buttons`         | Boolean | `true`                                                                     | Show or hide the action buttons                                |
+| `nav`             | Boolean | `true`                                                                     | Show or hide the header navigation                             |
+| `highlight`       | Boolean | `true`                                                                     | Enable or disable field highlighting on validation errors      |
+| `next`            | String  | `Next`                                                                     | Text for the Next button                                       |
+| `prev`            | String  | `Prev`                                                                     | Text for the Prev button                                       |
+| `finish`          | String  | `Submit`                                                                   | Text for the Finish button                                     |
+| `bubbles`         | Boolean | `false`                                                                    | Enable or disable event bubbling for custom events             |
+| `highlight_type`  | Object  | `{ error: "error", warning: "warning", success: "success", info: "info" }` | Classes for different validation highlight effects             |
+| `i18n`            | Object  | Various                                                                    | Internationalization messages for errors, titles, and warnings |
 
 ### i18n Options
 
