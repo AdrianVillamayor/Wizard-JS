@@ -421,6 +421,13 @@ $wz_doc.addEventListener("wz.reset", function (e) {
 });
 ```
 
+## Demo
+
+Try it on CodePen:
+
+[![Codepen](https://user-images.githubusercontent.com/29653964/116972608-8f6bca80-acbb-11eb-98c1-8a3b19705de1.png)](https://codepen.io/adrianvillamayor/pen/VwWPVME)
+
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
