@@ -39,7 +39,7 @@ A lightweight wizard UI component that supports accessibility and HTML5 in Vanil
     - [Dynamic Required Fields](#dynamic-required-fields)
     - [Custom Validation Highlighting](#custom-validation-highlighting)
   - [HTML Attributes](#html-attributes)
-    - [Data Title Attribute `[data-title]`](#data-title-attribute-data-title)
+    - [Data Title Attribute `[data-wz-title]`](#data-title-attribute-data-wz-title)
     - [Data Require If Attribute `[data-require-if]`](#data-require-if-attribute-data-require-if)
   - [Config Wizard](#config-wizard)
     - [i18n Options](#i18n-options)
@@ -231,12 +231,12 @@ let args = {
 
 ## HTML Attributes
 
-### Data Title Attribute `[data-title]`
+### Data Title Attribute `[data-wz-title]`
 
 Set the step title for the navigation. If left blank, the system will automatically add `Step + step number` as the title.
 
 ```html
-<div class="wizard-step" data-title="Configuration">
+<div class="wizard-step" data-wz-title="Configuration">
     <!-- Step content -->
 </div>
 ```
