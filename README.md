@@ -58,7 +58,7 @@ A lightweight wizard UI component that supports accessibility and HTML5 in Vanil
 
 ## Installation
 
-You can install the package via npm:
+You can install the package via [npm](https://www.npmjs.com/package/@adrii_/wizard-js):
 
 ```bash
 npm install @adrii_/wizard-js
