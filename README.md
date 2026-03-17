@@ -134,7 +134,7 @@ Browser examples available in `test/`:
 
 - [`test/ts/index.html`](./test/ts/index.html): TypeScript + package CSS.
 - [`test/js/index.html`](./test/js/index.html): JavaScript ESM + package CSS.
-- [`test/cjs/index.html`](./test/cjs/index.html): browser UMD/global test using the packaged `dist/index.js` bundle.
+- [`test/cjs/index.html`](./test/cjs/index.html): browser UMD/global test using the packaged UMD bundle installed in the fixture.
 - [`test/cdn/index.html`](./test/cdn/index.html): CDN/browser test using jsDelivr.
 
 Note about `cjs` in the browser:

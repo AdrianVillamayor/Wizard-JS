@@ -11,6 +11,7 @@
         "noEmit": true
     },
     "include": [
-        "./index.ts"
+        "./index.ts",
+        "./main.ts"
     ]
 }
