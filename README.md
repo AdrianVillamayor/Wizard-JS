@@ -13,6 +13,7 @@ A lightweight wizard UI component for accessible multi-step flows in vanilla Jav
 - Fully customizable wizard steps and navigation.
 - Works with both ES modules and CommonJS.
 - Built-in form validation and control.
+- Async step guards with `before_step_change`.
 - Conditional required fields using `data-require-if` attribute.
 - Dynamic required fields with `on-active-required` class.
 - Customizable validation highlighting.
