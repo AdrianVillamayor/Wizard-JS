@@ -1,0 +1,472 @@
+//#region src/core/defaults.ts
+var e = Object.freeze({
+	root: "wizard",
+	nav: "wizard-nav",
+	content: "wizard-content",
+	buttons: "wizard-buttons",
+	button: "wizard-btn",
+	step: "wizard-step",
+	form: "wizard-form",
+	next: "next",
+	prev: "prev",
+	finish: "finish",
+	highlight: "highlight-error"
+}), t = Object.freeze({
+	wz_class: ".wizard",
+	wz_nav: ".wizard-nav",
+	wz_ori: ".horizontal",
+	wz_nav_style: "dots",
+	wz_content: ".wizard-content",
+	wz_buttons: ".wizard-buttons",
+	wz_button: ".wizard-btn",
+	wz_button_style: ".btn",
+	wz_step: ".wizard-step",
+	wz_form: ".wizard-form",
+	wz_next: ".next",
+	wz_prev: ".prev",
+	wz_finish: ".finish",
+	wz_highlight: ".highlight-error",
+	bubbles: !0,
+	nav: !0,
+	buttons: !0,
+	highlight: !0,
+	current_step: 0,
+	steps: 0,
+	highlight_time: 1e3,
+	navigation: "all",
+	next: "Next",
+	prev: "Prev",
+	finish: "Submit",
+	before_step_change: null,
+	highlight_type: {
+		error: "error",
+		warning: "warning",
+		success: "success",
+		info: "info"
+	},
+	i18n: {
+		empty_wz: "No item has been found with which to generate the Wizard.",
+		empty_nav: "Nav does not exist or is empty.",
+		empty_content: "Content does not exist or is empty.",
+		empty_html: "Undefined or null content cannot be added.",
+		empty_update: "Nothing to update.",
+		no_nav: "Both the nav and the buttons are disabled, there is no navigation system.",
+		form_validation: "One or more of the form fields are invalid.",
+		diff_steps: "Discordance between the steps of nav and content.",
+		random: "There has been a problem, check the configuration and use of the wizard.",
+		already_defined: "This item is already defined",
+		title: "Step"
+	}
+});
+function n(e = {}) {
+	return {
+		...t,
+		...e,
+		highlight_type: {
+			...t.highlight_type,
+			...e.highlight_type
+		},
+		i18n: {
+			...t.i18n,
+			...e.i18n
+		}
+	};
+}
+//#endregion
+//#region src/core/dom.ts
+function r(e) {
+	if (typeof e != "string") return null;
+	let t = e.trim();
+	return !t.startsWith(".") || /[\s>+~:#[]/.test(t.slice(1)) ? null : t.slice(1);
+}
+function i(e, t) {
+	let n = r(t);
+	n && e.classList.add(n);
+}
+function a(e, t) {
+	t.filter(Boolean).forEach((t) => {
+		e.classList.add(t);
+	});
+}
+function o(e, t) {
+	let n = Number.isFinite(e) ? e : 0;
+	return t <= 0 ? 0 : Math.min(Math.max(n, 0), t - 1);
+}
+function s(e) {
+	return e.replace(/\./g, " ").split(" ").map((e) => e.trim()).filter(Boolean);
+}
+function c(e, t) {
+	e.forEach((e, n) => {
+		e.classList.toggle("active", n === t);
+	});
+}
+function l(e) {
+	return e instanceof HTMLInputElement && (e.type === "checkbox" || e.type === "radio") ? e.checked : e.value;
+}
+//#endregion
+//#region src/core/validation.ts
+function u(e) {
+	return e === "true" ? !0 : e === "false" ? !1 : null;
+}
+function d(e) {
+	return e instanceof HTMLInputElement && (e.type === "checkbox" || e.type === "radio");
+}
+function f(e, t) {
+	if (d(e)) {
+		let n = u(t);
+		return n === null ? e.checked && e.value === t : e.checked === n;
+	}
+	return l(e) === t;
+}
+function p(e, t) {
+	return !t && !e.required ? !0 : d(e) ? e.checked : typeof e.value == "string" && e.value.trim() === "" ? !1 : typeof e.checkValidity == "function" ? e.checkValidity() : !0;
+}
+function m(e, t, n) {
+	let r = !1, i = [];
+	return t.forEach((t) => {
+		let a = t.required || t.classList.contains("required"), o = t.classList.contains("on-active-required"), s = t.getAttribute("data-require-if");
+		if (s) {
+			let [t, n = ""] = s.split(":"), r = e.querySelector(`#${t}`);
+			r && f(r, n) && (a = !0);
+		}
+		p(t, a || o) || (r = !0, i.push(t), n.highlight && n.highlightElement(t, n.highlight_type.error));
+	}), {
+		error: r,
+		target: i
+	};
+}
+//#endregion
+//#region src/index.ts
+var h = class {
+	constructor(e = {}) {
+		this.options = n(e), Object.assign(this, this.options, {
+			last_step: this.options.current_step,
+			form: !1,
+			locked: !1,
+			pending: !1,
+			locked_step: null,
+			root: null,
+			navEventsBound: !1,
+			buttonEventsBound: !1
+		}), this.last_step = this.options.current_step, this.form = !1, this.locked = !1, this.pending = !1, this.locked_step = null, this.root = null, this.navEventsBound = !1, this.buttonEventsBound = !1;
+	}
+	init() {
+		let e = document.querySelector(this.wz_class);
+		if (!e) throw Error(this.i18n.empty_wz);
+		if (e.getAttribute("data-wz-load") === "true") throw Error(this.i18n.already_defined);
+		if (!this.buttons && !this.nav) throw Error(this.i18n.no_nav);
+		this.root = e, this.form = e.tagName === "FORM", this.decorateStructuralClasses(e), e.classList.add(this.wz_ori.replace(".", "")), this.checkAndPrepare(e), this.bindEvents(), e.style.display = e.classList.contains("vertical") ? "flex" : "block", e.setAttribute("data-wz-load", "true"), document.dispatchEvent(new CustomEvent("wz.ready", {
+			bubbles: this.bubbles,
+			detail: {
+				target: this.wz_class,
+				elem: e
+			}
+		}));
+	}
+	update() {
+		let e = this.getRoot();
+		if (e.getAttribute("data-wz-load") !== "true") throw Error(this.i18n.empty_wz);
+		this.decorateStructuralClasses(e), this.checkAndPrepare(e), e.dispatchEvent(new CustomEvent("wz.update", {
+			bubbles: this.bubbles,
+			detail: {
+				target: this.wz_class,
+				elem: e
+			}
+		}));
+	}
+	reset() {
+		let e = this.getRoot();
+		this.setCurrentStep(0), this.syncUI(e), e.dispatchEvent(new Event("wz.reset", { bubbles: this.bubbles }));
+	}
+	lock() {
+		this.locked = !0, this.locked_step = this.getCurrentStep();
+	}
+	unlock() {
+		let e = this.getRoot();
+		this.locked = !1, this.locked_step = null, e.dispatchEvent(new Event("wz.unlock", { bubbles: this.bubbles }));
+	}
+	updateToForm() {
+		let e = this.getRoot(), t = this.getContentElement(e);
+		if (t.tagName !== "FORM") {
+			var n;
+			let r = (n = t.getAttribute("class")) == null ? "" : n, i = t.innerHTML;
+			t.remove();
+			let a = document.createElement("form");
+			a.setAttribute("method", "POST"), a.setAttribute("class", `${r} ${this.wz_form.replace(".", "")}`.trim()), a.innerHTML = i, e.appendChild(a), this.decorateStructuralClasses(e);
+		}
+	}
+	checkForm() {
+		let e = this.getContentElement(this.getRoot()), t = Array.from(e.querySelectorAll(this.wz_step))[this.getCurrentStep()];
+		if (!t) return {
+			error: !1,
+			target: []
+		};
+		let n = Array.from(t.querySelectorAll("input, textarea, select"));
+		return n.length === 0 ? {
+			error: !1,
+			target: []
+		} : m(e, n, {
+			highlight: this.highlight,
+			highlight_type: this.highlight_type,
+			highlightElement: this.highlightElement.bind(this)
+		});
+	}
+	setNav(t) {
+		let n = t.querySelector(this.wz_nav);
+		if (n && this.nav && (n.remove(), n = null), !n && this.nav) {
+			let n = this.getContentElement(t), r = Array.from(n.querySelectorAll(this.wz_step)), o = document.createElement("aside");
+			a(o, [e.nav]), i(o, this.wz_nav), r.forEach((t, n) => {
+				let r = document.createElement("div"), s = t.getAttribute("data-wz-title") || `${this.i18n.title} ${n + 1}`;
+				a(r, [e.step]), i(r, this.wz_step), r.setAttribute("data-wz-step", String(n)), r.style.setProperty("--wizard-step-index", String(n)), this.navigation === "buttons" && r.classList.add("nav-buttons");
+				let c = document.createElement("span");
+				c.classList.add("dot"), r.appendChild(c);
+				let l = document.createElement("span");
+				l.textContent = s, r.appendChild(l), o.appendChild(r);
+			}), t.prepend(o);
+		}
+	}
+	setButtons() {
+		let t = this.getRoot(), n = t.querySelector(this.wz_buttons);
+		if (n && this.buttons && (n.remove(), n = null), !n && this.buttons) {
+			let n = document.createElement("aside"), r = s(this.wz_button_style);
+			a(n, [e.buttons]), i(n, this.wz_buttons);
+			let o = this.createButton(this.prev, [
+				e.button,
+				e.prev,
+				...r
+			], [this.wz_button, this.wz_prev]);
+			this.navigation === "nav" && (o.style.display = "none");
+			let c = this.createButton(this.next, [
+				e.button,
+				e.next,
+				...r
+			], [this.wz_button, this.wz_next]);
+			this.navigation === "nav" && (c.style.display = "none");
+			let l = this.createButton(this.finish, [
+				e.button,
+				e.finish,
+				...r
+			], [this.wz_button, this.wz_finish]);
+			n.append(o, c, l), t.appendChild(n), this.checkButtons(c, o, l);
+		}
+	}
+	checkButtons(e, t, n) {
+		let r = this.getCurrentStep(), i = this.steps - 1;
+		t.toggleAttribute("disabled", r === 0), r === i ? (e.setAttribute("disabled", "true"), n.style.display = "block") : (n.style.display = "none", e.removeAttribute("disabled"));
+	}
+	checkAndPrepare(e) {
+		this.setNav(e);
+		let t = this.getContentElement(e), n = Array.from(t.querySelectorAll(this.wz_step));
+		if (n.length === 0) throw Error(this.i18n.empty_content);
+		let r = null, i = [];
+		if (this.nav) {
+			if (r = e.querySelector(this.wz_nav), !r || (i = Array.from(r.querySelectorAll(this.wz_step)), i.length === 0)) throw Error(this.i18n.empty_nav);
+			if (i.length !== n.length) throw Error(this.i18n.diff_steps);
+		}
+		this.steps = n.length, this.normalizeCurrentStep(), n.forEach((e, t) => {
+			e.setAttribute("data-wz-step", String(t)), this.nav && i[t] && (i[t].setAttribute("data-wz-step", String(t)), i[t].style.setProperty("--wizard-step-index", String(t)));
+		}), this.nav && r && r.classList.add(this.wz_nav_style), this.setButtons(), this.syncUI(e);
+	}
+	async onClick(e) {
+		var t, n, i;
+		let a = this.getRoot();
+		if (this.pending) return;
+		if (this.locked && this.locked_step === this.getCurrentStep()) {
+			a.dispatchEvent(new Event("wz.lock", { bubbles: this.bubbles }));
+			return;
+		}
+		let o = (t = e.closest(this.wz_class)) == null ? a : t, s = e.classList.contains((n = r(this.wz_button)) == null ? "" : n), c = e.classList.contains((i = r(this.wz_step)) == null ? "" : i), l = e.getAttribute("data-wz-step"), u = l === null ? this.getCurrentStep() : parseInt(l, 10), d = null;
+		if (s) {
+			var f, p;
+			e.classList.contains((f = r(this.wz_prev)) == null ? "" : f) ? (--u, d = "prev") : e.classList.contains((p = r(this.wz_next)) == null ? "" : p) && (u += 1, d = "next");
+		}
+		let m = u > this.getCurrentStep();
+		if (c && (m ? d = "nav.forward" : u < this.getCurrentStep() && (d = "nav.backward")), this.form && this.navigation !== "buttons" && m && u !== this.getCurrentStep() + 1 && (u = u >= this.last_step ? this.last_step : this.getCurrentStep() + 1), this.form) {
+			let e = this.checkForm();
+			if (e.error && (m && a.dispatchEvent(new CustomEvent("wz.error", {
+				bubbles: this.bubbles,
+				detail: {
+					id: "form_validation",
+					msg: this.i18n.form_validation,
+					target: e.target
+				}
+			})), this.last_step = this.getCurrentStep(), this.getCurrentStep() < u)) return;
+		}
+		m && d && !await this.runBeforeStepChange(u, d, a) || (d && this.dispatchStepEvent(d, a), this.setCurrentStep(u), this.syncUI(o));
+	}
+	onClickFinish() {
+		let e = this.getRoot();
+		if (this.form) {
+			this.checkForm().error || e.dispatchEvent(new Event("wz.form.submit", { bubbles: this.bubbles }));
+			return;
+		}
+		e.dispatchEvent(new Event("wz.end", { bubbles: this.bubbles }));
+	}
+	setCurrentStep(e) {
+		this.current_step = this.setStep(e);
+	}
+	getCurrentStep() {
+		return this.current_step;
+	}
+	setStep(e) {
+		let t = this.steps || this.getTotalSteps(), n = o(Number(e), t);
+		return this.last_step = Math.max(n, o(this.last_step, t)), n;
+	}
+	setNavEvent() {
+		this.getRoot().addEventListener("click", (e) => {
+			if (!(e.target instanceof Element)) return;
+			let t = e.target.closest(`${this.wz_nav} ${this.wz_step}`);
+			t && (e.preventDefault(), this.onClick(t));
+		}), this.navEventsBound = !0;
+	}
+	setBtnEvent() {
+		this.getRoot().addEventListener("click", (e) => {
+			if (!(e.target instanceof Element)) return;
+			let t = e.target.closest(`${this.wz_buttons} ${this.wz_button}`);
+			if (t) {
+				var n;
+				e.preventDefault(), t.classList.contains((n = r(this.wz_finish)) == null ? "" : n) ? this.onClickFinish() : this.onClick(t);
+			}
+		}), this.buttonEventsBound = !0;
+	}
+	highlightElement(t, n) {
+		let i = r(this.wz_highlight), a = [
+			e.highlight,
+			i,
+			n
+		].filter(Boolean);
+		t.classList.add(...a), setTimeout(() => {
+			t.classList.remove(...a);
+		}, this.highlight_time);
+	}
+	bindEvents() {
+		switch (this.navigation) {
+			case "all":
+			case "nav":
+				this.navEventsBound || this.setNavEvent(), this.buttonEventsBound || this.setBtnEvent();
+				break;
+			case "buttons":
+				this.buttonEventsBound || this.setBtnEvent();
+				break;
+			default: break;
+		}
+	}
+	createButton(e, t, n) {
+		let r = document.createElement("button");
+		return r.type = "button", r.textContent = e, a(r, t), n.forEach((e) => i(r, e)), r;
+	}
+	decorateStructuralClasses(t) {
+		a(t, [e.root]);
+		let n = t.querySelector(this.wz_content);
+		n && a(n, [e.content]);
+		let r = t.querySelector(this.wz_nav);
+		r && a(r, [e.nav]), t.querySelectorAll(this.wz_step).forEach((t) => {
+			a(t, [e.step]);
+		});
+		let i = t.querySelector(this.wz_buttons);
+		i && a(i, [e.buttons]), t.querySelectorAll(`${this.wz_buttons} ${this.wz_button}`).forEach((t) => {
+			a(t, [e.button]);
+		});
+	}
+	getRoot() {
+		if (this.root && this.root.isConnected) return this.root;
+		let e = document.querySelector(this.wz_class);
+		if (!e) throw Error(this.i18n.empty_wz);
+		return this.root = e, e;
+	}
+	getContentElement(e) {
+		let t = e.querySelector(this.wz_content);
+		if (!t) throw Error(this.i18n.empty_content);
+		return t;
+	}
+	getTotalSteps() {
+		return this.getContentElement(this.getRoot()).querySelectorAll(this.wz_step).length;
+	}
+	getStepElement(e, t = this.getRoot()) {
+		var n;
+		let r = this.getContentElement(t);
+		return (n = Array.from(r.querySelectorAll(this.wz_step))[e]) == null ? null : n;
+	}
+	isAsyncStep(e, t = this.getRoot()) {
+		let n = this.getStepElement(e, t);
+		return n ? [n.getAttribute("data-wz-async"), n.getAttribute("data-async-step")].some((e) => e === "" || e === "true") : !1;
+	}
+	createBeforeStepChangeContext(e, t, n) {
+		let r = this.getCurrentStep();
+		return {
+			wizard: this,
+			currentStep: r,
+			nextStep: e,
+			trigger: t,
+			currentStepElement: this.getStepElement(r, n),
+			nextStepElement: this.getStepElement(e, n),
+			isAsyncStep: this.isAsyncStep(r, n)
+		};
+	}
+	setPendingState(e, t) {
+		this.pending = e, t.setAttribute("data-wz-pending", String(e));
+	}
+	dispatchStepEvent(e, t) {
+		t.dispatchEvent(new Event({
+			next: "wz.btn.next",
+			prev: "wz.btn.prev",
+			"nav.forward": "wz.nav.forward",
+			"nav.backward": "wz.nav.backward"
+		}[e], { bubbles: this.bubbles }));
+	}
+	async runBeforeStepChange(e, t, n) {
+		if (!this.before_step_change) return !0;
+		let r = this.createBeforeStepChangeContext(e, t, n), i = {
+			target: this.wz_class,
+			elem: n,
+			currentStep: r.currentStep,
+			nextStep: r.nextStep,
+			trigger: r.trigger,
+			isAsyncStep: r.isAsyncStep
+		};
+		this.setPendingState(!0, n), n.dispatchEvent(new CustomEvent("wz.pending", {
+			bubbles: this.bubbles,
+			detail: i
+		}));
+		try {
+			let e = await this.before_step_change(r) !== !1;
+			return n.dispatchEvent(new CustomEvent("wz.pending.done", {
+				bubbles: this.bubbles,
+				detail: {
+					...i,
+					allowed: e
+				}
+			})), e;
+		} catch (e) {
+			return n.dispatchEvent(new CustomEvent("wz.pending.error", {
+				bubbles: this.bubbles,
+				detail: {
+					...i,
+					error: e
+				}
+			})), !1;
+		} finally {
+			this.setPendingState(!1, n);
+		}
+	}
+	normalizeCurrentStep() {
+		let e = this.steps || this.getTotalSteps();
+		this.current_step = o(this.current_step, e), this.last_step = o(this.last_step, e);
+	}
+	syncUI(e) {
+		let t = this.getContentElement(e), n = Array.from(t.querySelectorAll(this.wz_step));
+		if (this.normalizeCurrentStep(), c(n, this.getCurrentStep()), this.nav) {
+			let t = e.querySelector(this.wz_nav);
+			t && c(Array.from(t.querySelectorAll(this.wz_step)), this.getCurrentStep());
+		}
+		if (this.buttons) {
+			let t = e.querySelector(this.wz_buttons);
+			if (t) {
+				let e = t.querySelector(`${this.wz_button}${this.wz_next}`), n = t.querySelector(`${this.wz_button}${this.wz_prev}`), r = t.querySelector(`${this.wz_button}${this.wz_finish}`);
+				e && n && r && this.checkButtons(e, n, r);
+			}
+		}
+	}
+};
+//#endregion
+export { h as default };
