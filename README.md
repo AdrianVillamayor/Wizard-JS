@@ -18,7 +18,6 @@ A lightweight wizard UI component for accessible multi-step flows in vanilla Jav
 - Dynamic required fields with `on-active-required` class.
 - Customizable validation highlighting.
 
-
 ## Table of Contents
 
 - [Wizard-JS](#wizard-js)
