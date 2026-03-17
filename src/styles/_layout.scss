@@ -1,0 +1,72 @@
+@use "./vars" as *;
+
+.wizard {
+    transition:
+        opacity $motion-base,
+        transform $motion-base;
+    display: none;
+
+    &.vertical {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+        transition:
+            opacity $motion-base,
+            transform $motion-base;
+
+        .wizard-nav {
+            flex: 1;
+            flex-direction: column;
+            padding: 0 3rem;
+            transition:
+                opacity $motion-base,
+                transform $motion-base;
+
+            @media screen and (min-width: 1024px) {
+                max-width: 250px;
+            }
+
+            @media screen and (max-width: 767px) {
+                .wizard-step {
+                    padding-left: 1rem;
+                    text-align: left;
+                }
+            }
+
+            .wizard-step {
+                &::before,
+                &::after {
+                    top: 7px;
+                    left: -12px;
+                    width: 2px;
+                    height: 100%;
+                }
+
+                .dot {
+                    top: 7px;
+                    left: -15px;
+                }
+
+                &.active {
+                    ~ .wizard-step::before {
+                        height: 0;
+                    }
+                }
+            }
+        }
+
+        .wizard-content {
+            width: 75%;
+            padding: 0 0 3rem;
+
+            @media screen and (max-width: 767px) {
+                padding: 2rem 0;
+            }
+        }
+
+        .wizard-buttons {
+            flex-basis: 100%;
+        }
+    }
+}

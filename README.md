@@ -5,7 +5,7 @@
 
 # Wizard-JS
 
-A lightweight wizard UI component that supports accessibility and HTML5 in Vanilla JavaScript.
+A lightweight wizard UI component for accessible multi-step flows in vanilla JavaScript.
 
 ## Features
 
@@ -25,6 +25,7 @@ A lightweight wizard UI component that supports accessibility and HTML5 in Vanil
   - [Features](#features)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
+  - [Test Folder](#test-folder)
   - [Usage](#usage)
     - [CommonJS](#commonjs)
     - [ES Modules](#es-modules)
@@ -58,19 +59,90 @@ A lightweight wizard UI component that supports accessibility and HTML5 in Vanil
 
 ## Installation
 
-You can install the package via [npm](https://www.npmjs.com/package/@adrii_/wizard-js):
+You can install the package from [npm](https://www.npmjs.com/package/@adrii_/wizard-js):
 
 ```bash
 npm install @adrii_/wizard-js
 ```
 
+```bash
+pnpm add @adrii_/wizard-js
+```
+
+```bash
+bun install @adrii_/wizard-js
+```
+
 For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" target="_blank">CDN</a> usage:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/main.min.css">
+
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/index.js"></script>
+```
+
+For production usage, it is better to pin a specific version instead of `@latest`:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/main.min.css">
 
 <script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/index.js"></script>
 ```
+
+## Test Folder
+
+The repository includes a [`test/`](./test) folder with smoke examples that show how to consume the package in different environments:
+
+- [`test/ts`](./test/ts): TypeScript consumer using the packed tarball.
+- [`test/js`](./test/js): JavaScript ESM consumer using the packed tarball.
+- [`test/cjs`](./test/cjs): CommonJS consumer using the packed tarball.
+- [`test/cdn`](./test/cdn): browser example using jsDelivr CDN.
+- [`test/base.css`](./test/base.css): minimal visual base used only by the browser smoke examples.
+
+The name `test/` is intentional here: these are not unit tests, but package consumption smoke tests.
+
+To run the automated smoke checks:
+
+```bash
+pnpm run smoke
+```
+
+To run them one by one:
+
+```bash
+pnpm run smoke:ts
+pnpm run smoke:js
+pnpm run smoke:cjs
+```
+
+To prepare the browser examples:
+
+```bash
+pnpm run browser:prepare
+```
+
+To open each browser example with Vite:
+
+```bash
+pnpm run browser:ts
+pnpm run browser:js
+pnpm run browser:cjs
+pnpm run browser:cdn
+```
+
+Browser examples available in `test/`:
+
+- [`test/ts/index.html`](./test/ts/index.html): TypeScript + package CSS.
+- [`test/js/index.html`](./test/js/index.html): JavaScript ESM + package CSS.
+- [`test/cjs/index.html`](./test/cjs/index.html): browser UMD/global test using the packaged UMD bundle installed in the fixture.
+- [`test/cdn/index.html`](./test/cdn/index.html): CDN/browser test using jsDelivr.
+
+Note about `cjs` in the browser:
+
+- [`test/cjs/index.js`](./test/cjs/index.js) validates CommonJS in Node.
+- [`test/cjs/index.html`](./test/cjs/index.html) validates the browser global/UMD bundle.
+
+The CDN example can also be opened directly in a browser if you only want to test the published jsDelivr version.
 
 ## Usage
 
@@ -279,9 +351,66 @@ Options allowing you to modify the behavior and actions:
 | `next`            | String  | `Next`                                                                     | Text for the Next button                                       |
 | `prev`            | String  | `Prev`                                                                     | Text for the Prev button                                       |
 | `finish`          | String  | `Submit`                                                                   | Text for the Finish button                                     |
-| `bubbles`         | Boolean | `false`                                                                    | Enable or disable event bubbling for custom events             |
+| `before_step_change` | Function | `null`                                                                  | Hook executed before moving forward. Can return `false` or a rejected promise to block the step change |
+| `bubbles`         | Boolean | `true`                                                                     | Enable or disable event bubbling for custom events             |
 | `highlight_type`  | Object  | `{ error: "error", warning: "warning", success: "success", info: "info" }` | Classes for different validation highlight effects             |
 | `i18n`            | Object  | Various                                                                    | Internationalization messages for errors, titles, and warnings |
+
+### Async Step Hook
+
+Use `before_step_change` when you need to perform async work before allowing the wizard to move to the next step.
+
+```javascript
+const wizard = new Wizard({
+    wz_class: ".wizard",
+    before_step_change: async ({ currentStepElement, isAsyncStep }) => {
+        if (!isAsyncStep) {
+            return true;
+        }
+
+        const stepId = currentStepElement?.getAttribute("data-id");
+
+        if (stepId === "campaign") {
+            const response = await fetch("/api/check-campaign", {
+                method: "POST"
+            });
+
+            return response.ok;
+        }
+
+        if (stepId === "notification") {
+            const title = currentStepElement
+                ?.querySelector('input[name="title"]')
+                ?.value;
+
+            return title === "LoR";
+        }
+
+        return true;
+    }
+});
+```
+
+To mark a step as async-only, add either `data-wz-async="true"` or `data-async-step="true"` to the current `.wizard-step`.
+
+If you have more than one async step, prefer identifying each step with a stable attribute such as `data-id` instead of relying only on the numeric index.
+
+```html
+<div class="wizard-step" data-id="campaign" data-wz-async="true"></div>
+<div class="wizard-step" data-id="notification" data-wz-async="true"></div>
+```
+
+The hook context exposes:
+
+- `currentStep`
+- `nextStep`
+- `currentStepElement`
+- `nextStepElement`
+- `trigger`
+- `isAsyncStep`
+- `wizard`
+
+While the hook is pending, the wizard root gets `data-wz-pending="true"` and extra forward clicks are ignored.
 
 ### i18n Options
 
@@ -393,6 +522,24 @@ $wz_doc.addEventListener("wz.error", function (e) {
 });
 ```
 
+### Pending Step Events
+
+Triggered when `before_step_change` starts, finishes or throws an error.
+
+```javascript
+$wz_doc.addEventListener("wz.pending", function (e) {
+    console.log("Pending step change", e.detail.currentStep, e.detail.nextStep);
+});
+
+$wz_doc.addEventListener("wz.pending.done", function (e) {
+    console.log("Step change allowed:", e.detail.allowed);
+});
+
+$wz_doc.addEventListener("wz.pending.error", function (e) {
+    console.error("Async step failed", e.detail.error);
+});
+```
+
 ### Form Submission and Wizard Completion Events
 
 If it is a form, at the end it will fire the following event:
@@ -426,6 +573,17 @@ $wz_doc.addEventListener("wz.reset", function (e) {
 Try it on CodePen:
 
 [![Codepen](https://user-images.githubusercontent.com/29653964/116972608-8f6bca80-acbb-11eb-98c1-8a3b19705de1.png)](https://codepen.io/adrianvillamayor/pen/VwWPVME)
+
+The local repo demo also includes an async example with multiple async steps:
+
+- `campaign`: only advances when `dropdown === "other"`
+- `notification`: only advances when `title === "LoR"`
+
+You can run it with:
+
+```bash
+pnpm run dev
+```
 
 
 ## Contributing

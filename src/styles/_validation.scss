@@ -1,0 +1,7 @@
+@use "./vars" as *;
+
+.highlight {
+    &-error {
+        outline: 1px solid $color-error;
+    }
+}

@@ -1,0 +1,162 @@
+@use "./vars" as *;
+
+.wizard {
+    .wizard-nav {
+        display: flex;
+        flex-wrap: wrap;
+        transition:
+            transform $motion-base,
+            opacity $motion-base;
+
+        &.tabs {
+            .wizard-step {
+                position: relative;
+                flex-basis: 0;
+                flex-grow: 1;
+                max-width: 100%;
+                padding: 0.5rem 1rem;
+                border-bottom: 1px solid $color-border;
+                font-size: 14px;
+                text-align: center;
+
+                &.active {
+                    border: 1px solid $color-border;
+                    border-top-left-radius: 0.25rem;
+                    border-top-right-radius: 0.25rem;
+                    border-bottom: 0;
+                }
+            }
+        }
+
+        &.progress {
+            height: auto;
+            overflow: auto;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            line-height: 1.5;
+
+            .wizard-step {
+                position: relative;
+                flex-basis: 0;
+                flex-grow: 1;
+                max-width: 100%;
+                padding: 0.5rem 1rem;
+                border: 1px solid $color-border;
+                background-color: $color-done;
+                color: $white;
+                font-size: 14px;
+                text-align: center;
+                transition:
+                    background-color $motion-base,
+                    color $motion-base;
+
+                &.active {
+                    ~ .wizard-step {
+                        background-color: $white;
+                        color: $black;
+                    }
+                }
+            }
+        }
+
+        &.dots {
+            .wizard-step {
+                position: relative;
+                flex-basis: 0;
+                flex-grow: 1;
+                max-width: 100%;
+                font-size: 14px;
+                text-align: center;
+
+                span {
+                    cursor: pointer;
+                }
+
+                &:last-child {
+                    &::before,
+                    &::after {
+                        display: none;
+                    }
+                }
+
+                .dot {
+                    position: absolute;
+                    top: -20px;
+                    left: 50%;
+                    z-index: 3;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: $color-active;
+                    box-shadow: 0 0 0 2px rgb(255, 255, 255);
+                    transition:
+                        background-color $motion-slow,
+                        box-shadow $motion-slow,
+                        transform $motion-fast;
+                    transition-delay: calc(var(--wizard-step-index, 0) * 0.1s);
+                }
+
+                &::before,
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: -17px;
+                    left: 50%;
+                    width: 100%;
+                    height: 2px;
+                    transition:
+                        background-color $motion-fast,
+                        width $motion-fast,
+                        height $motion-fast;
+                    transition-delay: calc(var(--wizard-step-index, 0) * 0.1s);
+                }
+
+                &::before {
+                    z-index: 2;
+                    background: $color-done;
+                }
+
+                &::after {
+                    z-index: 1;
+                    background: $color-border;
+                }
+
+                &.active {
+                    ~ .wizard-step {
+                        .dot {
+                            background: $color-border;
+                        }
+
+                        &::before,
+                        &::after {
+                            background: $color-border;
+                        }
+
+                        &::before {
+                            width: 0;
+                        }
+                    }
+
+                    .dot {
+                        background-color: $color-active;
+                        box-shadow: 0 0 0 3px rgba(25, 143, 209, 0.2);
+                    }
+
+                    &::before,
+                    &::after {
+                        background: $color-border;
+                    }
+                }
+            }
+        }
+
+        .wizard-step {
+            cursor: pointer;
+
+            &.nav-buttons,
+            &.nav-buttons span {
+                cursor: default;
+            }
+        }
+    }
+}
