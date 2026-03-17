@@ -40,6 +40,7 @@ export const DEFAULT_OPTIONS = Object.freeze({
     next: "Next",
     prev: "Prev",
     finish: "Submit",
+    before_step_change: null,
     highlight_type: {
         error: "error",
         warning: "warning",

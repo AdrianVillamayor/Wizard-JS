@@ -9,12 +9,17 @@ import {
 } from "./dom";
 import { validateFields } from "./validation";
 import type {
+    BeforeStepChangeContext,
     ResolvedWizardOptions,
     ValidationResult,
     WizardErrorDetail,
     WizardField,
+    WizardPendingDetail,
+    WizardPendingDoneDetail,
+    WizardPendingErrorDetail,
     WizardOptions,
     WizardReadyDetail,
+    WizardTrigger,
     WizardUpdateDetail
 } from "./types";
 
@@ -45,11 +50,13 @@ class Wizard implements ResolvedWizardOptions {
     next!: string;
     prev!: string;
     finish!: string;
+    before_step_change!: ResolvedWizardOptions["before_step_change"];
     highlight_type!: ResolvedWizardOptions["highlight_type"];
     i18n!: ResolvedWizardOptions["i18n"];
     last_step: number;
     form: boolean;
     locked: boolean;
+    pending: boolean;
     locked_step: number | null;
     root: HTMLElement | null;
     navEventsBound: boolean;
@@ -61,6 +68,7 @@ class Wizard implements ResolvedWizardOptions {
             last_step: this.options.current_step,
             form: false,
             locked: false,
+            pending: false,
             locked_step: null,
             root: null,
             navEventsBound: false,
@@ -69,6 +77,7 @@ class Wizard implements ResolvedWizardOptions {
         this.last_step = this.options.current_step;
         this.form = false;
         this.locked = false;
+        this.pending = false;
         this.locked_step = null;
         this.root = null;
         this.navEventsBound = false;
@@ -339,8 +348,12 @@ class Wizard implements ResolvedWizardOptions {
         this.syncUI(wizardRoot);
     }
 
-    onClick(element: HTMLElement): void {
+    async onClick(element: HTMLElement): Promise<void> {
         const wizardRoot = this.getRoot();
+        if (this.pending) {
+            return;
+        }
+
         if (this.locked && this.locked_step === this.getCurrentStep()) {
             wizardRoot.dispatchEvent(new Event("wz.lock", {
                 bubbles: this.bubbles
@@ -354,31 +367,24 @@ class Wizard implements ResolvedWizardOptions {
 
         const step = element.getAttribute("data-wz-step");
         let nextStep = step !== null ? parseInt(step, 10) : this.getCurrentStep();
+        let trigger: WizardTrigger | null = null;
 
         if (isButton) {
             if (element.classList.contains(selectorToClassName(this.wz_prev) ?? "")) {
                 nextStep -= 1;
-                wizardRoot.dispatchEvent(new Event("wz.btn.prev", {
-                    bubbles: this.bubbles
-                }));
+                trigger = "prev";
             } else if (element.classList.contains(selectorToClassName(this.wz_next) ?? "")) {
                 nextStep += 1;
-                wizardRoot.dispatchEvent(new Event("wz.btn.next", {
-                    bubbles: this.bubbles
-                }));
+                trigger = "next";
             }
         }
 
         const movingForward = nextStep > this.getCurrentStep();
         if (isNavigationStep) {
             if (movingForward) {
-                wizardRoot.dispatchEvent(new Event("wz.nav.forward", {
-                    bubbles: this.bubbles
-                }));
+                trigger = "nav.forward";
             } else if (nextStep < this.getCurrentStep()) {
-                wizardRoot.dispatchEvent(new Event("wz.nav.backward", {
-                    bubbles: this.bubbles
-                }));
+                trigger = "nav.backward";
             }
         }
 
@@ -405,6 +411,17 @@ class Wizard implements ResolvedWizardOptions {
                     return;
                 }
             }
+        }
+
+        if (movingForward && trigger) {
+            const shouldProceed = await this.runBeforeStepChange(nextStep, trigger, wizardRoot);
+            if (!shouldProceed) {
+                return;
+            }
+        }
+
+        if (trigger) {
+            this.dispatchStepEvent(trigger, wizardRoot);
         }
 
         this.setCurrentStep(nextStep);
@@ -453,7 +470,7 @@ class Wizard implements ResolvedWizardOptions {
             const target = event.target.closest<HTMLElement>(`${this.wz_nav} ${this.wz_step}`);
             if (target) {
                 event.preventDefault();
-                this.onClick(target);
+                void this.onClick(target);
             }
         });
         this.navEventsBound = true;
@@ -472,7 +489,7 @@ class Wizard implements ResolvedWizardOptions {
                 if (target.classList.contains(selectorToClassName(this.wz_finish) ?? "")) {
                     this.onClickFinish();
                 } else {
-                    this.onClick(target);
+                    void this.onClick(target);
                 }
             }
         });
@@ -572,6 +589,107 @@ class Wizard implements ResolvedWizardOptions {
     getTotalSteps(): number {
         const wizardContent = this.getContentElement(this.getRoot());
         return wizardContent.querySelectorAll(this.wz_step).length;
+    }
+
+    getStepElement(index: number, wizardRoot: ParentNode = this.getRoot()): HTMLElement | null {
+        const wizardContent = this.getContentElement(wizardRoot);
+        const steps = Array.from(wizardContent.querySelectorAll<HTMLElement>(this.wz_step));
+        return steps[index] ?? null;
+    }
+
+    isAsyncStep(index: number, wizardRoot: ParentNode = this.getRoot()): boolean {
+        const stepElement = this.getStepElement(index, wizardRoot);
+        if (!stepElement) {
+            return false;
+        }
+
+        const asyncMarkers = [
+            stepElement.getAttribute("data-wz-async"),
+            stepElement.getAttribute("data-async-step")
+        ];
+
+        return asyncMarkers.some((value) => value === "" || value === "true");
+    }
+
+    createBeforeStepChangeContext(nextStep: number, trigger: WizardTrigger, wizardRoot: HTMLElement): BeforeStepChangeContext {
+        const currentStep = this.getCurrentStep();
+
+        return {
+            wizard: this,
+            currentStep,
+            nextStep,
+            trigger,
+            currentStepElement: this.getStepElement(currentStep, wizardRoot),
+            nextStepElement: this.getStepElement(nextStep, wizardRoot),
+            isAsyncStep: this.isAsyncStep(currentStep, wizardRoot)
+        };
+    }
+
+    setPendingState(isPending: boolean, wizardRoot: HTMLElement): void {
+        this.pending = isPending;
+        wizardRoot.setAttribute("data-wz-pending", String(isPending));
+    }
+
+    dispatchStepEvent(trigger: WizardTrigger, wizardRoot: HTMLElement): void {
+        const eventNameMap: Record<WizardTrigger, string> = {
+            next: "wz.btn.next",
+            prev: "wz.btn.prev",
+            "nav.forward": "wz.nav.forward",
+            "nav.backward": "wz.nav.backward"
+        };
+
+        wizardRoot.dispatchEvent(new Event(eventNameMap[trigger], {
+            bubbles: this.bubbles
+        }));
+    }
+
+    async runBeforeStepChange(nextStep: number, trigger: WizardTrigger, wizardRoot: HTMLElement): Promise<boolean> {
+        if (!this.before_step_change) {
+            return true;
+        }
+
+        const context = this.createBeforeStepChangeContext(nextStep, trigger, wizardRoot);
+        const detail: WizardPendingDetail = {
+            target: this.wz_class,
+            elem: wizardRoot,
+            currentStep: context.currentStep,
+            nextStep: context.nextStep,
+            trigger: context.trigger,
+            isAsyncStep: context.isAsyncStep
+        };
+
+        this.setPendingState(true, wizardRoot);
+        wizardRoot.dispatchEvent(new CustomEvent<WizardPendingDetail>("wz.pending", {
+            bubbles: this.bubbles,
+            detail
+        }));
+
+        try {
+            const result = await this.before_step_change(context);
+            const allowed = result !== false;
+
+            wizardRoot.dispatchEvent(new CustomEvent<WizardPendingDoneDetail>("wz.pending.done", {
+                bubbles: this.bubbles,
+                detail: {
+                    ...detail,
+                    allowed
+                }
+            }));
+
+            return allowed;
+        } catch (error) {
+            wizardRoot.dispatchEvent(new CustomEvent<WizardPendingErrorDetail>("wz.pending.error", {
+                bubbles: this.bubbles,
+                detail: {
+                    ...detail,
+                    error
+                }
+            }));
+
+            return false;
+        } finally {
+            this.setPendingState(false, wizardRoot);
+        }
     }
 
     normalizeCurrentStep(): void {

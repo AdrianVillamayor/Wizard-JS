@@ -351,9 +351,39 @@ Options allowing you to modify the behavior and actions:
 | `next`            | String  | `Next`                                                                     | Text for the Next button                                       |
 | `prev`            | String  | `Prev`                                                                     | Text for the Prev button                                       |
 | `finish`          | String  | `Submit`                                                                   | Text for the Finish button                                     |
+| `before_step_change` | Function | `null`                                                                  | Hook executed before moving forward. Can return `false` or a rejected promise to block the step change |
 | `bubbles`         | Boolean | `true`                                                                     | Enable or disable event bubbling for custom events             |
 | `highlight_type`  | Object  | `{ error: "error", warning: "warning", success: "success", info: "info" }` | Classes for different validation highlight effects             |
 | `i18n`            | Object  | Various                                                                    | Internationalization messages for errors, titles, and warnings |
+
+### Async Step Hook
+
+Use `before_step_change` when you need to perform async work before allowing the wizard to move to the next step.
+
+```javascript
+const wizard = new Wizard({
+    wz_class: ".wizard",
+    before_step_change: async ({ currentStep, isAsyncStep }) => {
+        if (!isAsyncStep) {
+            return true;
+        }
+
+        if (currentStep === 0) {
+            const response = await fetch("/api/check-step", {
+                method: "POST"
+            });
+
+            return response.ok;
+        }
+
+        return true;
+    }
+});
+```
+
+To mark a step as async-only, add either `data-wz-async="true"` or `data-async-step="true"` to the current `.wizard-step`.
+
+While the hook is pending, the wizard root gets `data-wz-pending="true"` and extra forward clicks are ignored.
 
 ### i18n Options
 
@@ -462,6 +492,24 @@ $wz_doc.addEventListener("wz.error", function (e) {
     console.log(`ID:`, e.detail.id); // form_validation
     console.log(`Message:`, e.detail.msg); // Form validation message
     console.log(`Target:`, e.detail.target); // Array of invalid elements
+});
+```
+
+### Pending Step Events
+
+Triggered when `before_step_change` starts, finishes or throws an error.
+
+```javascript
+$wz_doc.addEventListener("wz.pending", function (e) {
+    console.log("Pending step change", e.detail.currentStep, e.detail.nextStep);
+});
+
+$wz_doc.addEventListener("wz.pending.done", function (e) {
+    console.log("Step change allowed:", e.detail.allowed);
+});
+
+$wz_doc.addEventListener("wz.pending.error", function (e) {
+    console.error("Async step failed", e.detail.error);
 });
 ```
 

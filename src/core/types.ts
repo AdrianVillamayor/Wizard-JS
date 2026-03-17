@@ -1,4 +1,25 @@
 export type WizardNavigation = "all" | "nav" | "buttons";
+export type WizardTrigger = "next" | "prev" | "nav.forward" | "nav.backward";
+
+export interface WizardInstance {
+    getCurrentStep(): number;
+    getRoot(): HTMLElement;
+    setCurrentStep(step: number): void;
+    steps: number;
+}
+
+export interface BeforeStepChangeContext {
+    wizard: WizardInstance;
+    currentStep: number;
+    nextStep: number;
+    trigger: WizardTrigger;
+    currentStepElement: HTMLElement | null;
+    nextStepElement: HTMLElement | null;
+    isAsyncStep: boolean;
+}
+
+export type BeforeStepChangeResult = boolean | void | Promise<boolean | void>;
+export type BeforeStepChangeHook = (context: BeforeStepChangeContext) => BeforeStepChangeResult;
 
 export interface HighlightTypeMap {
     error: string;
@@ -48,6 +69,7 @@ export interface ResolvedWizardOptions {
     next: string;
     prev: string;
     finish: string;
+    before_step_change: BeforeStepChangeHook | null;
     highlight_type: HighlightTypeMap;
     i18n: WizardI18n;
 }
@@ -84,4 +106,21 @@ export interface WizardErrorDetail {
     id: string;
     msg: string;
     target: WizardField[];
+}
+
+export interface WizardPendingDetail {
+    target: string;
+    elem: HTMLElement;
+    currentStep: number;
+    nextStep: number;
+    trigger: WizardTrigger;
+    isAsyncStep: boolean;
+}
+
+export interface WizardPendingDoneDetail extends WizardPendingDetail {
+    allowed: boolean;
+}
+
+export interface WizardPendingErrorDetail extends WizardPendingDetail {
+    error: unknown;
 }

@@ -1,10 +1,14 @@
 import Wizard, {
+    type WizardPendingDetail,
+    type WizardPendingDoneDetail,
+    type WizardPendingErrorDetail,
     type WizardErrorDetail,
     type WizardReadyDetail,
     type WizardUpdateDetail
 } from "@adrii_/wizard-js";
 
 const wzClass = ".wizard";
+const asyncStatus = document.getElementById("async_status");
 
 const wizardRoot = document.querySelector<HTMLElement>(wzClass);
 const resetButton = document.getElementById("btn_reset");
@@ -13,7 +17,7 @@ const unlockButton = document.getElementById("btn_unlock");
 const appendButton = document.getElementById("btn_append");
 const formWizard = document.getElementById("formWizard");
 
-if (!wizardRoot || !resetButton || !lockButton || !unlockButton || !appendButton || !(formWizard instanceof HTMLFormElement)) {
+if (!wizardRoot || !resetButton || !lockButton || !unlockButton || !appendButton || !asyncStatus || !(formWizard instanceof HTMLFormElement)) {
     throw new Error("Demo markup is incomplete.");
 }
 
@@ -35,7 +39,21 @@ const wizard = new Wizard({
     buttons: true,
     navigation: "all",
     finish: "Save iie!",
-    bubbles: true
+    bubbles: true,
+    before_step_change: async ({ currentStep, isAsyncStep }) => {
+        if (!isAsyncStep) {
+            return true;
+        }
+
+        asyncStatus.className = "alert alert-info py-2 px-3";
+        asyncStatus.textContent = `Running async validation for step ${currentStep + 1}...`;
+
+        await new Promise((resolve) => {
+            setTimeout(resolve, 1200);
+        });
+
+        return true;
+    }
 });
 
 wizard.init();
@@ -85,6 +103,32 @@ wizardRoot.addEventListener("wz.error", (event) => {
     console.log(errorEvent.detail.msg);
 });
 
+wizardRoot.addEventListener("wz.pending", (event) => {
+    const pendingEvent = event as CustomEvent<WizardPendingDetail>;
+
+    asyncStatus.className = "alert alert-info py-2 px-3";
+    asyncStatus.textContent = `Pending transition from step ${pendingEvent.detail.currentStep + 1} to ${pendingEvent.detail.nextStep + 1}...`;
+});
+
+wizardRoot.addEventListener("wz.pending.done", (event) => {
+    const pendingDoneEvent = event as CustomEvent<WizardPendingDoneDetail>;
+
+    asyncStatus.className = pendingDoneEvent.detail.allowed
+        ? "alert alert-success py-2 px-3"
+        : "alert alert-warning py-2 px-3";
+    asyncStatus.textContent = pendingDoneEvent.detail.allowed
+        ? `Async validation completed. Step ${pendingDoneEvent.detail.nextStep + 1} unlocked.`
+        : "Async validation blocked the transition.";
+});
+
+wizardRoot.addEventListener("wz.pending.error", (event) => {
+    const pendingErrorEvent = event as CustomEvent<WizardPendingErrorDetail>;
+
+    asyncStatus.className = "alert alert-danger py-2 px-3";
+    asyncStatus.textContent = `Async step failed before moving to step ${pendingErrorEvent.detail.nextStep + 1}.`;
+    console.error(pendingErrorEvent.detail.error);
+});
+
 wizardRoot.addEventListener("wz.lock", () => {
     alert("Wizard locked");
 });
@@ -95,6 +139,8 @@ wizardRoot.addEventListener("wz.unlock", () => {
 
 wizardRoot.addEventListener("wz.reset", () => {
     formWizard.reset();
+    asyncStatus.className = "alert alert-info py-2 px-3 d-none";
+    asyncStatus.textContent = "";
     alert("Wizard has restarted");
 });
 
