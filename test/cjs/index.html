@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wizard UMD Browser Test</title>
+    <link rel="stylesheet" href="../base.css">
+    <link rel="stylesheet" href="./node_modules/@adrii_/wizard-js/dist/main.min.css">
+</head>
+<body>
+    <main class="test-shell">
+        <header class="test-header">
+            <h1>UMD Browser Smoke Test</h1>
+            <p>Loading the browser global from the generated `dist/index.js` bundle.</p>
+        </header>
+        <div class="wizard">
+            <aside class="wizard-content">
+                <div class="wizard-step" data-wz-title="Billing">
+                    <label for="cjs-holder">Card holder</label>
+                    <input id="cjs-holder" type="text" class="required" placeholder="Card holder">
+                </div>
+                <div class="wizard-step" data-wz-title="Confirm">
+                    <label for="cjs-reference">Reference</label>
+                    <input id="cjs-reference" type="text" class="required" placeholder="Reference">
+                </div>
+            </aside>
+        </div>
+        <p id="status">Loading UMD browser test...</p>
+    </main>
+    <script src="./node_modules/@adrii_/wizard-js/dist/index.js"></script>
+    <script>
+        const wizard = new Wizard({
+            wz_class: ".wizard",
+            navigation: "all",
+            buttons: true,
+            nav: true,
+            finish: "Done"
+        });
+
+        wizard.init();
+        document.getElementById("status").textContent = `UMD browser test ready: ${typeof wizard.init}`;
+    </script>
+</body>
+</html>

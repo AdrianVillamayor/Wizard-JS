@@ -76,6 +76,14 @@ bun install @adrii_/wizard-js
 For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" target="_blank">CDN</a> usage:
 
 ```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/main.min.css">
+
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/index.js"></script>
+```
+
+For production usage, it is better to pin a specific version instead of `@latest`:
+
+```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/main.min.css">
 
 <script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/index.js"></script>
@@ -89,6 +97,7 @@ The repository includes a [`test/`](./test) folder with smoke examples that show
 - [`test/js`](./test/js): JavaScript ESM consumer using the packed tarball.
 - [`test/cjs`](./test/cjs): CommonJS consumer using the packed tarball.
 - [`test/cdn`](./test/cdn): browser example using jsDelivr CDN.
+- [`test/base.css`](./test/base.css): minimal visual base used only by the browser smoke examples.
 
 The name `test/` is intentional here: these are not unit tests, but package consumption smoke tests.
 
@@ -106,7 +115,34 @@ pnpm run smoke:js
 pnpm run smoke:cjs
 ```
 
-The CDN example is manual: open [`test/cdn/index.html`](./test/cdn/index.html) in a browser.
+To prepare the browser examples:
+
+```bash
+pnpm run browser:prepare
+```
+
+To open each browser example with Vite:
+
+```bash
+pnpm run browser:ts
+pnpm run browser:js
+pnpm run browser:cjs
+pnpm run browser:cdn
+```
+
+Browser examples available in `test/`:
+
+- [`test/ts/index.html`](./test/ts/index.html): TypeScript + package CSS.
+- [`test/js/index.html`](./test/js/index.html): JavaScript ESM + package CSS.
+- [`test/cjs/index.html`](./test/cjs/index.html): browser UMD/global test using the packaged `dist/index.js` bundle.
+- [`test/cdn/index.html`](./test/cdn/index.html): CDN/browser test using jsDelivr.
+
+Note about `cjs` in the browser:
+
+- [`test/cjs/index.js`](./test/cjs/index.js) validates CommonJS in Node.
+- [`test/cjs/index.html`](./test/cjs/index.html) validates the browser global/UMD bundle.
+
+The CDN example can also be opened directly in a browser if you only want to test the published jsDelivr version.
 
 ## Usage
 

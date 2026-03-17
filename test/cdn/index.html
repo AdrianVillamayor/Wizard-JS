@@ -4,19 +4,30 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Wizard CDN Smoke Test</title>
+    <link rel="stylesheet" href="../base.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/main.min.css">
 </head>
 <body>
-    <div class="wizard">
-        <aside class="wizard-content">
-            <div class="wizard-step" data-wz-title="Step 1">
-                <input type="text" class="required" placeholder="Name">
-            </div>
-            <div class="wizard-step" data-wz-title="Step 2">
-                <input type="email" class="required" placeholder="Email">
-            </div>
-        </aside>
-    </div>
+    <main class="test-shell">
+        <header class="test-header">
+            <h1>CDN Browser Smoke Test</h1>
+            <p>Loading Wizard-JS directly from jsDelivr using the latest published release.</p>
+        </header>
+        <div class="wizard">
+            <aside class="wizard-content">
+                <div class="wizard-step" data-wz-title="Step 1">
+                    <label for="cdn-name">Name</label>
+                    <input id="cdn-name" type="text" class="required" placeholder="Name">
+                </div>
+                <div class="wizard-step" data-wz-title="Step 2">
+                    <label for="cdn-email">Email</label>
+                    <input id="cdn-email" type="email" class="required" placeholder="Email">
+                </div>
+            </aside>
+        </div>
+
+        <p id="status">Loading CDN browser test...</p>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/index.js"></script>
     <script>
@@ -26,9 +37,8 @@
             buttons: true,
             nav: true
         });
-
         wizard.init();
-        console.log(typeof Wizard, typeof wizard.init);
+        document.getElementById("status").textContent = `CDN browser test ready: ${typeof wizard.init}`;
     </script>
 </body>
 </html>

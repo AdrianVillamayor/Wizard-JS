@@ -17,7 +17,10 @@
             "require": "./dist/index.js"
         },
         "./package.json": "./package.json",
-        "./style.css": "./dist/main.min.css"
+        "./style.css": {
+            "types": "./dist/style.css.d.ts",
+            "default": "./dist/main.min.css"
+        }
     },
     "sideEffects": [
         "*.css",
@@ -26,7 +29,7 @@
     "scripts": {
         "build": "pnpm run build:lib && pnpm run build:types && pnpm run build:demo",
         "build:lib": "vite build",
-        "build:types": "pnpm exec tsc --declaration --emitDeclarationOnly --declarationMap false --outDir dist --rootDir src src/global.d.ts src/index.ts src/core/*.ts && mkdir -p dist/styles && printf 'export {};\\n' > dist/styles/index.scss.d.ts",
+        "build:types": "pnpm exec tsc --declaration --emitDeclarationOnly --declarationMap false --outDir dist --rootDir src src/global.d.ts src/index.ts src/core/*.ts && mkdir -p dist/styles && printf 'export {};\\n' > dist/styles/index.scss.d.ts && printf 'declare const css: string;\\nexport default css;\\n' > dist/style.css.d.ts",
         "build:demo": "pnpm exec vite build --config demo/vite.config.ts",
         "start": "pnpm exec vite --config demo/vite.config.ts",
         "dev": "pnpm run start",
@@ -38,7 +41,12 @@
         "smoke:ts": "pnpm exec tsc -p test/ts/tsconfig.json --noEmit",
         "smoke:js": "node test/js/index.js",
         "smoke:cjs": "node test/cjs/index.js",
-        "smoke": "pnpm run build && pnpm run smoke:pack && pnpm run smoke:install:ts && pnpm run smoke:install:js && pnpm run smoke:install:cjs && pnpm run smoke:ts && pnpm run smoke:js && pnpm run smoke:cjs"
+        "smoke": "pnpm run build && pnpm run smoke:pack && pnpm run smoke:install:ts && pnpm run smoke:install:js && pnpm run smoke:install:cjs && pnpm run smoke:ts && pnpm run smoke:js && pnpm run smoke:cjs",
+        "browser:prepare": "pnpm run build && pnpm run smoke:pack && pnpm run smoke:install:ts && pnpm run smoke:install:js && pnpm run smoke:install:cjs",
+        "browser:ts": "pnpm exec vite test/ts --config test/vite.config.ts",
+        "browser:js": "pnpm exec vite test/js --config test/vite.config.ts",
+        "browser:cjs": "pnpm exec vite test/cjs --config test/vite.config.ts",
+        "browser:cdn": "pnpm exec vite test/cdn --config test/vite.config.ts"
     },
     "keywords": [
         "javascript",
@@ -81,8 +89,8 @@
         }
     ],
     "devDependencies": {
-        "@types/node": "^24.5.2",
-        "sass": "^1.75.0",
+        "@types/node": "^24.12.0",
+        "sass": "^1.98.0",
         "typescript": "^5.9.3",
         "vite": "^8.0.0"
     },

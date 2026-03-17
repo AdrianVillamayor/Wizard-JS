@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wizard JS Browser Test</title>
+    <link rel="stylesheet" href="../base.css">
+</head>
+<body>
+    <main class="test-shell">
+        <header class="test-header">
+            <h1>JavaScript Browser Smoke Test</h1>
+            <p>Consuming the published package from a JavaScript ESM entry with package CSS.</p>
+        </header>
+        <div class="wizard">
+            <aside class="wizard-content">
+                <div class="wizard-step" data-wz-title="Details">
+                    <label for="js-company">Company</label>
+                    <input id="js-company" type="text" class="required" placeholder="Company">
+                </div>
+                <div class="wizard-step" data-wz-title="Review">
+                    <label for="js-notes">Notes</label>
+                    <textarea id="js-notes" class="required" placeholder="Notes"></textarea>
+                </div>
+            </aside>
+        </div>
+        <p id="status">Loading JavaScript browser test...</p>
+    </main>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
