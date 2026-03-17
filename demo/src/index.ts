@@ -9,6 +9,7 @@ import Wizard, {
 
 const wzClass = ".wizard";
 const asyncStatus = document.getElementById("async_status");
+const stepPayload = document.getElementById("step_payload");
 
 const wizardRoot = document.querySelector<HTMLElement>(wzClass);
 const resetButton = document.getElementById("btn_reset");
@@ -17,7 +18,16 @@ const unlockButton = document.getElementById("btn_unlock");
 const appendButton = document.getElementById("btn_append");
 const formWizard = document.getElementById("formWizard");
 
-if (!wizardRoot || !resetButton || !lockButton || !unlockButton || !appendButton || !asyncStatus || !(formWizard instanceof HTMLFormElement)) {
+if (
+    !wizardRoot
+    || !resetButton
+    || !lockButton
+    || !unlockButton
+    || !appendButton
+    || !asyncStatus
+    || !stepPayload
+    || !(formWizard instanceof HTMLFormElement)
+) {
     throw new Error("Demo markup is incomplete.");
 }
 
@@ -40,18 +50,37 @@ const wizard = new Wizard({
     navigation: "all",
     finish: "Save iie!",
     bubbles: true,
-    before_step_change: async ({ currentStep, isAsyncStep }) => {
+    before_step_change: async ({ currentStep, currentStepElement, isAsyncStep }) => {
         if (!isAsyncStep) {
             return true;
         }
 
+        const fields = serializeStepFields(currentStepElement);
+        const stepId = currentStepElement?.getAttribute("data-id") ?? `step-${currentStep + 1}`;
+
+        stepPayload.className = "bg-light border rounded p-3 small";
+        stepPayload.textContent = JSON.stringify({
+            stepId,
+            fields
+        }, null, 2);
+
         asyncStatus.className = "alert alert-info py-2 px-3";
-        asyncStatus.textContent = `Running async validation for step ${currentStep + 1}...`;
+        asyncStatus.textContent = `Running async validation for "${stepId}" with ${Object.keys(fields).length} collected field(s)...`;
 
         await new Promise((resolve) => {
             setTimeout(resolve, 1200);
         });
 
+        const validation = validateAsyncStep(stepId, fields);
+
+        if (!validation.allowed) {
+            asyncStatus.className = "alert alert-warning py-2 px-3";
+            asyncStatus.textContent = validation.message;
+            return false;
+        }
+
+        asyncStatus.className = "alert alert-success py-2 px-3";
+        asyncStatus.textContent = validation.message;
         return true;
     }
 });
@@ -141,6 +170,8 @@ wizardRoot.addEventListener("wz.reset", () => {
     formWizard.reset();
     asyncStatus.className = "alert alert-info py-2 px-3 d-none";
     asyncStatus.textContent = "";
+    stepPayload.className = "bg-light border rounded p-3 small d-none";
+    stepPayload.textContent = "";
     alert("Wizard has restarted");
 });
 
@@ -178,4 +209,85 @@ function setStep(activeWizard: Wizard): void {
 
     target.insertAdjacentHTML("beforebegin", html);
     activeWizard.update();
+}
+
+function serializeStepFields(stepElement: HTMLElement | null): Record<string, string | string[]> {
+    const fields: Record<string, string | string[]> = {};
+
+    if (!stepElement) {
+        return fields;
+    }
+
+    const elements = stepElement.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+        "input, textarea, select"
+    );
+
+    elements.forEach((field) => {
+        if (!field.name) {
+            return;
+        }
+
+        if (field instanceof HTMLInputElement && field.type === "file") {
+            fields[field.name] = Array.from(field.files ?? []).map((file) => file.name);
+            return;
+        }
+
+        if (field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio")) {
+            if (!field.checked) {
+                return;
+            }
+
+            const previousValue = fields[field.name];
+            if (Array.isArray(previousValue)) {
+                previousValue.push(field.value);
+                return;
+            }
+
+            if (typeof previousValue === "string") {
+                fields[field.name] = [previousValue, field.value];
+                return;
+            }
+
+            fields[field.name] = field.value;
+            return;
+        }
+
+        fields[field.name] = field.value;
+    });
+
+    return fields;
+}
+
+function validateAsyncStep(
+    stepId: string,
+    fields: Record<string, string | string[]>
+): { allowed: boolean; message: string } {
+    if (stepId === "campaign") {
+        return fields.dropdown === "other"
+            ? {
+                allowed: true,
+                message: "Async validation completed. Campaign step unlocked."
+            }
+            : {
+                allowed: false,
+                message: "Async validation blocked the transition. Campaign name must be set to \"Other\"."
+            };
+    }
+
+    if (stepId === "notification") {
+        return fields.title === "LoR"
+            ? {
+                allowed: true,
+                message: "Async validation completed. Notification step unlocked."
+            }
+            : {
+                allowed: false,
+                message: "Async validation blocked the transition. The Title field must be exactly \"LoR\"."
+            };
+    }
+
+    return {
+        allowed: true,
+        message: `Async validation completed. ${stepId} unlocked.`
+    };
 }

@@ -18,9 +18,10 @@
                 <small>A lightweight wizard UI component that supports accessibility and HTML5 in vanilla JavaScript.
                 </small>
                 <p class="mt-3 mb-2 text-muted">
-                    Step 2 is marked as async. Moving forward from that step simulates a delayed request before allowing the wizard to continue.
+                    Steps 1 and 2 are marked as async. Each one reads all of its fields, waits briefly, and applies a different rule before allowing the wizard to continue.
                 </p>
                 <div id="async_status" class="alert alert-info py-2 px-3 d-none" role="status" aria-live="polite"></div>
+                <pre id="step_payload" class="bg-light border rounded p-3 small d-none"></pre>
                 <p>
                     <img src="https://img.shields.io/badge/WizardJS-v2.0.3-blue?style=flat-square" class="img-fluid">
                     <img src="https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square"
@@ -32,7 +33,7 @@
 
                 <aside class="wizard-content container">
 
-                    <div class="wizard-step" data-wz-title="Adrii">
+                    <div class="wizard-step" data-id="campaign" data-wz-title="Adrii" data-wz-async="true">
                         <div class="form-group">
                             <label for="nameCampaign">Campaign name <span class="required">*</span></label>
                             <select class="form-control" id="dropdown" name="dropdown">
@@ -47,9 +48,13 @@
                             <input class="form-control" type="text" id="otherField" name="otherField"
                                 data-require-if="dropdown:other" placeholder="Please specify" />
                         </div>
+
+                        <div class="alert alert-warning mt-3 mb-0">
+                            Async rule for this step: <strong>Campaign name</strong> must be <strong>Other</strong>.
+                        </div>
                     </div>
 
-                    <div class="wizard-step" data-wz-async="true">
+                    <div class="wizard-step" data-id="notification" data-wz-async="true">
                         <div class="form-group">
                             <label for="titleNoti">Title <span class="required">*</span></label>
                             <input type="text" name="title" class="form-control required banner-info" id="titleNoti"
@@ -68,7 +73,7 @@
                         </div>
 
                         <div class="alert alert-warning mt-3 mb-0">
-                            This step simulates an async validation before the wizard can move forward.
+                            This step simulates an async validation before the wizard can move forward. It reads every field in the step and blocks the transition unless the Title is exactly <strong>LoR</strong>.
                         </div>
 
                     </div>

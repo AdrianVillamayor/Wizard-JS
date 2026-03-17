@@ -363,17 +363,27 @@ Use `before_step_change` when you need to perform async work before allowing the
 ```javascript
 const wizard = new Wizard({
     wz_class: ".wizard",
-    before_step_change: async ({ currentStep, isAsyncStep }) => {
+    before_step_change: async ({ currentStepElement, isAsyncStep }) => {
         if (!isAsyncStep) {
             return true;
         }
 
-        if (currentStep === 0) {
-            const response = await fetch("/api/check-step", {
+        const stepId = currentStepElement?.getAttribute("data-id");
+
+        if (stepId === "campaign") {
+            const response = await fetch("/api/check-campaign", {
                 method: "POST"
             });
 
             return response.ok;
+        }
+
+        if (stepId === "notification") {
+            const title = currentStepElement
+                ?.querySelector('input[name="title"]')
+                ?.value;
+
+            return title === "LoR";
         }
 
         return true;
@@ -382,6 +392,23 @@ const wizard = new Wizard({
 ```
 
 To mark a step as async-only, add either `data-wz-async="true"` or `data-async-step="true"` to the current `.wizard-step`.
+
+If you have more than one async step, prefer identifying each step with a stable attribute such as `data-id` instead of relying only on the numeric index.
+
+```html
+<div class="wizard-step" data-id="campaign" data-wz-async="true"></div>
+<div class="wizard-step" data-id="notification" data-wz-async="true"></div>
+```
+
+The hook context exposes:
+
+- `currentStep`
+- `nextStep`
+- `currentStepElement`
+- `nextStepElement`
+- `trigger`
+- `isAsyncStep`
+- `wizard`
 
 While the hook is pending, the wizard root gets `data-wz-pending="true"` and extra forward clicks are ignored.
 
@@ -546,6 +573,17 @@ $wz_doc.addEventListener("wz.reset", function (e) {
 Try it on CodePen:
 
 [![Codepen](https://user-images.githubusercontent.com/29653964/116972608-8f6bca80-acbb-11eb-98c1-8a3b19705de1.png)](https://codepen.io/adrianvillamayor/pen/VwWPVME)
+
+The local repo demo also includes an async example with multiple async steps:
+
+- `campaign`: only advances when `dropdown === "other"`
+- `notification`: only advances when `title === "LoR"`
+
+You can run it with:
+
+```bash
+pnpm run dev
+```
 
 
 ## Contributing
