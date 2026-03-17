@@ -1,4 +1,6 @@
-export function selectorToClassName(selector) {
+import type { WizardField } from "./types";
+
+export function selectorToClassName(selector?: string | null): string | null {
     if (typeof selector !== "string") {
         return null;
     }
@@ -11,24 +13,24 @@ export function selectorToClassName(selector) {
     return trimmed.slice(1);
 }
 
-export function addClassFromSelector(element, selector) {
+export function addClassFromSelector(element: Element, selector?: string | null): void {
     const className = selectorToClassName(selector);
     if (className) {
         element.classList.add(className);
     }
 }
 
-export function addClassNames(element, classNames) {
+export function addClassNames(element: Element, classNames: Array<string | null | undefined>): void {
     classNames.filter(Boolean).forEach((className) => {
-        element.classList.add(className);
+        element.classList.add(className as string);
     });
 }
 
-export function getStepSelector(stepSelector, index) {
+export function getStepSelector(stepSelector: string, index: number): string {
     return `${stepSelector}[data-wz-step="${index}"]`;
 }
 
-export function clampStep(step, totalSteps) {
+export function clampStep(step: number, totalSteps: number): number {
     const safeStep = Number.isFinite(step) ? step : 0;
     if (totalSteps <= 0) {
         return 0;
@@ -37,7 +39,7 @@ export function clampStep(step, totalSteps) {
     return Math.min(Math.max(safeStep, 0), totalSteps - 1);
 }
 
-export function getButtonStyleClasses(selector) {
+export function getButtonStyleClasses(selector: string): string[] {
     return selector
         .replace(/\./g, " ")
         .split(" ")
@@ -45,14 +47,14 @@ export function getButtonStyleClasses(selector) {
         .filter(Boolean);
 }
 
-export function toggleActiveStep(steps, activeIndex) {
+export function toggleActiveStep(steps: Element[], activeIndex: number): void {
     steps.forEach((step, index) => {
         step.classList.toggle("active", index === activeIndex);
     });
 }
 
-export function getFieldValue(field) {
-    if (field.type === "checkbox" || field.type === "radio") {
+export function getFieldValue(field: WizardField): string | boolean {
+    if (field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio")) {
         return field.checked;
     }
 

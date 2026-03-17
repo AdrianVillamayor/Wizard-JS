@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wizard CDN Smoke Test</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/main.min.css">
+</head>
+<body>
+    <div class="wizard">
+        <aside class="wizard-content">
+            <div class="wizard-step" data-wz-title="Step 1">
+                <input type="text" class="required" placeholder="Name">
+            </div>
+            <div class="wizard-step" data-wz-title="Step 2">
+                <input type="email" class="required" placeholder="Email">
+            </div>
+        </aside>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/index.js"></script>
+    <script>
+        const wizard = new Wizard({
+            wz_class: ".wizard",
+            navigation: "all",
+            buttons: true,
+            nav: true
+        });
+
+        wizard.init();
+        console.log(typeof Wizard, typeof wizard.init);
+    </script>
+</body>
+</html>

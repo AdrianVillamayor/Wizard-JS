@@ -1,3 +1,5 @@
+import type { ResolvedWizardOptions, WizardOptions } from "./types";
+
 export const INTERNAL_CLASSES = Object.freeze({
     root: "wizard",
     nav: "wizard-nav",
@@ -57,19 +59,19 @@ export const DEFAULT_OPTIONS = Object.freeze({
         already_defined: "This item is already defined",
         title: "Step"
     }
-});
+} satisfies ResolvedWizardOptions);
 
-export function createOptions(args = {}) {
+export function createOptions(args: WizardOptions = {}): ResolvedWizardOptions {
     return {
         ...DEFAULT_OPTIONS,
         ...args,
         highlight_type: {
             ...DEFAULT_OPTIONS.highlight_type,
-            ...(args.highlight_type || {})
+            ...args.highlight_type
         },
         i18n: {
             ...DEFAULT_OPTIONS.i18n,
-            ...(args.i18n || {})
+            ...args.i18n
         }
     };
 }

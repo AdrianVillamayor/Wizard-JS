@@ -1,11 +1,13 @@
-@use "./tokens" as *;
+@use "./vars" as *;
 
 .wizard {
     .wizard-buttons {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        transition: opacity $motion-base, transform $motion-base;
+        transition:
+            opacity $motion-base,
+            transform $motion-base;
 
         .wizard-btn {
             display: inline-block;
@@ -22,7 +24,9 @@
             vertical-align: middle;
             cursor: pointer;
             user-select: none;
-            transition: background-color $motion-base, opacity $motion-base;
+            transition:
+                background-color $motion-base,
+                opacity $motion-base;
 
             &:hover {
                 background-color: rgba($color-active, 0.8);

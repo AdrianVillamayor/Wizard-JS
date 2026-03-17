@@ -25,6 +25,7 @@ A lightweight wizard UI component for accessible multi-step flows in vanilla Jav
   - [Features](#features)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
+  - [Test Folder](#test-folder)
   - [Usage](#usage)
     - [CommonJS](#commonjs)
     - [ES Modules](#es-modules)
@@ -79,6 +80,33 @@ For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" tar
 
 <script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/index.js"></script>
 ```
+
+## Test Folder
+
+The repository includes a [`test/`](./test) folder with smoke examples that show how to consume the package in different environments:
+
+- [`test/ts`](./test/ts): TypeScript consumer using the packed tarball.
+- [`test/js`](./test/js): JavaScript ESM consumer using the packed tarball.
+- [`test/cjs`](./test/cjs): CommonJS consumer using the packed tarball.
+- [`test/cdn`](./test/cdn): browser example using jsDelivr CDN.
+
+The name `test/` is intentional here: these are not unit tests, but package consumption smoke tests.
+
+To run the automated smoke checks:
+
+```bash
+pnpm run smoke
+```
+
+To run them one by one:
+
+```bash
+pnpm run smoke:ts
+pnpm run smoke:js
+pnpm run smoke:cjs
+```
+
+The CDN example is manual: open [`test/cdn/index.html`](./test/cdn/index.html) in a browser.
 
 ## Usage
 

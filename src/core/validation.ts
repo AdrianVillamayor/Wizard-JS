@@ -1,6 +1,7 @@
-import { getFieldValue } from "@core/dom.js";
+import { getFieldValue } from "./dom";
+import type { ValidationOptions, ValidationResult, WizardField } from "./types";
 
-function parseBoolean(value) {
+function parseBoolean(value: string): boolean | null {
     if (value === "true") {
         return true;
     }
@@ -12,8 +13,12 @@ function parseBoolean(value) {
     return null;
 }
 
-function isConditionalRequirementMet(field, expectedValue) {
-    if (field.type === "checkbox" || field.type === "radio") {
+function isCheckableField(field: WizardField): field is HTMLInputElement {
+    return field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio");
+}
+
+function isConditionalRequirementMet(field: WizardField, expectedValue: string): boolean {
+    if (isCheckableField(field)) {
         const booleanValue = parseBoolean(expectedValue);
         if (booleanValue !== null) {
             return field.checked === booleanValue;
@@ -25,12 +30,12 @@ function isConditionalRequirementMet(field, expectedValue) {
     return getFieldValue(field) === expectedValue;
 }
 
-export function validateField(field, isRequired) {
+export function validateField(field: WizardField, isRequired: boolean): boolean {
     if (!isRequired && !field.required) {
         return true;
     }
 
-    if (field.type === "checkbox" || field.type === "radio") {
+    if (isCheckableField(field)) {
         return field.checked;
     }
 
@@ -41,9 +46,13 @@ export function validateField(field, isRequired) {
     return typeof field.checkValidity === "function" ? field.checkValidity() : true;
 }
 
-export function validateFields(wizardContent, fields, options) {
+export function validateFields(
+    wizardContent: Element,
+    fields: WizardField[],
+    options: ValidationOptions
+): ValidationResult {
     let hasError = false;
-    const invalidTargets = [];
+    const invalidTargets: WizardField[] = [];
 
     fields.forEach((field) => {
         let isRequired = field.required || field.classList.contains("required");
@@ -52,7 +61,7 @@ export function validateFields(wizardContent, fields, options) {
 
         if (requireIf) {
             const [dependencyId, expectedValue = ""] = requireIf.split(":");
-            const dependencyField = wizardContent.querySelector(`#${dependencyId}`);
+            const dependencyField = wizardContent.querySelector<WizardField>(`#${dependencyId}`);
 
             if (dependencyField && isConditionalRequirementMet(dependencyField, expectedValue)) {
                 isRequired = true;

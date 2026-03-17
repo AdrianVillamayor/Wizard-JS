@@ -1,4 +1,4 @@
-import { DEFAULT_OPTIONS, INTERNAL_CLASSES, createOptions } from "@core/defaults.js";
+import { DEFAULT_OPTIONS, INTERNAL_CLASSES, createOptions } from "./defaults";
 import {
     addClassFromSelector,
     addClassNames,
@@ -6,11 +6,56 @@ import {
     getButtonStyleClasses,
     selectorToClassName,
     toggleActiveStep
-} from "@core/dom.js";
-import { validateFields } from "@core/validation.js";
+} from "./dom";
+import { validateFields } from "./validation";
+import type {
+    ResolvedWizardOptions,
+    ValidationResult,
+    WizardErrorDetail,
+    WizardField,
+    WizardOptions,
+    WizardReadyDetail,
+    WizardUpdateDetail
+} from "./types";
 
-class Wizard {
-    constructor(args = {}) {
+class Wizard implements ResolvedWizardOptions {
+    options: ResolvedWizardOptions;
+    wz_class!: string;
+    wz_nav!: string;
+    wz_ori!: string;
+    wz_nav_style!: string;
+    wz_content!: string;
+    wz_buttons!: string;
+    wz_button!: string;
+    wz_button_style!: string;
+    wz_step!: string;
+    wz_form!: string;
+    wz_next!: string;
+    wz_prev!: string;
+    wz_finish!: string;
+    wz_highlight!: string;
+    bubbles!: boolean;
+    nav!: boolean;
+    buttons!: boolean;
+    highlight!: boolean;
+    current_step!: number;
+    steps!: number;
+    highlight_time!: number;
+    navigation!: ResolvedWizardOptions["navigation"];
+    next!: string;
+    prev!: string;
+    finish!: string;
+    highlight_type!: ResolvedWizardOptions["highlight_type"];
+    i18n!: ResolvedWizardOptions["i18n"];
+    last_step: number;
+    form: boolean;
+    locked: boolean;
+    locked_step: number | null;
+    root: HTMLElement | null;
+    navEventsBound: boolean;
+    buttonEventsBound: boolean;
+
+    constructor(args: WizardOptions = {}) {
         this.options = createOptions(args);
         Object.assign(this, this.options, {
             last_step: this.options.current_step,
@@ -21,10 +66,17 @@ class Wizard {
             navEventsBound: false,
             buttonEventsBound: false
         });
+        this.last_step = this.options.current_step;
+        this.form = false;
+        this.locked = false;
+        this.locked_step = null;
+        this.root = null;
+        this.navEventsBound = false;
+        this.buttonEventsBound = false;
     }
 
-    init() {
-        const wizardRoot = document.querySelector(this.wz_class);
+    init(): void {
+        const wizardRoot = document.querySelector<HTMLElement>(this.wz_class);
         if (!wizardRoot) {
             throw new Error(this.i18n.empty_wz);
         }
@@ -43,12 +95,12 @@ class Wizard {
         this.decorateStructuralClasses(wizardRoot);
         wizardRoot.classList.add(this.wz_ori.replace(".", ""));
         this.checkAndPrepare(wizardRoot);
-        this.bindEvents(wizardRoot);
+        this.bindEvents();
 
         wizardRoot.style.display = wizardRoot.classList.contains("vertical") ? "flex" : "block";
         wizardRoot.setAttribute("data-wz-load", "true");
 
-        document.dispatchEvent(new CustomEvent("wz.ready", {
+        document.dispatchEvent(new CustomEvent<WizardReadyDetail>("wz.ready", {
             bubbles: this.bubbles,
             detail: {
                 target: this.wz_class,
@@ -57,7 +109,7 @@ class Wizard {
         }));
     }
 
-    update() {
+    update(): void {
         const wizardRoot = this.getRoot();
         if (wizardRoot.getAttribute("data-wz-load") !== "true") {
             throw new Error(this.i18n.empty_wz);
@@ -65,7 +117,7 @@ class Wizard {
 
         this.decorateStructuralClasses(wizardRoot);
         this.checkAndPrepare(wizardRoot);
-        wizardRoot.dispatchEvent(new CustomEvent("wz.update", {
+        wizardRoot.dispatchEvent(new CustomEvent<WizardUpdateDetail>("wz.update", {
             bubbles: this.bubbles,
             detail: {
                 target: this.wz_class,
@@ -74,7 +126,7 @@ class Wizard {
         }));
     }
 
-    reset() {
+    reset(): void {
         const wizardRoot = this.getRoot();
         this.setCurrentStep(0);
         this.syncUI(wizardRoot);
@@ -83,12 +135,12 @@ class Wizard {
         }));
     }
 
-    lock() {
+    lock(): void {
         this.locked = true;
         this.locked_step = this.getCurrentStep();
     }
 
-    unlock() {
+    unlock(): void {
         const wizardRoot = this.getRoot();
         this.locked = false;
         this.locked_step = null;
@@ -97,37 +149,37 @@ class Wizard {
         }));
     }
 
-    updateToForm() {
+    updateToForm(): void {
         const wizardRoot = this.getRoot();
         const wizardContent = this.getContentElement(wizardRoot);
 
         if (wizardContent.tagName !== "FORM") {
-            const wizardContentClass = wizardContent.getAttribute("class");
+            const wizardContentClass = wizardContent.getAttribute("class") ?? "";
             const wizardContentMarkup = wizardContent.innerHTML;
 
             wizardContent.remove();
 
             const form = document.createElement("form");
             form.setAttribute("method", "POST");
-            form.setAttribute("class", `${wizardContentClass} ${this.wz_form.replace(".", "")}`);
+            form.setAttribute("class", `${wizardContentClass} ${this.wz_form.replace(".", "")}`.trim());
             form.innerHTML = wizardContentMarkup;
             wizardRoot.appendChild(form);
             this.decorateStructuralClasses(wizardRoot);
         }
     }
 
-    checkForm() {
+    checkForm(): ValidationResult {
         const wizardContent = this.getContentElement(this.getRoot());
-        const steps = Array.from(wizardContent.querySelectorAll(this.wz_step));
+        const steps = Array.from(wizardContent.querySelectorAll<HTMLElement>(this.wz_step));
         const activeStep = steps[this.getCurrentStep()];
 
         if (!activeStep) {
-            return { error: false };
+            return { error: false, target: [] };
         }
 
-        const fields = Array.from(activeStep.querySelectorAll("input, textarea, select"));
+        const fields = Array.from(activeStep.querySelectorAll<WizardField>("input, textarea, select"));
         if (fields.length === 0) {
-            return { error: false };
+            return { error: false, target: [] };
         }
 
         return validateFields(wizardContent, fields, {
@@ -137,8 +189,8 @@ class Wizard {
         });
     }
 
-    setNav(wizardRoot) {
-        let navigation = wizardRoot.querySelector(this.wz_nav);
+    setNav(wizardRoot: HTMLElement): void {
+        let navigation = wizardRoot.querySelector<HTMLElement>(this.wz_nav);
         if (navigation && this.nav) {
             navigation.remove();
             navigation = null;
@@ -146,7 +198,7 @@ class Wizard {
 
         if (!navigation && this.nav) {
             const wizardContent = this.getContentElement(wizardRoot);
-            const steps = Array.from(wizardContent.querySelectorAll(this.wz_step));
+            const steps = Array.from(wizardContent.querySelectorAll<HTMLElement>(this.wz_step));
             const nav = document.createElement("aside");
 
             addClassNames(nav, [INTERNAL_CLASSES.nav]);
@@ -180,9 +232,9 @@ class Wizard {
         }
     }
 
-    setButtons() {
+    setButtons(): void {
         const wizardRoot = this.getRoot();
-        let buttonContainer = wizardRoot.querySelector(this.wz_buttons);
+        let buttonContainer = wizardRoot.querySelector<HTMLElement>(this.wz_buttons);
 
         if (buttonContainer && this.buttons) {
             buttonContainer.remove();
@@ -226,7 +278,7 @@ class Wizard {
         }
     }
 
-    checkButtons(nextButton, prevButton, finishButton) {
+    checkButtons(nextButton: HTMLButtonElement, prevButton: HTMLButtonElement, finishButton: HTMLButtonElement): void {
         const currentStep = this.getCurrentStep();
         const finalStep = this.steps - 1;
 
@@ -241,24 +293,24 @@ class Wizard {
         }
     }
 
-    checkAndPrepare(wizardRoot) {
+    checkAndPrepare(wizardRoot: HTMLElement): void {
         this.setNav(wizardRoot);
 
         const wizardContent = this.getContentElement(wizardRoot);
-        const contentSteps = Array.from(wizardContent.querySelectorAll(this.wz_step));
+        const contentSteps = Array.from(wizardContent.querySelectorAll<HTMLElement>(this.wz_step));
         if (contentSteps.length === 0) {
             throw new Error(this.i18n.empty_content);
         }
 
-        let navigation = null;
-        let navigationSteps = [];
+        let navigation: HTMLElement | null = null;
+        let navigationSteps: HTMLElement[] = [];
         if (this.nav) {
-            navigation = wizardRoot.querySelector(this.wz_nav);
+            navigation = wizardRoot.querySelector<HTMLElement>(this.wz_nav);
             if (!navigation) {
                 throw new Error(this.i18n.empty_nav);
             }
 
-            navigationSteps = Array.from(navigation.querySelectorAll(this.wz_step));
+            navigationSteps = Array.from(navigation.querySelectorAll<HTMLElement>(this.wz_step));
             if (navigationSteps.length === 0) {
                 throw new Error(this.i18n.empty_nav);
             }
@@ -287,7 +339,7 @@ class Wizard {
         this.syncUI(wizardRoot);
     }
 
-    onClick(element) {
+    onClick(element: HTMLElement): void {
         const wizardRoot = this.getRoot();
         if (this.locked && this.locked_step === this.getCurrentStep()) {
             wizardRoot.dispatchEvent(new Event("wz.lock", {
@@ -296,49 +348,49 @@ class Wizard {
             return;
         }
 
-        const parent = element.closest(this.wz_class) || wizardRoot;
-        const isButton = element.classList.contains(selectorToClassName(this.wz_button) || "");
-        const isNavigationStep = element.classList.contains(selectorToClassName(this.wz_step) || "");
+        const parent = element.closest<HTMLElement>(this.wz_class) ?? wizardRoot;
+        const isButton = element.classList.contains(selectorToClassName(this.wz_button) ?? "");
+        const isNavigationStep = element.classList.contains(selectorToClassName(this.wz_step) ?? "");
 
-        let step = element.getAttribute("data-wz-step");
-        step = step !== null ? parseInt(step, 10) : this.getCurrentStep();
+        const step = element.getAttribute("data-wz-step");
+        let nextStep = step !== null ? parseInt(step, 10) : this.getCurrentStep();
 
         if (isButton) {
-            if (element.classList.contains(selectorToClassName(this.wz_prev) || "")) {
-                step -= 1;
+            if (element.classList.contains(selectorToClassName(this.wz_prev) ?? "")) {
+                nextStep -= 1;
                 wizardRoot.dispatchEvent(new Event("wz.btn.prev", {
                     bubbles: this.bubbles
                 }));
-            } else if (element.classList.contains(selectorToClassName(this.wz_next) || "")) {
-                step += 1;
+            } else if (element.classList.contains(selectorToClassName(this.wz_next) ?? "")) {
+                nextStep += 1;
                 wizardRoot.dispatchEvent(new Event("wz.btn.next", {
                     bubbles: this.bubbles
                 }));
             }
         }
 
-        const movingForward = step > this.getCurrentStep();
+        const movingForward = nextStep > this.getCurrentStep();
         if (isNavigationStep) {
             if (movingForward) {
                 wizardRoot.dispatchEvent(new Event("wz.nav.forward", {
                     bubbles: this.bubbles
                 }));
-            } else if (step < this.getCurrentStep()) {
+            } else if (nextStep < this.getCurrentStep()) {
                 wizardRoot.dispatchEvent(new Event("wz.nav.backward", {
                     bubbles: this.bubbles
                 }));
             }
         }
 
-        if (this.form && this.navigation !== "buttons" && movingForward && step !== this.getCurrentStep() + 1) {
-            step = step >= this.last_step ? this.last_step : this.getCurrentStep() + 1;
+        if (this.form && this.navigation !== "buttons" && movingForward && nextStep !== this.getCurrentStep() + 1) {
+            nextStep = nextStep >= this.last_step ? this.last_step : this.getCurrentStep() + 1;
         }
 
         if (this.form) {
             const checkForm = this.checkForm();
             if (checkForm.error) {
                 if (movingForward) {
-                    wizardRoot.dispatchEvent(new CustomEvent("wz.error", {
+                    wizardRoot.dispatchEvent(new CustomEvent<WizardErrorDetail>("wz.error", {
                         bubbles: this.bubbles,
                         detail: {
                             id: "form_validation",
@@ -349,20 +401,17 @@ class Wizard {
                 }
 
                 this.last_step = this.getCurrentStep();
-                if (this.getCurrentStep() < step) {
+                if (this.getCurrentStep() < nextStep) {
                     return;
                 }
             }
         }
 
-        if (step !== null && step !== undefined) {
-            this.setCurrentStep(step);
-        }
-
+        this.setCurrentStep(nextStep);
         this.syncUI(parent);
     }
 
-    onClickFinish() {
+    onClickFinish(): void {
         const wizardRoot = this.getRoot();
         if (this.form) {
             const checkForm = this.checkForm();
@@ -379,24 +428,29 @@ class Wizard {
         }));
     }
 
-    setCurrentStep(step) {
+    setCurrentStep(step: number): void {
         this.current_step = this.setStep(step);
     }
 
-    getCurrentStep() {
+    getCurrentStep(): number {
         return this.current_step;
     }
 
-    setStep(step) {
-        const currentStep = clampStep(Number(step), this.steps || this.getTotalSteps());
-        this.last_step = Math.max(currentStep, clampStep(this.last_step, this.steps || this.getTotalSteps()));
+    setStep(step: number): number {
+        const totalSteps = this.steps || this.getTotalSteps();
+        const currentStep = clampStep(Number(step), totalSteps);
+        this.last_step = Math.max(currentStep, clampStep(this.last_step, totalSteps));
         return currentStep;
     }
 
-    setNavEvent() {
+    setNavEvent(): void {
         const wizardRoot = this.getRoot();
         wizardRoot.addEventListener("click", (event) => {
-            const target = event.target.closest(`${this.wz_nav} ${this.wz_step}`);
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+
+            const target = event.target.closest<HTMLElement>(`${this.wz_nav} ${this.wz_step}`);
             if (target) {
                 event.preventDefault();
                 this.onClick(target);
@@ -405,13 +459,17 @@ class Wizard {
         this.navEventsBound = true;
     }
 
-    setBtnEvent() {
+    setBtnEvent(): void {
         const wizardRoot = this.getRoot();
         wizardRoot.addEventListener("click", (event) => {
-            const target = event.target.closest(`${this.wz_buttons} ${this.wz_button}`);
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+
+            const target = event.target.closest<HTMLElement>(`${this.wz_buttons} ${this.wz_button}`);
             if (target) {
                 event.preventDefault();
-                if (target.classList.contains(selectorToClassName(this.wz_finish) || "")) {
+                if (target.classList.contains(selectorToClassName(this.wz_finish) ?? "")) {
                     this.onClickFinish();
                 } else {
                     this.onClick(target);
@@ -421,9 +479,9 @@ class Wizard {
         this.buttonEventsBound = true;
     }
 
-    highlightElement(element, type) {
+    highlightElement(element: WizardField, type: string): void {
         const customHighlightClass = selectorToClassName(this.wz_highlight);
-        const classes = [INTERNAL_CLASSES.highlight, customHighlightClass, type].filter(Boolean);
+        const classes = [INTERNAL_CLASSES.highlight, customHighlightClass, type].filter(Boolean) as string[];
 
         element.classList.add(...classes);
         setTimeout(() => {
@@ -431,7 +489,7 @@ class Wizard {
         }, this.highlight_time);
     }
 
-    bindEvents() {
+    bindEvents(): void {
         switch (this.navigation) {
             case "all":
             case "nav":
@@ -452,7 +510,7 @@ class Wizard {
         }
     }
 
-    createButton(text, internalClasses, selectorClasses) {
+    createButton(text: string, internalClasses: string[], selectorClasses: string[]): HTMLButtonElement {
         const button = document.createElement("button");
         button.type = "button";
         button.textContent = text;
@@ -461,39 +519,39 @@ class Wizard {
         return button;
     }
 
-    decorateStructuralClasses(wizardRoot) {
+    decorateStructuralClasses(wizardRoot: HTMLElement): void {
         addClassNames(wizardRoot, [INTERNAL_CLASSES.root]);
 
-        const wizardContent = wizardRoot.querySelector(this.wz_content);
+        const wizardContent = wizardRoot.querySelector<HTMLElement>(this.wz_content);
         if (wizardContent) {
             addClassNames(wizardContent, [INTERNAL_CLASSES.content]);
         }
 
-        const navigation = wizardRoot.querySelector(this.wz_nav);
+        const navigation = wizardRoot.querySelector<HTMLElement>(this.wz_nav);
         if (navigation) {
             addClassNames(navigation, [INTERNAL_CLASSES.nav]);
         }
 
-        wizardRoot.querySelectorAll(this.wz_step).forEach((step) => {
+        wizardRoot.querySelectorAll<HTMLElement>(this.wz_step).forEach((step) => {
             addClassNames(step, [INTERNAL_CLASSES.step]);
         });
 
-        const buttons = wizardRoot.querySelector(this.wz_buttons);
+        const buttons = wizardRoot.querySelector<HTMLElement>(this.wz_buttons);
         if (buttons) {
             addClassNames(buttons, [INTERNAL_CLASSES.buttons]);
         }
 
-        wizardRoot.querySelectorAll(`${this.wz_buttons} ${this.wz_button}`).forEach((button) => {
+        wizardRoot.querySelectorAll<HTMLElement>(`${this.wz_buttons} ${this.wz_button}`).forEach((button) => {
             addClassNames(button, [INTERNAL_CLASSES.button]);
         });
     }
 
-    getRoot() {
+    getRoot(): HTMLElement {
         if (this.root && this.root.isConnected) {
             return this.root;
         }
 
-        const wizardRoot = document.querySelector(this.wz_class);
+        const wizardRoot = document.querySelector<HTMLElement>(this.wz_class);
         if (!wizardRoot) {
             throw new Error(this.i18n.empty_wz);
         }
@@ -502,8 +560,8 @@ class Wizard {
         return wizardRoot;
     }
 
-    getContentElement(wizardRoot) {
-        const wizardContent = wizardRoot.querySelector(this.wz_content);
+    getContentElement(wizardRoot: ParentNode): HTMLElement {
+        const wizardContent = wizardRoot.querySelector<HTMLElement>(this.wz_content);
         if (!wizardContent) {
             throw new Error(this.i18n.empty_content);
         }
@@ -511,38 +569,38 @@ class Wizard {
         return wizardContent;
     }
 
-    getTotalSteps() {
+    getTotalSteps(): number {
         const wizardContent = this.getContentElement(this.getRoot());
         return wizardContent.querySelectorAll(this.wz_step).length;
     }
 
-    normalizeCurrentStep() {
+    normalizeCurrentStep(): void {
         const totalSteps = this.steps || this.getTotalSteps();
         this.current_step = clampStep(this.current_step, totalSteps);
         this.last_step = clampStep(this.last_step, totalSteps);
     }
 
-    syncUI(wizardRoot) {
+    syncUI(wizardRoot: HTMLElement): void {
         const wizardContent = this.getContentElement(wizardRoot);
-        const contentSteps = Array.from(wizardContent.querySelectorAll(this.wz_step));
+        const contentSteps = Array.from(wizardContent.querySelectorAll<HTMLElement>(this.wz_step));
 
         this.normalizeCurrentStep();
         toggleActiveStep(contentSteps, this.getCurrentStep());
 
         if (this.nav) {
-            const navigation = wizardRoot.querySelector(this.wz_nav);
+            const navigation = wizardRoot.querySelector<HTMLElement>(this.wz_nav);
             if (navigation) {
-                const navigationSteps = Array.from(navigation.querySelectorAll(this.wz_step));
+                const navigationSteps = Array.from(navigation.querySelectorAll<HTMLElement>(this.wz_step));
                 toggleActiveStep(navigationSteps, this.getCurrentStep());
             }
         }
 
         if (this.buttons) {
-            const buttons = wizardRoot.querySelector(this.wz_buttons);
+            const buttons = wizardRoot.querySelector<HTMLElement>(this.wz_buttons);
             if (buttons) {
-                const nextButton = buttons.querySelector(`${this.wz_button}${this.wz_next}`);
-                const prevButton = buttons.querySelector(`${this.wz_button}${this.wz_prev}`);
-                const finishButton = buttons.querySelector(`${this.wz_button}${this.wz_finish}`);
+                const nextButton = buttons.querySelector<HTMLButtonElement>(`${this.wz_button}${this.wz_next}`);
+                const prevButton = buttons.querySelector<HTMLButtonElement>(`${this.wz_button}${this.wz_prev}`);
+                const finishButton = buttons.querySelector<HTMLButtonElement>(`${this.wz_button}${this.wz_finish}`);
 
                 if (nextButton && prevButton && finishButton) {
                     this.checkButtons(nextButton, prevButton, finishButton);
@@ -552,5 +610,5 @@ class Wizard {
     }
 }
 
-export { DEFAULT_OPTIONS };
+export { DEFAULT_OPTIONS, Wizard };
 export default Wizard;

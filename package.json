@@ -4,6 +4,7 @@
     "description": "A lightweight wizard UI component that supports accessibility and HTML5 in vanilla JavaScript.",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
     "files": [
         "./dist",
         "./src",
@@ -11,6 +12,7 @@
     ],
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
             "import": "./dist/index.esm.js",
             "require": "./dist/index.js"
         },
@@ -22,11 +24,21 @@
         "*.scss"
     ],
     "scripts": {
-        "build": "pnpm run build:lib && pnpm run build:demo",
+        "build": "pnpm run build:lib && pnpm run build:types && pnpm run build:demo",
         "build:lib": "vite build",
-        "build:demo": "pnpm exec vite build --config demo/vite.config.js",
-        "start": "pnpm exec vite --config demo/vite.config.js",
-        "dev": "pnpm run start"
+        "build:types": "pnpm exec tsc --declaration --emitDeclarationOnly --declarationMap false --outDir dist --rootDir src src/global.d.ts src/index.ts src/core/*.ts && mkdir -p dist/styles && printf 'export {};\\n' > dist/styles/index.scss.d.ts",
+        "build:demo": "pnpm exec vite build --config demo/vite.config.ts",
+        "start": "pnpm exec vite --config demo/vite.config.ts",
+        "dev": "pnpm run start",
+        "typecheck": "pnpm exec tsc -p tsconfig.json --noEmit",
+        "smoke:pack": "mkdir -p test/wizard-js-pack && rm -f test/wizard-js-pack/package.tgz && pnpm pack --pack-destination test/wizard-js-pack && node -e \"const fs=require('fs');const path=require('path');const dir=path.resolve('test/wizard-js-pack');const tgz=fs.readdirSync(dir).find((file)=>file.endsWith('.tgz')&&file!=='package.tgz');if(!tgz) throw new Error('No tarball generated');fs.renameSync(path.join(dir,tgz), path.join(dir,'package.tgz'));\"",
+        "smoke:install:ts": "CI=true pnpm --dir test/ts install --no-frozen-lockfile",
+        "smoke:install:js": "CI=true pnpm --dir test/js install --no-frozen-lockfile",
+        "smoke:install:cjs": "CI=true pnpm --dir test/cjs install --no-frozen-lockfile",
+        "smoke:ts": "pnpm exec tsc -p test/ts/tsconfig.json --noEmit",
+        "smoke:js": "node test/js/index.js",
+        "smoke:cjs": "node test/cjs/index.js",
+        "smoke": "pnpm run build && pnpm run smoke:pack && pnpm run smoke:install:ts && pnpm run smoke:install:js && pnpm run smoke:install:cjs && pnpm run smoke:ts && pnpm run smoke:js && pnpm run smoke:cjs"
     },
     "keywords": [
         "javascript",
@@ -69,7 +81,9 @@
         }
     ],
     "devDependencies": {
+        "@types/node": "^24.5.2",
         "sass": "^1.75.0",
+        "typescript": "^5.9.3",
         "vite": "^8.0.0"
     },
     "directories": {

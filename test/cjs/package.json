@@ -1,0 +1,7 @@
+{
+    "name": "wizard-js-consumer-cjs-smoke-test",
+    "private": true,
+    "dependencies": {
+        "@adrii_/wizard-js": "file:../wizard-js-pack/package.tgz"
+    }
+}

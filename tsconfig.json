@@ -1,0 +1,45 @@
+{
+    "compilerOptions": {
+        "target": "ES2018",
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ES2018"
+        ],
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowJs": false,
+        "strict": false,
+        "noEmit": true,
+        "isolatedModules": true,
+        "types": [
+            "node"
+        ],
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ],
+            "@core/*": [
+                "./src/core/*"
+            ],
+            "@styles/*": [
+                "./src/styles/*"
+            ],
+            "@adrii_/wizard-js": [
+                "./src/index.ts"
+            ]
+        },
+        "skipLibCheck": true
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.d.ts",
+        "demo/src/**/*.ts",
+        "vite.config.ts",
+        "demo/vite.config.ts"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
+}

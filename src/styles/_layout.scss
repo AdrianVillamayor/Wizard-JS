@@ -1,7 +1,9 @@
-@use "./tokens" as *;
+@use "./vars" as *;
 
 .wizard {
-    transition: opacity $motion-base, transform $motion-base;
+    transition:
+        opacity $motion-base,
+        transform $motion-base;
     display: none;
 
     &.vertical {
@@ -9,13 +11,17 @@
         flex-direction: row;
         flex-wrap: wrap;
         width: 100%;
-        transition: opacity $motion-base, transform $motion-base;
+        transition:
+            opacity $motion-base,
+            transform $motion-base;
 
         .wizard-nav {
             flex: 1;
             flex-direction: column;
             padding: 0 3rem;
-            transition: opacity $motion-base, transform $motion-base;
+            transition:
+                opacity $motion-base,
+                transform $motion-base;
 
             @media screen and (min-width: 1024px) {
                 max-width: 250px;
