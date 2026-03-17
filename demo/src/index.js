@@ -1,12 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-
 import Wizard from "@adrii_/wizard-js";
 
-let wz_class = ".wizard";
+const wz_class = ".wizard";
 
 document.addEventListener("wz.ready", function (e) {
-
   console.log("My body is ready");
 
   console.log("↓ Target ↓");
@@ -24,7 +20,7 @@ const args = {
   "buttons": true,
   "navigation": "all",
   "finish": "Save iie!",
-  "bubble": true,
+  "bubbles": true,
 };
 
 const wizard = new Wizard(args);
@@ -42,29 +38,29 @@ document.getElementById("btn_unlock").onclick = function () {
   wizard.unlock();
 };
 
-let $wz_doc = document.querySelector(wz_class);
+const $wz_doc = document.querySelector(wz_class);
 
-$wz_doc.addEventListener("wz.btn.prev", function (e) {
+$wz_doc.addEventListener("wz.btn.prev", function () {
   console.log("Prev Step");
 });
 
-$wz_doc.addEventListener("wz.btn.next", function (e) {
+$wz_doc.addEventListener("wz.btn.next", function () {
   console.log("Next Step");
 });
 
-$wz_doc.addEventListener("wz.nav.forward", function (e) {
+$wz_doc.addEventListener("wz.nav.forward", function () {
   console.log("Forward Nav");
 });
 
-$wz_doc.addEventListener("wz.nav.backward", function (e) {
+$wz_doc.addEventListener("wz.nav.backward", function () {
   console.log("Backward Nav");
 });
 
-$wz_doc.addEventListener("wz.form.submit", function (e) {
+$wz_doc.addEventListener("wz.form.submit", function () {
   alert("Form Submit");
 });
 
-$wz_doc.addEventListener("wz.end", function (e) {
+$wz_doc.addEventListener("wz.end", function () {
   alert("Wizard End");
 });
 
@@ -76,15 +72,15 @@ $wz_doc.addEventListener("wz.error", function (e) {
   console.log(e.detail.msg); //options.i18n.form_validation
 });
 
-$wz_doc.addEventListener("wz.lock", function (e) {
+$wz_doc.addEventListener("wz.lock", function () {
   alert("Wizard locked");
 });
 
-$wz_doc.addEventListener("wz.unlock", function (e) {
+$wz_doc.addEventListener("wz.unlock", function () {
   alert("Wizard unlocked");
 });
 
-$wz_doc.addEventListener("wz.reset", function (e) {
+$wz_doc.addEventListener("wz.reset", function () {
   document.getElementById("formWizard").reset();
   alert("Wizard has restarted");
 });
@@ -104,12 +100,12 @@ document.getElementById("btn_append").onclick = function () {
 };
 
 function setStep(wizard) {
-  const html = "<div class=\"card card-body m-4 wizard-step\" data-id=\"patata\" data-title=\"Adrii\"> <label class=\"question\"> Embedded step </label> <input type=\"text\" maxlength=\"100\" name=\"patata\" class=\"form-control required\" placeholder=\"Embedded step\"> </div>";
+  const html = "<div class=\"card card-body m-4 wizard-step\" data-id=\"patata\" data-wz-title=\"Adrii\"> <label class=\"question\"> Embedded step </label> <input type=\"text\" maxlength=\"100\" name=\"patata\" class=\"form-control required\" placeholder=\"Embedded step\"> </div>";
 
   const wz = document.querySelector(wizard.wz_class);
   const wz_content = wz.querySelector(wizard.wz_content);
 
-  let target = wz_content.querySelector(`${wizard.wz_step}[data-wz-step="2"]`);
+  const target = wz_content.querySelector(`${wizard.wz_step}[data-wz-step="2"]`);
 
   target.insertAdjacentHTML("beforebegin", html);
 

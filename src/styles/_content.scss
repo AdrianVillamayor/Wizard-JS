@@ -1,0 +1,17 @@
+@use "./tokens" as *;
+
+.wizard {
+    .wizard-content {
+        padding: 3rem 0;
+        transition: opacity $motion-base, transform $motion-base;
+
+        .wizard-step {
+            display: none;
+            transition: opacity $motion-base, transform $motion-base;
+
+            &.active {
+                display: block;
+            }
+        }
+    }
+}

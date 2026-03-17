@@ -5,7 +5,7 @@
 
 # Wizard-JS
 
-A lightweight wizard UI component that supports accessibility and HTML5 in Vanilla JavaScript.
+A lightweight wizard UI component for accessible multi-step flows in vanilla JavaScript.
 
 ## Features
 
@@ -58,10 +58,18 @@ A lightweight wizard UI component that supports accessibility and HTML5 in Vanil
 
 ## Installation
 
-You can install the package via [npm](https://www.npmjs.com/package/@adrii_/wizard-js):
+You can install the package from [npm](https://www.npmjs.com/package/@adrii_/wizard-js):
 
 ```bash
 npm install @adrii_/wizard-js
+```
+
+```bash
+pnpm add @adrii_/wizard-js
+```
+
+```bash
+bun install @adrii_/wizard-js
 ```
 
 For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" target="_blank">CDN</a> usage:
@@ -279,7 +287,7 @@ Options allowing you to modify the behavior and actions:
 | `next`            | String  | `Next`                                                                     | Text for the Next button                                       |
 | `prev`            | String  | `Prev`                                                                     | Text for the Prev button                                       |
 | `finish`          | String  | `Submit`                                                                   | Text for the Finish button                                     |
-| `bubbles`         | Boolean | `false`                                                                    | Enable or disable event bubbling for custom events             |
+| `bubbles`         | Boolean | `true`                                                                     | Enable or disable event bubbling for custom events             |
 | `highlight_type`  | Object  | `{ error: "error", warning: "warning", success: "success", info: "info" }` | Classes for different validation highlight effects             |
 | `i18n`            | Object  | Various                                                                    | Internationalization messages for errors, titles, and warnings |
 

@@ -1,6 +1,9 @@
-package-lock.json
 .vscode
 node_modules
 .DS_Store
-lib/*
 yarn.lock
+/dist
+test/dist
+demo/dist
+*-lock.*
+.pnpm-*
