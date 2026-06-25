@@ -17,6 +17,10 @@ function isCheckableField(field: WizardField): field is HTMLInputElement {
     return field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio");
 }
 
+function isRadioField(field: WizardField): field is HTMLInputElement {
+    return field instanceof HTMLInputElement && field.type === "radio";
+}
+
 function isConditionalRequirementMet(field: WizardField, expectedValue: string): boolean {
     if (isCheckableField(field)) {
         const booleanValue = parseBoolean(expectedValue);
@@ -68,7 +72,10 @@ export function validateFields(
             }
         }
 
-        const isValid = validateField(field, isRequired || isOnActiveRequired);
+        const required = isRequired || isOnActiveRequired;
+        const isValid = required && isRadioField(field) && field.name
+            ? fields.some((candidate) => isRadioField(candidate) && candidate.name === field.name && candidate.checked)
+            : validateField(field, required);
         if (!isValid) {
             hasError = true;
             invalidTargets.push(field);

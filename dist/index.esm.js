@@ -111,25 +111,29 @@ function u(e) {
 function d(e) {
 	return e instanceof HTMLInputElement && (e.type === "checkbox" || e.type === "radio");
 }
-function f(e, t) {
+function f(e) {
+	return e instanceof HTMLInputElement && e.type === "radio";
+}
+function p(e, t) {
 	if (d(e)) {
 		let n = u(t);
 		return n === null ? e.checked && e.value === t : e.checked === n;
 	}
 	return l(e) === t;
 }
-function p(e, t) {
+function m(e, t) {
 	return !t && !e.required ? !0 : d(e) ? e.checked : typeof e.value == "string" && e.value.trim() === "" ? !1 : typeof e.checkValidity == "function" ? e.checkValidity() : !0;
 }
-function m(e, t, n) {
+function h(e, t, n) {
 	let r = !1, i = [];
-	return t.forEach((t) => {
-		let a = t.required || t.classList.contains("required"), o = t.classList.contains("on-active-required"), s = t.getAttribute("data-require-if");
-		if (s) {
-			let [t, n = ""] = s.split(":"), r = e.querySelector(`#${t}`);
-			r && f(r, n) && (a = !0);
+	return t.forEach((a) => {
+		let o = a.required || a.classList.contains("required"), s = a.classList.contains("on-active-required"), c = a.getAttribute("data-require-if");
+		if (c) {
+			let [t, n = ""] = c.split(":"), r = e.querySelector(`#${t}`);
+			r && p(r, n) && (o = !0);
 		}
-		p(t, a || o) || (r = !0, i.push(t), n.highlight && n.highlightElement(t, n.highlight_type.error));
+		let l = o || s;
+		(l && f(a) && a.name ? t.some((e) => f(e) && e.name === a.name && e.checked) : m(a, l)) || (r = !0, i.push(a), n.highlight && n.highlightElement(a, n.highlight_type.error));
 	}), {
 		error: r,
 		target: i
@@ -137,7 +141,7 @@ function m(e, t, n) {
 }
 //#endregion
 //#region src/index.ts
-var h = class {
+var g = class {
 	constructor(e = {}) {
 		this.options = n(e), Object.assign(this, this.options, {
 			last_step: this.options.current_step,
@@ -205,7 +209,7 @@ var h = class {
 		return n.length === 0 ? {
 			error: !1,
 			target: []
-		} : m(e, n, {
+		} : h(e, n, {
 			highlight: this.highlight,
 			highlight_type: this.highlight_type,
 			highlightElement: this.highlightElement.bind(this)
@@ -469,4 +473,4 @@ var h = class {
 	}
 };
 //#endregion
-export { h as default };
+export { g as default };
