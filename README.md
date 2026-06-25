@@ -1,5 +1,5 @@
 [![Build and Lint](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml/badge.svg)](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml)
-![Badge-glow](https://img.shields.io/badge/WizardJS-v2.0.3-blue?style=flat-square)
+![Badge-glow](https://img.shields.io/badge/WizardJS-v2.1.1-blue?style=flat-square)
 [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
@@ -42,6 +42,7 @@ A lightweight wizard UI component for accessible multi-step flows in vanilla Jav
     - [Data Title Attribute `[data-wz-title]`](#data-title-attribute-data-wz-title)
     - [Data Require If Attribute `[data-require-if]`](#data-require-if-attribute-data-require-if)
   - [Config Wizard](#config-wizard)
+    - [Async Step Hook](#async-step-hook)
     - [i18n Options](#i18n-options)
   - [Events Management](#events-management)
     - [Wizard Ready Event](#wizard-ready-event)
@@ -49,6 +50,7 @@ A lightweight wizard UI component for accessible multi-step flows in vanilla Jav
     - [Lock and Unlock Events](#lock-and-unlock-events)
     - [Navigation Events](#navigation-events)
     - [Validation Error Event](#validation-error-event)
+    - [Pending Step Events](#pending-step-events)
     - [Form Submission and Wizard Completion Events](#form-submission-and-wizard-completion-events)
     - [Reset Event](#reset-event)
   - [Demo](#demo)
