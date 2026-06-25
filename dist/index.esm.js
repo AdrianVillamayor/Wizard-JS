@@ -89,8 +89,7 @@ function a(e, t) {
 	});
 }
 function o(e, t) {
-	let n = Number.isFinite(e) ? e : 0;
-	return t <= 0 ? 0 : Math.min(Math.max(n, 0), t - 1);
+	return t <= 0 ? 0 : Math.min(Math.max(Number.isFinite(e) ? e : 0, 0), t - 1);
 }
 function s(e) {
 	return e.replace(/\./g, " ").split(" ").map((e) => e.trim()).filter(Boolean);
