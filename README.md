@@ -1,6 +1,6 @@
 [![Build and Lint](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml/badge.svg)](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml)
 ![Badge-glow](https://img.shields.io/badge/WizardJS-v2.0.3-blue?style=flat-square)
-[![jsDelivr hits (npm)](https://data.jsdelivr.com/v1/package/npm/@adrii_/wizard-js/badge)](https://www.jsdelivr.com/package/npm/@adrii_/wizard-js)
+[![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
 # Wizard-JS
@@ -72,20 +72,20 @@ pnpm add @adrii_/wizard-js
 bun install @adrii_/wizard-js
 ```
 
-For <a href="https://www.jsdelivr.com/package/npm/@adrii_/wizard-js" target="_blank">CDN</a> usage:
+For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" target="_blank">CDN</a> usage:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@adrii_/wizard-js@latest/dist/main.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/main.min.css">
 
-<script src="https://cdn.jsdelivr.net/npm/@adrii_/wizard-js@latest/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@latest/dist/index.js"></script>
 ```
 
 For production usage, it is better to pin a specific version instead of `@latest`:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@adrii_/wizard-js@2.0.3/dist/main.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/main.min.css">
 
-<script src="https://cdn.jsdelivr.net/npm/@adrii_/wizard-js@2.0.3/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/index.js"></script>
 ```
 
 ## Test Folder
