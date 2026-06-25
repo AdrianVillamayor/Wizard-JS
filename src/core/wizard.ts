@@ -173,6 +173,7 @@ class Wizard implements ResolvedWizardOptions {
             form.setAttribute("class", `${wizardContentClass} ${this.wz_form.replace(".", "")}`.trim());
             form.innerHTML = wizardContentMarkup;
             wizardRoot.appendChild(form);
+            this.form = true;
             this.decorateStructuralClasses(wizardRoot);
         }
     }

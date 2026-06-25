@@ -25,8 +25,11 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
         
-      - name: Build
-        run: pnpm run build
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Smoke Tests
+        run: pnpm run smoke
 
       - name: Audit Dependencies
         run: pnpm audit --audit-level=high

@@ -195,7 +195,7 @@ var g = class {
 			let r = (n = t.getAttribute("class")) == null ? "" : n, i = t.innerHTML;
 			t.remove();
 			let a = document.createElement("form");
-			a.setAttribute("method", "POST"), a.setAttribute("class", `${r} ${this.wz_form.replace(".", "")}`.trim()), a.innerHTML = i, e.appendChild(a), this.decorateStructuralClasses(e);
+			a.setAttribute("method", "POST"), a.setAttribute("class", `${r} ${this.wz_form.replace(".", "")}`.trim()), a.innerHTML = i, e.appendChild(a), this.form = !0, this.decorateStructuralClasses(e);
 		}
 	}
 	checkForm() {
