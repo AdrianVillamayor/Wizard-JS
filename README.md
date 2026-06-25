@@ -1,5 +1,5 @@
-[![Build and Lint](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml/badge.svg)](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml)
-![Badge-glow](https://img.shields.io/badge/WizardJS-v2.1.1-blue?style=flat-square)
+[![Build](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml/badge.svg)](https://github.com/AdrianVillamayor/Wizard-JS/actions/workflows/main.yml)
+[![npm version](https://img.shields.io/npm/v/@adrii_/wizard-js?style=flat-square)](https://www.npmjs.com/package/@adrii_/wizard-js)
 [![jsDelivr hits (GitHub)](https://data.jsdelivr.com/v1/package/gh/AdrianVillamayor/Wizard-JS/badge)](https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS)
 ![GitHub repo size](https://img.shields.io/github/repo-size/AdrianVillamayor/Wizard-JS?style=flat-square)
 
@@ -18,45 +18,44 @@ A lightweight wizard UI component for accessible multi-step flows in vanilla Jav
 - Dynamic required fields with `on-active-required` class.
 - Customizable validation highlighting.
 
-## Table of Contents
+## Contents
 
-- [Wizard-JS](#wizard-js)
-  - [Features](#features)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Test Folder](#test-folder)
-  - [Usage](#usage)
-    - [CommonJS](#commonjs)
-    - [ES Modules](#es-modules)
-    - [Example HTML for Wizard](#example-html-for-wizard)
-    - [Launch the Wizard](#launch-the-wizard)
-    - [Restart the Wizard](#restart-the-wizard)
-    - [Update the Wizard](#update-the-wizard)
-    - [Lock and Unlock the Wizard](#lock-and-unlock-the-wizard)
-  - [Form Validation](#form-validation)
-    - [Required Fields](#required-fields)
-    - [Conditionally Required Fields](#conditionally-required-fields)
-    - [Dynamic Required Fields](#dynamic-required-fields)
-    - [Custom Validation Highlighting](#custom-validation-highlighting)
-  - [HTML Attributes](#html-attributes)
-    - [Data Title Attribute `[data-wz-title]`](#data-title-attribute-data-wz-title)
-    - [Data Require If Attribute `[data-require-if]`](#data-require-if-attribute-data-require-if)
-  - [Config Wizard](#config-wizard)
-    - [Async Step Hook](#async-step-hook)
-    - [i18n Options](#i18n-options)
-  - [Events Management](#events-management)
-    - [Wizard Ready Event](#wizard-ready-event)
-    - [Wizard Update Event](#wizard-update-event)
-    - [Lock and Unlock Events](#lock-and-unlock-events)
-    - [Navigation Events](#navigation-events)
-    - [Validation Error Event](#validation-error-event)
-    - [Pending Step Events](#pending-step-events)
-    - [Form Submission and Wizard Completion Events](#form-submission-and-wizard-completion-events)
-    - [Reset Event](#reset-event)
-  - [Demo](#demo)
-  - [Contributing](#contributing)
-  - [License](#license)
-    - [Thanks for your help! 🎉](#thanks-for-your-help-)
+- [Quick Start](#quick-start) - copy-paste CDN example.
+- [Installation](#installation) - npm, pnpm, bun and CDN links.
+- [Usage](#usage) - module imports, HTML structure and wizard controls.
+- [Form Validation](#form-validation) - required fields, radio groups and conditional rules.
+- [Config Wizard](#config-wizard) - options, async guards and i18n.
+- [Events Management](#events-management) - lifecycle, navigation, validation and submit events.
+- [Test Folder](#test-folder) - package consumption smoke tests.
+- [CDN Releases](#cdn-releases) - how to publish tags that work on jsDelivr.
+
+## Quick Start
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.1.1/dist/main.min.css">
+
+<form class="wizard" method="POST">
+    <aside class="wizard-content">
+        <div class="wizard-step" data-wz-title="Account">
+            <input type="email" name="email" class="required" placeholder="Email">
+        </div>
+
+        <div class="wizard-step" data-wz-title="Plan">
+            <label><input type="radio" name="plan" value="free" required> Free</label>
+            <label><input type="radio" name="plan" value="pro" required> Pro</label>
+        </div>
+    </aside>
+</form>
+
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.1.1/dist/index.js"></script>
+<script>
+    const wizard = new Wizard({
+        wz_class: ".wizard"
+    });
+
+    wizard.init();
+</script>
+```
 
 ## Installation
 
@@ -85,65 +84,12 @@ For <a href="https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS" tar
 For production usage, it is better to pin a specific version instead of `@latest`:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/main.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.1.1/dist/main.min.css">
 
-<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.0.3/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/AdrianVillamayor/Wizard-JS@2.1.1/dist/index.js"></script>
 ```
 
-## Test Folder
-
-The repository includes a [`test/`](./test) folder with smoke examples that show how to consume the package in different environments:
-
-- [`test/ts`](./test/ts): TypeScript consumer using the packed tarball.
-- [`test/js`](./test/js): JavaScript ESM consumer using the packed tarball.
-- [`test/cjs`](./test/cjs): CommonJS consumer using the packed tarball.
-- [`test/cdn`](./test/cdn): browser example using jsDelivr CDN.
-- [`test/base.css`](./test/base.css): minimal visual base used only by the browser smoke examples.
-
-The name `test/` is intentional here: these are not unit tests, but package consumption smoke tests.
-
-To run the automated smoke checks:
-
-```bash
-pnpm run smoke
-```
-
-To run them one by one:
-
-```bash
-pnpm run smoke:ts
-pnpm run smoke:js
-pnpm run smoke:cjs
-```
-
-To prepare the browser examples:
-
-```bash
-pnpm run browser:prepare
-```
-
-To open each browser example with Vite:
-
-```bash
-pnpm run browser:ts
-pnpm run browser:js
-pnpm run browser:cjs
-pnpm run browser:cdn
-```
-
-Browser examples available in `test/`:
-
-- [`test/ts/index.html`](./test/ts/index.html): TypeScript + package CSS.
-- [`test/js/index.html`](./test/js/index.html): JavaScript ESM + package CSS.
-- [`test/cjs/index.html`](./test/cjs/index.html): browser UMD/global test using the packaged UMD bundle installed in the fixture.
-- [`test/cdn/index.html`](./test/cdn/index.html): CDN/browser test using jsDelivr.
-
-Note about `cjs` in the browser:
-
-- [`test/cjs/index.js`](./test/cjs/index.js) validates CommonJS in Node.
-- [`test/cjs/index.html`](./test/cjs/index.html) validates the browser global/UMD bundle.
-
-The CDN example can also be opened directly in a browser if you only want to test the published jsDelivr version.
+The GitHub CDN uses files from the release tag, so every published tag must include the generated `dist/` folder.
 
 ## Usage
 
@@ -259,6 +205,29 @@ To mark an input as required, add the `required` attribute or the `required` cla
 <input type="text" name="email" required>
 <!-- or -->
 <input type="text" name="email" class="required">
+```
+
+### Required Radio Groups
+
+Radio buttons are validated by their shared `name`. One checked option is enough to continue:
+
+```html
+<label>
+    <input type="radio" name="plan" value="free" required>
+    Free
+</label>
+
+<label>
+    <input type="radio" name="plan" value="pro" required>
+    Pro
+</label>
+```
+
+You can also use the `required` class instead of the native attribute:
+
+```html
+<input type="radio" name="answer" value="yes" class="required">
+<input type="radio" name="answer" value="no" class="required">
 ```
 
 ### Conditionally Required Fields
@@ -569,6 +538,61 @@ $wz_doc.addEventListener("wz.reset", function (e) {
 });
 ```
 
+## Test Folder
+
+The repository includes a [`test/`](./test) folder with smoke examples that show how to consume the package in different environments:
+
+- [`test/ts`](./test/ts): TypeScript consumer using the packed tarball.
+- [`test/js`](./test/js): JavaScript ESM consumer using the packed tarball.
+- [`test/cjs`](./test/cjs): CommonJS consumer using the packed tarball.
+- [`test/cdn`](./test/cdn): browser example using jsDelivr CDN.
+- [`test/base.css`](./test/base.css): minimal visual base used only by the browser smoke examples.
+
+The name `test/` is intentional here: these are not unit tests, but package consumption smoke tests.
+
+To run the automated smoke checks:
+
+```bash
+pnpm run smoke
+```
+
+To run them one by one:
+
+```bash
+pnpm run smoke:ts
+pnpm run smoke:js
+pnpm run smoke:cjs
+```
+
+To prepare the browser examples:
+
+```bash
+pnpm run browser:prepare
+```
+
+To open each browser example with Vite:
+
+```bash
+pnpm run browser:ts
+pnpm run browser:js
+pnpm run browser:cjs
+pnpm run browser:cdn
+```
+
+Browser examples available in `test/`:
+
+- [`test/ts/index.html`](./test/ts/index.html): TypeScript + package CSS.
+- [`test/js/index.html`](./test/js/index.html): JavaScript ESM + package CSS.
+- [`test/cjs/index.html`](./test/cjs/index.html): browser UMD/global test using the packaged UMD bundle installed in the fixture.
+- [`test/cdn/index.html`](./test/cdn/index.html): CDN/browser test using jsDelivr.
+
+Note about `cjs` in the browser:
+
+- [`test/cjs/index.js`](./test/cjs/index.js) validates CommonJS in Node.
+- [`test/cjs/index.html`](./test/cjs/index.html) validates the browser global/UMD bundle.
+
+The CDN example can also be opened directly in a browser if you only want to test the published jsDelivr version.
+
 ## Demo
 
 Try it on CodePen:
@@ -586,6 +610,15 @@ You can run it with:
 pnpm run dev
 ```
 
+## CDN Releases
+
+This project uses the jsDelivr GitHub package:
+
+```text
+https://www.jsdelivr.com/package/gh/AdrianVillamayor/Wizard-JS
+```
+
+Before creating a new release tag, run `pnpm run build` and commit the generated `dist/` files. Without `dist/`, CDN URLs like `/dist/index.js` and `/dist/main.min.css` will not work for that tag.
 
 ## Contributing
 
@@ -596,4 +629,3 @@ Please make sure to update tests as appropriate.
 ## License
 
 [MIT](https://github.com/AdrianVillamayor/Wizard-JS/blob/main/LICENSE)
-### Thanks for your help! 🎉
